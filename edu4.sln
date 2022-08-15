@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.API", "src\edu4.API\edu4.API.csproj", "{8730931D-653E-4951-8172-D4472267D231}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "edu4.WebClient", "src\edu4.app\edu4.WebClient.esproj", "{A05FCAE5-4D87-400E-9088-86D759E59361}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "edu4.WebClient", "src\edu4.WebClient\edu4.WebClient.esproj", "{A05FCAE5-4D87-400E-9088-86D759E59361}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{0104256C-FD81-4594-9597-318A7D5C50D3}"
 	ProjectSection(SolutionItems) = preProject
