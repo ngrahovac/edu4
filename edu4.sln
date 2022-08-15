@@ -13,11 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{0104256C-F
 		edu4.sln = edu4.sln
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu4.Domain", "src\edu4.Domain\edu4.Domain.csproj", "{0469A734-5FED-44DC-87EC-53BFD26F1515}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Domain", "src\edu4.Domain\edu4.Domain.csproj", "{0469A734-5FED-44DC-87EC-53BFD26F1515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu4.Application", "src\edu4.Application\edu4.Application.csproj", "{C48EA5CF-3530-4534-8303-AE9B30BC6168}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Application", "src\edu4.Application\edu4.Application.csproj", "{C48EA5CF-3530-4534-8303-AE9B30BC6168}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu4.Infrastructure", "src\edu4.Infrastructure\edu4.Infrastructure.csproj", "{F3394B9B-7A01-4A03-829B-884193A32CE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Infrastructure", "src\edu4.Infrastructure\edu4.Infrastructure.csproj", "{F3394B9B-7A01-4A03-829B-884193A32CE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu4.Domain.Tests", "tests\edu4.Domain.Tests\edu4.Domain.Tests.csproj", "{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{F3394B9B-7A01-4A03-829B-884193A32CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3394B9B-7A01-4A03-829B-884193A32CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3394B9B-7A01-4A03-829B-884193A32CE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
