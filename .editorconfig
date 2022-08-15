@@ -50,6 +50,20 @@ csharp_style_expression_bodied_accessors = true:warning
 csharp_style_expression_bodied_lambdas = true:warning
 csharp_style_expression_bodied_local_functions = true:warning
 csharp_space_around_binary_operators = before_and_after
+csharp_prefer_static_local_function = true:warning
+csharp_style_allow_embedded_statements_on_same_line_experimental = true:silent
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true:silent
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true:silent
+csharp_style_conditional_delegate_call = true:warning
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+csharp_style_prefer_pattern_matching = true:warning
+csharp_style_prefer_switch_expression = true:warning
+csharp_style_prefer_extended_property_pattern = true:suggestion
+csharp_style_prefer_not_pattern = true:warning
+csharp_style_pattern_matching_over_as_with_null_check = true:warning
+csharp_style_var_for_built_in_types = true:warning
+csharp_style_var_elsewhere = true:warning
+csharp_style_var_when_type_is_apparent = true:warning
 
 # XML Configuration Files
 [*.{xml,config,props,targets,nuspec,resx,ruleset,vsixmanifest,vsct}]
@@ -485,3 +499,5 @@ dotnet_diagnostic.Underscore.severity = silent
 dotnet_diagnostic.UnusedVariable.severity = silent
 tab_width = 4
 end_of_line = crlf
+dotnet_style_allow_multiple_blank_lines_experimental = true:silent
+dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
