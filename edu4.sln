@@ -9,6 +9,7 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "edu4.WebClient", "src\edu4.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{0104256C-FD81-4594-9597-318A7D5C50D3}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		edu4.sln = edu4.sln
 	EndProjectSection
@@ -19,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Application", "src\edu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Infrastructure", "src\edu4.Infrastructure\edu4.Infrastructure.csproj", "{F3394B9B-7A01-4A03-829B-884193A32CE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu4.Domain.Tests", "tests\edu4.Domain.Tests\edu4.Domain.Tests.csproj", "{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Domain.Tests", "tests\edu4.Domain.Tests\edu4.Domain.Tests.csproj", "{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
