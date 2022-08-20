@@ -1,6 +1,6 @@
 namespace edu4.Domain.Common;
 
-internal abstract class AbstractEntity
+public abstract class AbstractEntity
 {
     public Guid Id { get; private set; }
 

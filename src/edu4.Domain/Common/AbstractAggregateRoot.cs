@@ -1,5 +1,5 @@
 namespace edu4.Domain.Common;
 
-internal class AbstractAggregateRoot : AbstractEntity
+public class AbstractAggregateRoot : AbstractEntity
 {
 }
