@@ -33,7 +33,7 @@ public class UsersServiceTests
         };
 
         // act
-        var signedUpUser = await sut.SignUp(accountId, contactEmail, hats);
+        var signedUpUser = await sut.SignUpAsync(accountId, contactEmail, hats);
 
         // assert user got assigned id by db driver
         signedUpUser.Id.Should().NotBe(Guid.Empty);
@@ -69,10 +69,10 @@ public class UsersServiceTests
             new AcademicHat("Distributed Systems")
         };
 
-        await sut.SignUp(accountId, contactEmail, hats);
+        await sut.SignUpAsync(accountId, contactEmail, hats);
 
         // act
-        var signUserUp = async () => await sut.SignUp(accountId, contactEmail, hats);
+        var signUserUp = async () => await sut.SignUpAsync(accountId, contactEmail, hats);
 
         // assert
         await signUserUp.Should().ThrowAsync<InvalidOperationException>();

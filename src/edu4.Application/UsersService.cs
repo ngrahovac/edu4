@@ -9,7 +9,7 @@ public class UsersService
     public UsersService(IUsersRepository users) =>
         _users = users;
 
-    public async Task<User> SignUp(
+    public async Task<User> SignUpAsync(
         string accountId,
         string contactEmail,
         List<Hat> hats)
