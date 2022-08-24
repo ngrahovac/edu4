@@ -5,9 +5,6 @@ namespace edu4.API.Models;
 public class UserSignupInputModel
 {
     [Required]
-    public string? AccountId { get; set; }
-
-    [Required]
     public string? ContactEmail { get; set; }
 
     [Required]

@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using edu4.API.Middleware;
 using edu4.Application;
 using edu4.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,10 @@ builder.Services
     {
         options.Authority = $"https://{config["Auth0:Domain"]}/";
         options.Audience = config["Auth0:Audience"];
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = ClaimTypes.NameIdentifier
+        };
     });
 
 var app = builder.Build();

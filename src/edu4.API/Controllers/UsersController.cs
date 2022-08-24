@@ -1,9 +1,12 @@
 using edu4.API.Models;
+using edu4.API.Utils;
 using edu4.Application;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace edu4.API.Controllers;
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class UsersController : ControllerBase
 {
@@ -15,8 +18,10 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> SignUpAsync(UserSignupInputModel model)
     {
+        var accountId = AuthorizationUtils.ExtractAccountId(Request);
+
         await _users.SignUpAsync(
-                model.AccountId!,
+                accountId,
                 model.ContactEmail!,
                 model.Hats!.Select(hatModel => HatFactory.FromHatInputModel(hatModel)).ToList());
 
