@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "0bfd7cac-9d04-4c95-8637-7653b3578363",
+		"name": "edu4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8080477"
+	},
+	"item": [
+		{
+			"name": "Can't sign up a user with no hats provided",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountId\":\"google-oauth2|0\",\r\n    \"contactEmail\":\"mail@example.com\",\r\n    \"hats\": [\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_root_url}}/users",
+					"host": [
+						"{{api_root_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Can sign up a user with valid data provided",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountId\":\"google-oauth2|2\",\r\n    \"contactEmail\":\"mail2@example.com\",\r\n    \"hats\": [\r\n        {\r\n            \"type\":\"Student\",\r\n            \"parameters\":{\r\n                \"academicDegree\": 1,\r\n                \"studyField\":\"Computer Science\"\r\n            }\r\n        },\r\n        {\r\n            \"type\":\"Academic\",\r\n            \"parameters\":{\r\n                \"researchField\":\"Distributed Systems\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_root_url}}/users",
+					"host": [
+						"{{api_root_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "tokenType",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "accessToken",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "body",
+				"type": "string"
+			},
+			{
+				"key": "state",
+				"value": "ASJDFKALDJSFKLJASLKFJAKLS",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "openid profile email",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "{{auth0_client_secret}}",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "{{auth0_client_id}}",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://{{auth0_domain}}/oauth/token",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://{{auth0_domain}}/authorize?audience={{auth0_audience}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "edu4.API Token",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "https://www.getpostman.com/oauth2/callback",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

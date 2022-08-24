@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{0104256C-F
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		tests\edu4.postman_collection.json = tests\edu4.postman_collection.json
 		edu4.sln = edu4.sln
 	EndProjectSection
 EndProject
@@ -22,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Infrastructure", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Domain.Tests", "tests\edu4.Domain.Tests\edu4.Domain.Tests.csproj", "{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu4.Application.Tests", "tests\edu4.Application.Tests\edu4.Application.Tests.csproj", "{FE9DDDCC-5150-4291-A46F-323BEC4C044B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Application.Tests", "tests\edu4.Application.Tests\edu4.Application.Tests.csproj", "{FE9DDDCC-5150-4291-A46F-323BEC4C044B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
