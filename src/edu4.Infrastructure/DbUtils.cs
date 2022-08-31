@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace edu4.Application.Tests;
-internal class DbTestUtils
+namespace edu4.Infrastructure;
+public class DbUtils
 {
     private readonly IConfiguration _configuration;
 
-    public DbTestUtils(IConfiguration configuration) => _configuration = configuration;
+    public DbUtils(IConfiguration configuration) => _configuration = configuration;
 
     public async Task CleanDatabaseAsync()
     {

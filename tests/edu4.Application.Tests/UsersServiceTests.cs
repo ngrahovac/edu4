@@ -1,28 +1,33 @@
 using System.Diagnostics.CodeAnalysis;
+using edu4.Application.External;
 using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Moq;
 
 namespace edu4.Application.Tests;
 
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
-[Collection("Integration tests")]
+[Collection("App services integration tests")]
 public class UsersServiceTests
 {
     [Fact]
     public async void Successfully_signs_up_a_new_user_providing_valid_email_account_id_and_hat_list()
     {
-        // arrange
+        // ARRANGE
         var config = new ConfigurationBuilder()
-            .AddUserSecrets(typeof(MongoDbUsersRepository).Assembly)
+            .AddUserSecrets(GetType().Assembly)
             .Build();
 
-        await new DbTestUtils(config).CleanDatabaseAsync();
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var users = new MongoDbUsersRepository(config);
+        var accountManagementMock = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        accountManagementMock.Setup(s => s.MarkUserSignedUpAsync(It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
 
-        var sut = new UsersService(users);
+        var sut = new UsersService(users, accountManagementMock.Object);
 
         var accountId = "google-oauth2|0";
         var contactEmail = "mail@example.com";
@@ -32,11 +37,15 @@ public class UsersServiceTests
             new AcademicHat("Distributed Systems")
         };
 
-        // act
+        // ACT
         var signedUpUser = await sut.SignUpAsync(accountId, contactEmail, hats);
 
+        // ASSERT
         // assert user got assigned id by db driver
         signedUpUser.Id.Should().NotBe(Guid.Empty);
+
+        // assert user was marked as signed up
+        accountManagementMock.Verify(s => s.MarkUserSignedUpAsync(accountId), Times.Once);
 
         // assert db state through repository
         var retrievedUser = await users.GetByIdAsync(signedUpUser.Id);
@@ -52,14 +61,17 @@ public class UsersServiceTests
     {
         // arrange
         var config = new ConfigurationBuilder()
-            .AddUserSecrets(typeof(MongoDbUsersRepository).Assembly)
+            .AddUserSecrets(GetType().Assembly)
             .Build();
 
-        await new DbTestUtils(config).CleanDatabaseAsync();
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var users = new MongoDbUsersRepository(config);
+        var accountManagementMock = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        accountManagementMock.Setup(s => s.MarkUserSignedUpAsync(It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
 
-        var sut = new UsersService(users);
+        var sut = new UsersService(users, accountManagementMock.Object);
 
         var accountId = "google-oauth2|0";
         var contactEmail = "mail@example.com";
