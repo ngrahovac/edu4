@@ -12,8 +12,7 @@ public class UsersController : ControllerBase
 {
     private readonly UsersService _users;
 
-    public UsersController(UsersService users) =>
-        _users = users;
+    public UsersController(UsersService users) => _users = users;
 
     [HttpPost]
     public async Task<ActionResult> SignUpAsync(UserSignupInputModel model)
