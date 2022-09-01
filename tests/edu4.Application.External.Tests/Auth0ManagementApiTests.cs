@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
+using edu4.API;
 using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;
@@ -18,11 +19,10 @@ public class Auth0ManagementApiTests
     /// <summary>
     /// Not automated: the test assumes an existing user under Auth0 tenant
     /// and no user document with the same account id.
-    /// The token used is a test token with the lifetime of 24 hours.
     /// </summary>
     /// <returns></returns>
     [Fact]
-    public async Task User_account_is_assigned_collaborator_role_after_completing_signup()
+    public async Task User_account_is_assigned_contributor_role_after_completing_signup()
     {
         // ARRANGE
         var config = new ConfigurationBuilder()
@@ -31,14 +31,15 @@ public class Auth0ManagementApiTests
 
         var userId = "google-oauth2|100703511693509013031";
 
-        // in production, the client will be configured as transient
-        // and made to fetch an access token with every instance
+        // setting up the client
+        var tokenFetchingService = new Auth0ManagementApiAccessTokenFetchingService(config);
+        var token = await tokenFetchingService.FetchAsync();
+
         var auth0ManagementApiHttpClient = new HttpClient()
         {
             BaseAddress = new Uri($"https://{config["Auth0:Domain"]}/api/v2/")
         };
 
-        var token = config["Auth0:ManagementApi:TestAccessToken"];
         auth0ManagementApiHttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
         await new DbUtils(config).CleanDatabaseAsync();
