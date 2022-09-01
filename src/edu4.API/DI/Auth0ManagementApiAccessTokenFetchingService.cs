@@ -1,4 +1,4 @@
-namespace edu4.API;
+namespace edu4.API.DI;
 
 public class Auth0ManagementApiAccessTokenFetchingService
 {

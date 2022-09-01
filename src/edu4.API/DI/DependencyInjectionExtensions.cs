@@ -2,7 +2,7 @@ using edu4.Application.External;
 using edu4.Application;
 using edu4.Infrastructure;
 
-namespace edu4.API;
+namespace edu4.API.DI;
 
 public static class DependencyInjectionExtensions
 {

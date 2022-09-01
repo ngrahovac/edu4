@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using edu4.API;
+using edu4.API.DI;
 using edu4.API.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
