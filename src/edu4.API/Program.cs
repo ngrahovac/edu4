@@ -1,7 +1,6 @@
 using System.Security.Claims;
+using edu4.API;
 using edu4.API.Middleware;
-using edu4.Application;
-using edu4.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,6 +16,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddRepositories();
 builder.Services.AddApplicationServices();
+builder.Services.AddIAMServices();
+
 builder.Services
     .AddAuthentication(options =>
     {
