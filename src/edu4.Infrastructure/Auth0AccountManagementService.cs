@@ -13,7 +13,7 @@ public class Auth0AccountManagementService : IAccountManagementService
 
     public async Task MarkUserSignedUpAsync(string accountId)
     {
-        var roles = new[] { "rol_x9uzdhEDWHNRfDD2" };
+        var roles = new[] { "rol_zqrwxdFRpMEKMDrc" };
 
         var response = await _auth0ManagementApiClient.PostAsJsonAsync(
             $"users/{accountId}/roles",
