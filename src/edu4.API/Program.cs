@@ -34,6 +34,13 @@ builder.Services
         };
     });
 
+builder.Services.AddAuthorization(configure => configure.AddPolicy(
+        "NonContributor",
+        policy => policy.RequireAssertion(context =>
+        !context.User.HasClaim(c => c.Type == "permissions") ||
+        context.User.Claims.FirstOrDefault(c => c.Type == "permissions")?.Value == string.Empty)
+        ));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

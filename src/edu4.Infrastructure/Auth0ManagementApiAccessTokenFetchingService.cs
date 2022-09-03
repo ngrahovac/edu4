@@ -1,4 +1,8 @@
-namespace edu4.API.DI;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using Microsoft.Extensions.Configuration;
+
+namespace edu4.Infrastructure;
 
 public class Auth0ManagementApiAccessTokenFetchingService
 {
@@ -25,15 +29,15 @@ public class Auth0ManagementApiAccessTokenFetchingService
             BaseAddress = new Uri($"https://{_config["Auth0:Domain"]}/")
         };
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "oauth/token");
-        var payload = new Auth0ManagementApiFetchTokenPayload(
-            "client_credentials",
-            _config["Auth0:edu4.API:ClientID"],
-            _config["Auth0:edu4.API:ClientSecret"],
-            _config["Auth0:ManagementApiAudience"]);
-        request.Content = JsonContent.Create(payload, typeof(Auth0ManagementApiFetchTokenPayload));
-
-        var response = await client.SendAsync(request);
+        var response = await client.PostAsJsonAsync(
+            "oauth/token",
+            new Auth0ManagementApiFetchTokenPayload(
+                "client_credentials",
+                _config["Auth0:edu4.API:ClientID"],
+                _config["Auth0:edu4.API:ClientSecret"],
+                _config["Auth0:ManagementApiAudience"]
+                )
+            );
 
         if (!response.IsSuccessStatusCode)
         {

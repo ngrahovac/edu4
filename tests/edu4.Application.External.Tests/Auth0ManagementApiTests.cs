@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
-using edu4.API.DI;
 using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;

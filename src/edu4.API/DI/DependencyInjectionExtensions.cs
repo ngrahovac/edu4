@@ -15,17 +15,18 @@ public static class DependencyInjectionExtensions
             .AddUserSecrets(typeof(DependencyInjectionExtensions).Assembly)
             .Build();
 
-        var tokenFetchingService = new Auth0ManagementApiAccessTokenFetchingService(config);
+        // typed client has a transient lifetime
+        // token is fetched from the service using it
+        services.AddScoped<IAccountManagementService, Auth0AccountManagementService>();
 
         services.AddHttpClient<IAccountManagementService, Auth0AccountManagementService>(async client =>
         {
             client.BaseAddress = new Uri($"https://{config["Auth0:Domain"]}/api/v2/");
-            var token = await tokenFetchingService.FetchAsync();
 
+            var tokenFetchingService = new Auth0ManagementApiAccessTokenFetchingService(config);
+            var token = await tokenFetchingService.FetchAsync();
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         });
-
-        services.AddScoped<IAccountManagementService, Auth0AccountManagementService>();
 
         return services;
     }

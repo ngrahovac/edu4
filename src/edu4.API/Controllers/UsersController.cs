@@ -15,6 +15,7 @@ public class UsersController : ControllerBase
     public UsersController(UsersService users) => _users = users;
 
     [HttpPost]
+    [Authorize(Policy = "NonContributor")]
     public async Task<ActionResult> SignUpAsync(UserSignupInputModel model)
     {
         var accountId = AuthorizationUtils.ExtractAccountId(Request);
