@@ -22,6 +22,7 @@ public class UsersController : ControllerBase
 
         await _users.SignUpAsync(
                 accountId,
+                model.FullName!,
                 model.ContactEmail!,
                 model.Hats!.Select(hatModel => HatFactory.FromHatInputModel(hatModel)).ToList());
 

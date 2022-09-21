@@ -45,7 +45,11 @@ public class MongoDBSetupUtils
             // as a consequence, both _hats and Hats are mapped and a part of documents
             cm.MapProperty(u => u.Hats);
             cm.MapField("_hats").SetElementName("_hats");
-            cm.MapCreator(u => new User(u.AccountId, u.ContactEmail, u.Hats.ToList()));
+            cm.MapCreator(u => new User(
+                u.AccountId,
+                u.FullName,
+                u.ContactEmail,
+                u.Hats.ToList()));
         });
     }
 }

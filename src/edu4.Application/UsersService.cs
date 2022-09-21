@@ -24,10 +24,15 @@ public class UsersService
     /// <exception cref="InvalidOperationException"></exception>
     public async Task<User> SignUpAsync(
         string accountId,
+        string fullName,
         string contactEmail,
         List<Hat> hats)
     {
-        var user = new User(accountId, contactEmail, hats);
+        var user = new User(
+            accountId,
+            fullName,
+            contactEmail,
+            hats);
 
         if (await _users.GetByAccountIdAsync(accountId) is not null)
         {

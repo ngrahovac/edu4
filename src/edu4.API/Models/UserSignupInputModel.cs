@@ -8,6 +8,9 @@ public class UserSignupInputModel
     public string? ContactEmail { get; set; }
 
     [Required]
+    public string? FullName { get; set; }
+
+    [Required]
     [MinLength(1)]
     public List<HatInputModel>? Hats { get; set; }
 }

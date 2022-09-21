@@ -4,6 +4,9 @@ namespace edu4.Domain.Users;
 public class User : AbstractAggregateRoot
 {
     public string AccountId { get; }
+
+    public string FullName { get; }
+
     public string ContactEmail { get; }
 
     private readonly HashSet<Hat> _hats = new();
@@ -11,9 +14,14 @@ public class User : AbstractAggregateRoot
     public IReadOnlyList<Hat> Hats => _hats.ToList();
 
 
-    public User(string accountId, string contactEmail, List<Hat> hats)
+    public User(
+        string accountId,
+        string fullName,
+        string contactEmail,
+        List<Hat> hats)
     {
         AccountId = accountId;
+        FullName = fullName;
         ContactEmail = contactEmail;
 
         foreach (var hat in hats)
