@@ -50,6 +50,7 @@ public class UserTests
 
         var createUser = () => new User(
             "google-auth|0",
+            "John Doe",
             "example@mail.com",
             new List<Hat>() { hat1, hat2 });
 
@@ -66,6 +67,7 @@ public class UserTests
 
         var createUser = () => new User(
             "google-auth|0",
+            "John Doe",
             "example@mail.com",
             new List<Hat>() { hat1, hat2 });
 

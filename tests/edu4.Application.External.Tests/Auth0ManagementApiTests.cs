@@ -49,7 +49,11 @@ public class Auth0ManagementApiTests
         var sut = new UsersService(users, accountManagement);
 
         // ACT
-        await sut.SignUpAsync(userId, "mail@example.com", new List<Hat>() { new StudentHat("Computer Science") });
+        await sut.SignUpAsync(
+            userId,
+            "John Doe",
+            "mail@example.com",
+            new List<Hat>() { new StudentHat("Computer Science") });
 
         // ASSERT
         await Task.Delay(31);

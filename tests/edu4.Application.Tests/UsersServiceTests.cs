@@ -30,6 +30,7 @@ public class UsersServiceTests
         var sut = new UsersService(users, accountManagementMock.Object);
 
         var accountId = "google-oauth2|0";
+        var fullName = "John Doe";
         var contactEmail = "mail@example.com";
         var hats = new List<Hat>
         {
@@ -38,7 +39,11 @@ public class UsersServiceTests
         };
 
         // ACT
-        var signedUpUser = await sut.SignUpAsync(accountId, contactEmail, hats);
+        var signedUpUser = await sut.SignUpAsync(
+            accountId,
+            fullName,
+            contactEmail,
+            hats);
 
         // ASSERT
         // assert user got assigned id by db driver
@@ -52,6 +57,7 @@ public class UsersServiceTests
 
         retrievedUser!.Id.Should().Be(signedUpUser.Id);
         retrievedUser.AccountId.Should().Be(accountId);
+        retrievedUser.FullName.Should().Be(fullName);
         retrievedUser.ContactEmail.Should().Be(contactEmail);
         retrievedUser.Hats.Should().BeEquivalentTo(hats);
     }
@@ -74,6 +80,7 @@ public class UsersServiceTests
         var sut = new UsersService(users, accountManagementMock.Object);
 
         var accountId = "google-oauth2|0";
+        var fullName = "John Doe";
         var contactEmail = "mail@example.com";
         var hats = new List<Hat>
         {
@@ -81,10 +88,18 @@ public class UsersServiceTests
             new AcademicHat("Distributed Systems")
         };
 
-        await sut.SignUpAsync(accountId, contactEmail, hats);
+        await sut.SignUpAsync(
+            accountId,
+            fullName,
+            contactEmail,
+            hats);
 
         // act
-        var signUserUp = async () => await sut.SignUpAsync(accountId, contactEmail, hats);
+        var signUserUp = async () => await sut.SignUpAsync(
+            accountId,
+            fullName,
+            contactEmail,
+            hats);
 
         // assert
         await signUserUp.Should().ThrowAsync<InvalidOperationException>();

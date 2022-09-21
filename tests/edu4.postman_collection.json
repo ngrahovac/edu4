@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountId\":\"google-oauth2|0\",\r\n    \"contactEmail\":\"mail@example.com\",\r\n    \"hats\": [\r\n    ]\r\n}",
+					"raw": "{\r\n    \"accountId\":\"google-oauth2|0\",\r\n    \"fullName\":\"John Doe\",\r\n    \"contactEmail\":\"mail@example.com\",\r\n    \"hats\": [\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -39,7 +39,36 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"accountId\":\"google-oauth2|2\",\r\n    \"contactEmail\":\"mail2@example.com\",\r\n    \"hats\": [\r\n        {\r\n            \"type\":\"Student\",\r\n            \"parameters\":{\r\n                \"academicDegree\": 1,\r\n                \"studyField\":\"Computer Science\"\r\n            }\r\n        },\r\n        {\r\n            \"type\":\"Academic\",\r\n            \"parameters\":{\r\n                \"researchField\":\"Distributed Systems\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"accountId\":\"google-oauth2|100703511693509013031\",\r\n    \"contactEmail\":\"mail2@example.com\",\r\n    \"fullName\":\"John Doe\",\r\n    \"hats\": [\r\n        {\r\n            \"type\":\"Student\",\r\n            \"parameters\":{\r\n                \"academicDegree\": 1,\r\n                \"studyField\":\"Computer Science\"\r\n            }\r\n        },\r\n        {\r\n            \"type\":\"Academic\",\r\n            \"parameters\":{\r\n                \"researchField\":\"Distributed Systems\"\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_root_url}}/users",
+					"host": [
+						"{{api_root_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Can't sign up a user with no token in Authorization header",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountId\":\"google-oauth2|3\",\r\n    \"contactEmail\":\"mail3@example.com\",\r\n    \"fullName\":\"John Doe\",\r\n    \"hats\": [\r\n        {\r\n            \"type\":\"Student\",\r\n            \"parameters\":{\r\n                \"academicDegree\": 1,\r\n                \"studyField\":\"Computer Science\"\r\n            }\r\n        },\r\n        {\r\n            \"type\":\"Academic\",\r\n            \"parameters\":{\r\n                \"researchField\":\"Distributed Systems\"\r\n            }\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -64,12 +93,12 @@
 		"oauth2": [
 			{
 				"key": "tokenType",
-				"value": "",
+				"value": "Bearer",
 				"type": "string"
 			},
 			{
 				"key": "accessToken",
-				"value": "",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImhPZ3ZqREdqZFdVUWVRNW85Q1hrcSJ9.eyJpc3MiOiJodHRwczovL2Rldi05NmRlemFsNS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDA3MDM1MTE2OTM1MDkwMTMwMzEiLCJhdWQiOlsiZWR1NC5BUEkiLCJodHRwczovL2Rldi05NmRlemFsNS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjYyMDY1MTg4LCJleHAiOjE2NjIxNTE1ODgsImF6cCI6InVkMUR1c2prTVNCNFlHWUtKNUZMM2RlbVk1T2NIT0xkIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbXX0.Ra4E5cOkLhe57nQyiIgIgAz2G1OMKAMUwWaHwJ6PKBzawm6aX7R1uQMItMcURGupyUVPOc80UGSjg8XzLaCBMQMStO5hM8MZa38C8rdT24uQCSS6L9HjyYVRamKkPYoRE4gFYADZQNW7oNgZCEBxNnlTzdoOluVuZNr7ioI8NW2vT2xq5lDZox2I7LfB92Zyg3qLOUbW-WEOx_T2W7KQAA0xSlVgSly1iDkBvy0u0LwGr02z_9fvh7alh2HmS9qU1JxsWS0dXya5fZxXk-RAiyfcJUIQBWtu1ubJrjaB4kZPaBeq2qlBzHJgWlT_E4hstLbOIHyKoNCxVVFzFAG4tQ",
 				"type": "string"
 			},
 			{
