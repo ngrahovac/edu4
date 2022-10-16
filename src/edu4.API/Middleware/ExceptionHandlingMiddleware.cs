@@ -16,13 +16,13 @@ public class ExceptionHandlingMiddleware
         catch (InvalidOperationException ex)
         {
             context.Response.StatusCode = 400;
-            await context.Response.WriteAsync($"{ex.Message}\n{ex.StackTrace}");
+            await context.Response.WriteAsync($"{ex.Message}");
             return;
         }
         catch (Exception ex)
         {
             context.Response.StatusCode = 500;
-            await context.Response.WriteAsync($"{ex.Message}\n{ex.StackTrace}");
+            await context.Response.WriteAsync($"{ex.Message}");
             return;
         }
     }
