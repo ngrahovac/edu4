@@ -39,6 +39,7 @@ public class MongoDBSetupUtils
         {
             cm.MapProperty(u => u.AccountId);
             cm.MapProperty(u => u.ContactEmail);
+            cm.MapProperty(u => u.FullName);
 
             // Hats are mapped so they can be used in the creator map (below)
             // instead of breaking encapsulation;
