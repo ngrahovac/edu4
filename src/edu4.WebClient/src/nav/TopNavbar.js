@@ -1,5 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
+import LogoutButton from '../account/LogoutButton'
 import Search from './Search'
 import TopNavbarItem from './TopNavbarItem'
 
@@ -58,6 +59,8 @@ const TopNavbar = () => {
                         }
                         link="#">
                     </TopNavbarItem>
+
+                    <LogoutButton></LogoutButton>
                 </div>
             </div>
             <Outlet></Outlet>

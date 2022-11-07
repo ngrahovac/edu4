@@ -2,10 +2,10 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import jwtDecode from 'jwt-decode';
+import EnterButton from '../account/EnterButton';
 
 const Welcome = () => {
     const {
-        loginWithRedirect,
         isAuthenticated,
         isLoading,
         getAccessTokenSilently
@@ -50,12 +50,7 @@ const Welcome = () => {
     return (
         <>
             <div className='flex flex-row absolute top-2 right-4 z-10'>
-                <button
-                    type="button"
-                    className='px-4 py-2 rounded-md bg-stone-200 hover:bg-stone-300 text-slate-800 font-semibold text-lg ml-2'
-                    onClick={() => loginWithRedirect()}>
-                    Enter
-                </button>
+                <EnterButton></EnterButton>
             </div>
 
             <div
