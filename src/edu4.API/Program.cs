@@ -41,6 +41,14 @@ builder.Services.AddAuthorization(configure => configure.AddPolicy(
         context.User.Claims.FirstOrDefault(c => c.Type == "permissions")?.Value == string.Empty)
         ));
 
+builder.Services.AddCors(builder =>
+    builder.AddDefaultPolicy(policyBuilder =>
+    {
+        policyBuilder.AllowAnyHeader();
+        policyBuilder.AllowAnyMethod();
+        policyBuilder.AllowAnyOrigin();
+    }));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,6 +64,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+
+app.UseCors();
 
 app.UseAuthorization();
 
