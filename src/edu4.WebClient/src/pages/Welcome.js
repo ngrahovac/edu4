@@ -59,7 +59,7 @@ const Welcome = () => {
                     edu4
                 </p>
                 <p className='mt-8 space-y-2 leading-normal'>
-                    Helps you find amazing people
+                    Find amazing people
                     <br />
                     and bring your ideas to life.
                 </p>
