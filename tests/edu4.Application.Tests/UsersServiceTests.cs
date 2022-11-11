@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using edu4.Application.External;
+using edu4.Application.Contracts;
 using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;

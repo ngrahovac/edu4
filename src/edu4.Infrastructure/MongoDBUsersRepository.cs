@@ -1,4 +1,4 @@
-using edu4.Application;
+using edu4.Application.Contracts;
 using edu4.Domain.Users;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;

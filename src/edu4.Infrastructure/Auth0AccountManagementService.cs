@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using edu4.Application.External;
+using edu4.Application.Contracts;
 
 namespace edu4.Infrastructure;
 public class Auth0AccountManagementService : IAccountManagementService

@@ -1,6 +1,6 @@
-using edu4.Application.External;
 using edu4.Application;
 using edu4.Infrastructure;
+using edu4.Application.Contracts;
 
 namespace edu4.API.DI;
 
