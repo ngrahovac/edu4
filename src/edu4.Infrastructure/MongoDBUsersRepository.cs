@@ -19,13 +19,13 @@ public class MongoDbUsersRepository : IUsersRepository
         _usersCollection = mongoDb.GetCollection<User>(usersCollectionName);
     }
 
-    public Task AddAsync(User user) =>
-        _usersCollection.InsertOneAsync(user);
+    public Task AddAsync(User user)
+        => _usersCollection.InsertOneAsync(user);
 
-    public async Task<User?> GetByIdAsync(Guid id) =>
-        await _usersCollection.Find(u => u.Id == id).FirstOrDefaultAsync();
+    public async Task<User?> GetByIdAsync(Guid id)
+        => await _usersCollection.Find(u => u.Id == id).FirstOrDefaultAsync();
 
-    public async Task<User?> GetByAccountIdAsync(string accountId) =>
-        await _usersCollection.Find(u => u.AccountId == accountId).FirstOrDefaultAsync();
+    public async Task<User?> GetByAccountIdAsync(string accountId)
+        => await _usersCollection.Find(u => u.AccountId == accountId).FirstOrDefaultAsync();
 
 }
