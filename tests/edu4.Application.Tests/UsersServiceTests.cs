@@ -4,6 +4,7 @@ using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace edu4.Application.Tests;
@@ -27,7 +28,7 @@ public class UsersServiceTests
         accountManagementMock.Setup(s => s.MarkUserSignedUpAsync(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        var sut = new UsersService(users, accountManagementMock.Object);
+        var sut = new UsersService(users, accountManagementMock.Object, new NullLogger<UsersService>());
 
         var accountId = "google-oauth2|0";
         var fullName = "John Doe";
@@ -77,7 +78,7 @@ public class UsersServiceTests
         accountManagementMock.Setup(s => s.MarkUserSignedUpAsync(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        var sut = new UsersService(users, accountManagementMock.Object);
+        var sut = new UsersService(users, accountManagementMock.Object, new NullLogger<UsersService>());
 
         var accountId = "google-oauth2|0";
         var fullName = "John Doe";

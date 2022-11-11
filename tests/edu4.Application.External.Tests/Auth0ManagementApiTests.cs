@@ -4,6 +4,7 @@ using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace edu4.Application.External.Tests;
 
@@ -46,7 +47,7 @@ public class Auth0ManagementApiTests
         var users = new MongoDbUsersRepository(config);
         var accountManagement = new Auth0AccountManagementService(auth0ManagementApiHttpClient);
 
-        var sut = new UsersService(users, accountManagement);
+        var sut = new UsersService(users, accountManagement, new NullLogger<UsersService>());
 
         // ACT
         await sut.SignUpAsync(
