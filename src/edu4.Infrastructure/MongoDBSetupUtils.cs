@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.IdGenerators;
 using edu4.Domain.Common;
 using edu4.Domain.Users;
+using edu4.Domain.Projects;
 
 namespace edu4.Infrastructure;
 public class MongoDBSetupUtils
@@ -51,6 +52,33 @@ public class MongoDBSetupUtils
                 u.FullName,
                 u.ContactEmail,
                 u.Hats.ToList()));
+        });
+
+        BsonClassMap.RegisterClassMap<Project>(cm =>
+        {
+            cm.MapProperty(p => p.Title);
+            cm.MapProperty(p => p.Description);
+            cm.MapProperty(p => p.DatePosted);
+            cm.MapProperty(p => p.Author);
+
+            // Mapping both for the creator map and not breaking encapsulation
+            cm.MapProperty(p => p.Positions);
+            cm.MapField("_positions").SetElementName("_positions");
+
+            cm.MapCreator(p => new Project(
+                p.Title,
+                p.Description,
+                p.Author,
+                p.Positions.ToList()));
+        });
+
+        BsonClassMap.RegisterClassMap<Position>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(p => p.DatePosted);
+            cm.MapProperty(p => p.Name);
+            cm.MapProperty(p => p.Description);
+            cm.MapProperty(p => p.Requirements);
         });
     }
 }

@@ -16,5 +16,6 @@ public class DbUtils
         var mongoDb = new MongoClient(clusterConnectionString).GetDatabase(dbName);
 
         await mongoDb.DropCollectionAsync(_configuration["MongoDb:UsersCollectionName"]);
+        await mongoDb.DropCollectionAsync(_configuration["MongoDb:ProjectsCollectionName"]);
     }
 }
