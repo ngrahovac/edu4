@@ -42,12 +42,12 @@ public class ProjectsServiceTests
             new(
                 string.Empty,
                 string.Empty,
-                new("Student", new(){ { "StudyField", "Computer Science"} })),
+                new(HatType.Student, new(){ { "StudyField", "Computer Science"} })),
 
             new(
                 string.Empty,
                 string.Empty,
-                new("Academic", new(){ { "ResearchField", "Computer Science"} }))
+                new(HatType.Academic, new(){ { "ResearchField", "Computer Science"} }))
         };
 
         var title = "foo";

@@ -36,12 +36,12 @@ public class UsersServiceTests
         var contactEmail = "mail@example.com";
         var hatData = new List<HatDTO>
         {
-            new("Student", new Dictionary<string, object>()
+            new(HatType.Student, new Dictionary<string, object>()
                 {
                     { nameof(StudentHat.StudyField), "Computer Science" },
                     { nameof(StudentHat.AcademicDegree),  3 }
                 }),
-            new("Academic", new Dictionary<string, object>()
+            new(HatType.Academic, new Dictionary<string, object>()
                 {
                     {"ResearchField", "Distributed Systems" }
                 })
@@ -97,12 +97,12 @@ public class UsersServiceTests
         var contactEmail = "mail@example.com";
         var hatData = new List<HatDTO>
         {
-            new("Student", new Dictionary<string, object>()
+            new(HatType.Student, new Dictionary<string, object>()
                 {
                     { "StudyField", "Computer Science" },
                     { "StudyDegree",  3 }
                 }),
-            new("Academic", new Dictionary<string, object>()
+            new(HatType.Academic, new Dictionary<string, object>()
                 {
                     {"ResearchField", "Distributed Systems" }
                 })

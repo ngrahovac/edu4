@@ -57,7 +57,7 @@ public class Auth0ManagementApiTests
             "mail@example.com",
             new List<HatDTO>()
             {
-                new("Student", new Dictionary<string, object>()
+                new(HatType.Student, new Dictionary<string, object>()
                 {
                     { nameof(StudentHat.StudyField), "Computer Science" }
                 }),
