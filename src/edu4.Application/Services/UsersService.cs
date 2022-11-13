@@ -42,7 +42,7 @@ public class UsersService
 
         if (await _users.GetByAccountIdAsync(accountId) is not null)
         {
-            _logger.LogError("User with {AccountId} already signed in", accountId);
+            _logger.LogError("User with {AccountId} already signed up", accountId);
             throw new InvalidOperationException($"User with account id {accountId} already signed up");
         }
 
