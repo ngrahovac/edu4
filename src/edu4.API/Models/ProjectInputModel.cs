@@ -12,6 +12,7 @@ public class ProjectInputModel
     public string Description { get; set; }
 
     [Required]
+    [MinLength(1)]
     public List<PositionInputModel> Positions { get; set; }
 }
 #nullable restore
