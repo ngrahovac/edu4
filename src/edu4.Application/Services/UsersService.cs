@@ -53,4 +53,24 @@ public class UsersService
 
         return user;
     }
+
+    /// <summary>
+    /// Note: This method is implemented here for convenience.
+    /// Getting user's id from their account id in order to provide it
+    /// to application services might change in the future.
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <returns></returns>
+    public async Task<Guid> GetUserIdFromAccountId(string accountId)
+    {
+        var user = await _users.GetByAccountIdAsync(accountId);
+
+        if (user is null)
+        {
+            _logger.LogError("User with account id {AccountId} does not exist", accountId);
+            throw new InvalidOperationException($"User with account id {accountId} does not exist");
+        }
+
+        return user.Id;
+    }
 }
