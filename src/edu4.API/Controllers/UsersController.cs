@@ -24,7 +24,7 @@ public class UsersController : ControllerBase
                 accountId,
                 model.FullName!,
                 model.ContactEmail!,
-                model.Hats!.Select(hatModel => HatFactory.FromHatInputModel(hatModel)).ToList());
+                model.Hats!.Select(h => new HatDTO(h.Type, h.Parameters)).ToList());
 
         return Ok(); // TODO: replace with Created
     }
