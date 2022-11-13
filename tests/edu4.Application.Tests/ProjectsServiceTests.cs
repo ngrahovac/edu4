@@ -23,8 +23,12 @@ public class ProjectsServiceTests
         await new DbUtils(config).CleanDatabaseAsync();
 
         var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
 
-        var sut = new ProjectsService(projects, new NullLogger<ProjectsService>());
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
 
         var positions = new List<PositionDTO>()
         {
