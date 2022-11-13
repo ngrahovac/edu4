@@ -25,20 +25,21 @@ public class UsersService
     /// </summary>
     /// <param name="accountId"></param>
     /// <param name="contactEmail"></param>
-    /// <param name="hats"></param>
+    /// <param name="hatData"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
     public async Task<User> SignUpAsync(
         string accountId,
         string fullName,
         string contactEmail,
-        List<Hat> hats)
+        List<HatDTO> hatData)
     {
         var user = new User(
             accountId,
             fullName,
             contactEmail,
-            hats);
+            hatData.Select(
+                h => HatDTO.ToHat(h)).ToList());
 
         if (await _users.GetByAccountIdAsync(accountId) is not null)
         {
