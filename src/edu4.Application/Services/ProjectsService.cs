@@ -23,7 +23,7 @@ public class ProjectsService
         string title,
         string description,
         Guid authorId,
-        List<PositionDTO> positions)
+        List<PositionDTO> positionData)
     {
         var author = await _users.GetByIdAsync(authorId);
 
@@ -37,7 +37,7 @@ public class ProjectsService
             title,
             description,
             new Author(authorId),
-            positions.Select(
+            positionData.Select(
                 p => new Position(p.Name, p.Description, HatDTO.ToHat(p.Requirements))).ToList());
 
         await _projects.AddAsync(project);
