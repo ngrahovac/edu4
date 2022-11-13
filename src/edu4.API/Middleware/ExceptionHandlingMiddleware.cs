@@ -22,7 +22,7 @@ public class ExceptionHandlingMiddleware
         catch (Exception ex)
         {
             context.Response.StatusCode = 500;
-            await context.Response.WriteAsync($"{ex.Message}");
+            await context.Response.WriteAsync($"{ex}");
             return;
         }
     }
