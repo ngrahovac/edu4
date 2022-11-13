@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using edu4.Application.Services;
 using edu4.Domain.Projects;
+using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,12 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
+        var author = await TestDataFactory.CreateUserAsync(
+            "auth0-test",
+            "John Doe",
+            "mail@example.com",
+            new List<Hat>() { new StudentHat("Computer Science") });
+
         var projects = new MongoDBProjectsRepository(config);
         var users = new MongoDbUsersRepository(config);
 
@@ -42,7 +49,7 @@ public class ProjectsServiceTests
                 string.Empty,
                 new("Academic", new(){ { "ResearchField", "Computer Science"} }))
         };
-        var authorId = Guid.NewGuid();
+
         var title = "foo";
         var description = "bar";
 
@@ -50,7 +57,7 @@ public class ProjectsServiceTests
         var publishedProject = await sut.PublishProjectAsync(
             title,
             description,
-            authorId,
+            author.Id,
             positions);
 
         // ASSERT
@@ -60,7 +67,7 @@ public class ProjectsServiceTests
 
         retrievedProject.Title.Should().Be(title);
         retrievedProject.Description.Should().Be(description);
-        retrievedProject.Author.Should().Be(new Author(authorId));
+        retrievedProject.Author.Should().Be(new Author(author.Id));
         retrievedProject.Positions.Count.Should().Be(positions.Count);
     }
 }
