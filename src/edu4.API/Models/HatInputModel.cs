@@ -8,6 +8,7 @@ public class HatInputModel
     [Required]
     public string Type { get; set; }
 
+    [Required]
     public Dictionary<string, object> Parameters { get; set; }
 }
 #nullable restore
