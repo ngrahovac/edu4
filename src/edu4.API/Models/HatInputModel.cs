@@ -6,7 +6,8 @@ namespace edu4.API.Models;
 public class HatInputModel
 {
     [Required]
-    public string Type { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public HatType Type { get; set; }
 
     [Required]
     public Dictionary<string, object> Parameters { get; set; }
