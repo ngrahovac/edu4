@@ -55,7 +55,13 @@ public class Auth0ManagementApiTests
             userId,
             "John Doe",
             "mail@example.com",
-            new List<Hat>() { new StudentHat("Computer Science") });
+            new List<HatDTO>()
+            {
+                new("Student", new Dictionary<string, object>()
+                {
+                    { nameof(StudentHat.StudyField), "Computer Science" }
+                }),
+            });
 
         // ASSERT
         await Task.Delay(31);
