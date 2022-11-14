@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import VisibilityFlair from '../accents/VisibilityFlair'
+import VisibilityFlair from '../comps/accents/VisibilityFlair'
 import HatForm from '../comps/hat-forms/HatForm'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
 import Hat from '../comps/hats/Hat'
