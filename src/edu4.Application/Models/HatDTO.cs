@@ -1,7 +1,7 @@
 using edu4.Domain.Users;
 using System.Text.Json;
 
-namespace edu4.Application.Services;
+namespace edu4.Application.Models;
 
 public record HatDTO(HatType Type, Dictionary<string, object> Parameters)
 {
