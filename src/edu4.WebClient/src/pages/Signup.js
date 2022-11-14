@@ -94,7 +94,6 @@ const Signup = () => {
                         document.getElementById('user-action-success-toast').show();
                         setTimeout(() => window.location.href = "/homepage", 1000);
                     } else if (result.outcome === failureResult) {
-                        console.log('jebiga')
                         document.getElementById('user-action-fail-toast').show();
                         setTimeout(() => {
                             document.getElementById('user-action-fail-toast').close();
