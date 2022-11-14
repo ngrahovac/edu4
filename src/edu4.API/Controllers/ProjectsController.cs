@@ -3,7 +3,6 @@ using edu4.API.Utils;
 using edu4.Application.Models;
 using edu4.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace edu4.API.Controllers;
