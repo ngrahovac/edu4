@@ -43,10 +43,19 @@ builder.Services.AddAuthorization(configure => configure.AddPolicy(
 
 builder.Services.AddAuthorization(configure => configure.AddPolicy(
         "Contributor",
-        policy => policy.RequireAssertion(context =>
-        context.User.HasClaim(c => c.Type == "permissions") &&
-        context.User.Claims.First(c => c.Type == "permissions").Value.Contains("contribute"))
-        ));
+        policy =>
+        {
+            if (builder.Environment.IsDevelopment())
+            {
+                policy.RequireAssertion(_ => true);
+            }
+            else
+            {
+                policy.RequireAssertion(context =>
+                        context.User.HasClaim(c => c.Type == "permissions") &&
+                        context.User.Claims.First(c => c.Type == "permissions").Value.Contains("contribute"));
+            }
+        }));
 
 builder.Services.AddCors(builder =>
     builder.AddDefaultPolicy(policyBuilder =>
