@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using edu4.API.DI;
 using edu4.API.Middleware;
+using edu4.API.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -56,6 +57,15 @@ builder.Services.AddAuthorization(configure => configure.AddPolicy(
                         context.User.Claims.First(c => c.Type == "permissions").Value.Contains("contribute"));
             }
         }));
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSingleton<IAccountIdExtractionService, TestAccountIdExtractionService>();
+}
+else
+{
+    builder.Services.AddSingleton<IAccountIdExtractionService, AccountIdExtractionService>();
+}
 
 builder.Services.AddCors(builder =>
     builder.AddDefaultPolicy(policyBuilder =>

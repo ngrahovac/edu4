@@ -14,18 +14,20 @@ public class ProjectsController : ControllerBase
 {
     private readonly ProjectsService _projects;
     private readonly UsersService _users;
+    private readonly IAccountIdExtractionService _accountIdExtractionService;
 
-    public ProjectsController(ProjectsService projects, UsersService users)
+    public ProjectsController(ProjectsService projects, UsersService users, IAccountIdExtractionService accountIdExtractionService)
     {
         _projects = projects;
         _users = users;
+        _accountIdExtractionService = accountIdExtractionService;
     }
 
     [HttpPost]
     [Authorize(Policy = "Contributor")]
     public async Task<ActionResult> PublishAsync(ProjectInputModel model)
     {
-        var authorAccountId = AuthorizationUtils.ExtractAccountId(Request);
+        var authorAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var authorId = await _users.GetUserIdFromAccountId(authorAccountId);
 
         var project = await _projects.PublishProjectAsync(

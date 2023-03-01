@@ -2,9 +2,9 @@ using System.Security.Claims;
 
 namespace edu4.API.Utils;
 
-public static class AuthorizationUtils
+public class AccountIdExtractionService : IAccountIdExtractionService
 {
-    public static string ExtractAccountId(HttpRequest request)
+    public string ExtractAccountIdFromHttpRequest(HttpRequest request)
     {
         var claimsIdentity = request.HttpContext.User.Identity as ClaimsIdentity;
         var accountId = claimsIdentity?.Name;

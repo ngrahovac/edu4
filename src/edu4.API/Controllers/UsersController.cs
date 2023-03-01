@@ -12,14 +12,19 @@ namespace edu4.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly UsersService _users;
+    private readonly IAccountIdExtractionService _accountIdExtractionService;
 
-    public UsersController(UsersService users) => _users = users;
+    public UsersController(UsersService users, IAccountIdExtractionService accountIdExtractionService)
+    {
+        _users = users;
+        _accountIdExtractionService = accountIdExtractionService;
+    }
 
     [HttpPost]
     [Authorize(Policy = "NonContributor")]
     public async Task<ActionResult> SignUpAsync(UserSignupInputModel model)
     {
-        var accountId = AuthorizationUtils.ExtractAccountId(Request);
+        var accountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
 
         await _users.SignUpAsync(
                 accountId,
