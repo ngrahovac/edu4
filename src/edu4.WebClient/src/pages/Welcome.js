@@ -29,6 +29,13 @@ const Welcome = () => {
                 let decodedAccessToken = jwtDecode(accessToken);
                 console.log(decodedAccessToken);
 
+                if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+                    console.log("development mode; the logged in user is considered a contributor.");
+                    console.log("redirecting to homepage...");
+                    window.location.href = "/homepage";
+                    return;
+                }
+
                 let permissions = decodedAccessToken.permissions;
 
                 if (permissions.includes("contribute")) {
