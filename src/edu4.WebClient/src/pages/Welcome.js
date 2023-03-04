@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import jwtDecode from 'jwt-decode';
-import EnterButton from '../account/EnterButton';
+import EnterButton from '../comps/landing/EnterButton';
 
 const Welcome = () => {
     const {

@@ -11,8 +11,8 @@ import {
     failureResult,
     errorResult
 } from '../services/RequestResult'
-import UserActionSuccessToast from '../comps/common/UserActionSuccessToast'
-import UserActionFailToast from '../comps/common/UserActionFailToast'
+import UserActionSuccessToast from '../comps/toasts/UserActionSuccessToast'
+import UserActionFailToast from '../comps/toasts/UserActionFailToast'
 
 const Signup = () => {
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
