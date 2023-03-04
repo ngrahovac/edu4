@@ -6,13 +6,24 @@ const TopNavbarItem = (props) => {
 
     return (
         <div className="flex shrink-0">
-            <button className="flex items-center text-base text-slate-700 uppercase tracking-widest">
-                {icon}
+            <button className="flex items-center text-slate-700 font-semibold pl-4 pr-6 py-2 hover:rounded-full">
+                {
+                    text != false &&
+                    <div className='mr-2'>
+                        {icon}
+                    </div>
+                }
+                {
+                    text == false &&
+                    <div>
+                        {icon}
+                    </div>
+                }
                 <Link to={link}>
                     {text}
                 </Link>
             </button>
-        </div>
+        </div >
     )
 }
 
