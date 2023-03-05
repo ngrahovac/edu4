@@ -1,6 +1,6 @@
-using edu4.Application.External;
-using edu4.Application;
 using edu4.Infrastructure;
+using edu4.Application.Contracts;
+using edu4.Application.Services;
 
 namespace edu4.API.DI;
 
@@ -36,6 +36,7 @@ public static class DependencyInjectionExtensions
         MongoDBSetupUtils.RegisterClassMaps();
 
         services.AddScoped<IUsersRepository, MongoDbUsersRepository>();
+        services.AddScoped<IProjectsRepository, MongoDBProjectsRepository>();
 
         return services;
     }
@@ -43,6 +44,7 @@ public static class DependencyInjectionExtensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<UsersService>();
+        services.AddScoped<ProjectsService>();
 
         return services;
     }

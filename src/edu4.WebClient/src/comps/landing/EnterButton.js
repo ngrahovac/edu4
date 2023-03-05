@@ -7,7 +7,7 @@ const EnterButton = () => {
     return (
         <button
             type="button"
-            className='px-3 py-2 rounded-md bg-stone-200 hover:bg-stone-300 text-slate-800 font-semibold text-md ml-2'
+            className='px-3 py-2 rounded-md bg-blue-500 hover:bg-blue-700 text-stone-50 font-semibold text-md ml-2'
             onClick={() => loginWithRedirect()}>
             Enter
         </button>

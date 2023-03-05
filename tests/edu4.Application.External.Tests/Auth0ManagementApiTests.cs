@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
+using edu4.Application.Models;
+using edu4.Application.Services;
 using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;
@@ -54,7 +56,13 @@ public class Auth0ManagementApiTests
             userId,
             "John Doe",
             "mail@example.com",
-            new List<Hat>() { new StudentHat("Computer Science") });
+            new List<HatDTO>()
+            {
+                new(HatType.Student, new Dictionary<string, object>()
+                {
+                    { nameof(StudentHat.StudyField), "Computer Science" }
+                }),
+            });
 
         // ASSERT
         await Task.Delay(31);

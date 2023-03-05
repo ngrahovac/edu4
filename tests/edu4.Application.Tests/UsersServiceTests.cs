@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using edu4.Application.External;
+using edu4.Application.Contracts;
+using edu4.Application.Models;
+using edu4.Application.Services;
 using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;
@@ -33,10 +35,17 @@ public class UsersServiceTests
         var accountId = "google-oauth2|0";
         var fullName = "John Doe";
         var contactEmail = "mail@example.com";
-        var hats = new List<Hat>
+        var hatData = new List<HatDTO>
         {
-            new StudentHat("Computer Science", AcademicDegree.Doctorate),
-            new AcademicHat("Distributed Systems")
+            new(HatType.Student, new Dictionary<string, object>()
+                {
+                    { nameof(StudentHat.StudyField), "Computer Science" },
+                    { nameof(StudentHat.AcademicDegree),  3 }
+                }),
+            new(HatType.Academic, new Dictionary<string, object>()
+                {
+                    {"ResearchField", "Distributed Systems" }
+                })
         };
 
         // ACT
@@ -44,7 +53,7 @@ public class UsersServiceTests
             accountId,
             fullName,
             contactEmail,
-            hats);
+            hatData);
 
         // ASSERT
         // assert user got assigned id by db driver
@@ -60,7 +69,11 @@ public class UsersServiceTests
         retrievedUser.AccountId.Should().Be(accountId);
         retrievedUser.FullName.Should().Be(fullName);
         retrievedUser.ContactEmail.Should().Be(contactEmail);
-        retrievedUser.Hats.Should().BeEquivalentTo(hats);
+        retrievedUser.Hats.Should().BeEquivalentTo(new List<Hat>()
+        {
+            new AcademicHat("Distributed Systems"),
+            new StudentHat("Computer Science", AcademicDegree.Doctorate)
+        });
     }
 
     [Fact]
@@ -83,26 +96,33 @@ public class UsersServiceTests
         var accountId = "google-oauth2|0";
         var fullName = "John Doe";
         var contactEmail = "mail@example.com";
-        var hats = new List<Hat>
+        var hatData = new List<HatDTO>
         {
-            new StudentHat("Computer Science", AcademicDegree.Doctorate),
-            new AcademicHat("Distributed Systems")
+            new(HatType.Student, new Dictionary<string, object>()
+                {
+                    { "StudyField", "Computer Science" },
+                    { "StudyDegree",  3 }
+                }),
+            new(HatType.Academic, new Dictionary<string, object>()
+                {
+                    {"ResearchField", "Distributed Systems" }
+                })
         };
 
         await sut.SignUpAsync(
             accountId,
             fullName,
             contactEmail,
-            hats);
+            hatData);
 
-        // act
+        // ACT
         var signUserUp = async () => await sut.SignUpAsync(
             accountId,
             fullName,
             contactEmail,
-            hats);
+            hatData);
 
-        // assert
+        // ASSERT
         await signUserUp.Should().ThrowAsync<InvalidOperationException>();
     }
 }

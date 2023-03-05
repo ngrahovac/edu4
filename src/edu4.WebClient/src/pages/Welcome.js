@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import jwtDecode from 'jwt-decode';
-import EnterButton from '../account/EnterButton';
+import EnterButton from '../comps/landing/EnterButton';
 
 const Welcome = () => {
     const {
@@ -28,6 +28,13 @@ const Welcome = () => {
 
                 let decodedAccessToken = jwtDecode(accessToken);
                 console.log(decodedAccessToken);
+
+                if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+                    console.log("development mode; the logged in user is considered a contributor.");
+                    console.log("redirecting to homepage...");
+                    window.location.href = "/homepage";
+                    return;
+                }
 
                 let permissions = decodedAccessToken.permissions;
 
@@ -59,7 +66,7 @@ const Welcome = () => {
                     edu4
                 </p>
                 <p className='mt-8 space-y-2 leading-normal'>
-                    Helps you find amazing people
+                    Find amazing people
                     <br />
                     and bring your ideas to life.
                 </p>

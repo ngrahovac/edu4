@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import VisibilityFlair from '../accents/VisibilityFlair'
+import VisibilityFlair from '../comps/accents/VisibilityFlair'
 import HatForm from '../comps/hat-forms/HatForm'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
 import Hat from '../comps/hats/Hat'
@@ -11,8 +11,8 @@ import {
     failureResult,
     errorResult
 } from '../services/RequestResult'
-import UserActionSuccessToast from '../comps/common/UserActionSuccessToast'
-import UserActionFailToast from '../comps/common/UserActionFailToast'
+import UserActionSuccessToast from '../comps/toasts/UserActionSuccessToast'
+import UserActionFailToast from '../comps/toasts/UserActionFailToast'
 
 const Signup = () => {
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
@@ -94,7 +94,6 @@ const Signup = () => {
                         document.getElementById('user-action-success-toast').show();
                         setTimeout(() => window.location.href = "/homepage", 1000);
                     } else if (result.outcome === failureResult) {
-                        console.log('jebiga')
                         document.getElementById('user-action-fail-toast').show();
                         setTimeout(() => {
                             document.getElementById('user-action-fail-toast').close();

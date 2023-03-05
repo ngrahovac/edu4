@@ -2,7 +2,7 @@ namespace edu4.Domain.Common;
 
 public abstract class AbstractEntity
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; protected set; }
 
     public override bool Equals(object? obj) =>
         obj is AbstractEntity other &&

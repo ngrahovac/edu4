@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0bfd7cac-9d04-4c95-8637-7653b3578363",
+		"_postman_id": "6a28e5b3-0bd2-49e5-a039-e5cd535c0b2a",
 		"name": "edu4",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "8080477"
@@ -82,6 +82,32 @@
 					],
 					"path": [
 						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "A contributor can publish a project given required data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"Platform development\",\r\n    \"description\":\"A team is needed to continue with edu4 maintenance and development\",\r\n    \"positions\":[\r\n        {\r\n            \"name\":\"Backend developer\",\r\n            \"description\":\"Backend developer\",\r\n            \"requirements\":\r\n            {\r\n                \"type\":\"Student\",\r\n                \"parameters\":\r\n                {\r\n                    \"academicDegree\": 1,\r\n                    \"studyField\":\"Computer Science\"\r\n                }\r\n            }\r\n        },\r\n        {\r\n            \"name\":\"Frontend developer\",\r\n            \"description\":\"Frontend developer\",\r\n            \"requirements\":\r\n            {\r\n                \"type\":\"Student\",\r\n                \"parameters\":\r\n                {\r\n                    \"academicDegree\": 1\r\n                }\r\n            }\r\n        },\r\n        {\r\n            \"name\":\"Developer\",\r\n            \"description\":\"Backend developer\",\r\n            \"requirements\":\r\n            {\r\n                \"type\":\"Academic\",\r\n                \"parameters\":\r\n                {\r\n                    \"researchField\":\"Computer Science\"\r\n                }\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_root_url}}/projects",
+					"host": [
+						"{{api_root_url}}"
+					],
+					"path": [
+						"projects"
 					]
 				}
 			},

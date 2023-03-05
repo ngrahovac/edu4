@@ -1,9 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 
-const AcademicHatForm = (props) => {
-
-    const { onValidHatChange } = props;
+const AcademicHatForm = ({ onValidHatChange }) => {
 
     const [academicHat, setAcademicHat] = useState({
         type: "Academic",
@@ -30,6 +28,7 @@ const AcademicHatForm = (props) => {
         })
     }
 
+    {/* the current form doesn't allow for an invalid hat state */ }
     useEffect(() => {
         onValidHatChange(academicHat);
     }, [academicHat])
@@ -42,26 +41,20 @@ const AcademicHatForm = (props) => {
             onSubmit={e => e.preventDefault()}>
             <div
                 className='mb-4'>
-                <p
-                    className='text-slate-800 text-lg font-semibold'>
-                    <span className='superscript'>*</span>
-                    Research field
-                </p>
-                <select
-                    type="text"
-                    name="researchField"
-                    value={academicHat.parameters.researchField}
-                    className='block mt-2 rounded-md w-full h-12 p-2 text-base bg-white border border-slate-300 focus:outline-none focus:border-blue-500 focus:blue-500 text-slate-800 text-lg'>
-                    {
-                        researchFields.map(item => (
-                            <option
-                                key={item.id}
-                                value={item.value}>
-                                {item.value}
-                            </option>
-                        ))
-                    }
-                </select>
+                <div className='mb-8'>
+                    <label>
+                        <p>Research field*</p>
+                        <select
+                            name="researchField"
+                            className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
+                            {
+                                researchFields.map(f =>
+                                    <option key={f.id} value={f.value}>{f.value}</option>
+                                )
+                            }
+                        </select>
+                    </label>
+                </div>
             </div>
         </form>
     )
