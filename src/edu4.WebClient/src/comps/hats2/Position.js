@@ -6,7 +6,7 @@ const Position = ({ position }) => {
 
     return (
         function () {
-            switch (position.hat.type) {
+            switch (position.requirements.type) {
                 case "Student":
                     return <StudentPosition position={position}></StudentPosition>
                 case "Academic":

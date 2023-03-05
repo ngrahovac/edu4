@@ -1,9 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 
-const StudentHatForm = (props) => {
-
-    const { onValidHatChange } = props;
+const StudentHatForm = ({ onValidHatChange }) => {
 
     const [studentHat, setStudentHat] = useState({
         type: "Student",
@@ -42,59 +40,43 @@ const StudentHatForm = (props) => {
         })
     }
 
+    {/* the current form doesn't allow for an invalid hat state */ }
     useEffect(() => {
         onValidHatChange(studentHat);
     }, [studentHat])
-
 
     return (
         <form
             id="hat-form"
             onChange={onFormChange}
             onSubmit={e => e.preventDefault()}>
-            <div
-                className='mb-4 relative'>
-                <p
-                    className='text-slate-800 text-lg font-semibold'>
-                    <span className='superscript'>*</span>
-                    Degree
-                </p>
-                <p
-                    className='text-slate-500 text-sm text-justify'>
-                    Refers to the study program you're currently enrolled in
-                </p>
-                <select
-                    name="academicDegree"
-                    className='block mt-2 rounded-md w-full h-12 p-2 text-base bg-white border border-slate-300 focus:outline-none focus:border-blue-500 focus:blue-500 text-slate-800 text-lg'>
-                    value={studentHat.parameters.academicDegree}
-                    <option value={1}>Bachelor's</option>
-                    <option value={2}>Master's</option>
-                    <option value={3}>Doctoral</option>
-                </select>
+
+            <div className='mb-8'>
+                <label>
+                    <p>Study field*</p>
+                    <select
+                        name="studyField"
+                        className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
+                        {
+                            academicFields.map(f =>
+                                <option key={f.id} value={f.value}>{f.value}</option>
+                            )
+                        }
+                    </select>
+                </label>
             </div>
 
-            <div
-                className='mb-4'>
-                <p
-                    className='text-slate-800 text-lg font-semibold'>
-                    <span className='superscript'>*</span>
-                    Study field
-                </p>
-                <select
-                    type="text"
-                    name="studyField"
-                    value={studentHat.parameters.studyField}
-                    className='block mt-2 rounded-md w-full h-12 p-2 text-base bg-white border border-slate-300 focus:outline-none focus:border-blue-500 focus:blue-500 text-slate-800 text-lg'>
-                    {
-                        academicFields.map(item => (
-                            <option
-                                key={item.id}
-                                value={item.value}>
-                                {item.value}
-                            </option>
-                        ))
-                    }
-                </select>
+            <div className='mb-16'>
+                <label>
+                    <p>Degree*</p>
+                    <select
+                        name="academicDegree"
+                        className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
+                        <option value="1">BSc</option>
+                        <option value="2">MSc</option>
+                        <option value="3">PhD</option>
+                    </select>
+                </label>
             </div>
         </form>
     )
