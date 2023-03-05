@@ -7,6 +7,14 @@ import { SectionTitle } from '../layout/SectionTitle'
 import SubsectionTitle from '../layout/SubsectionTitle';
 import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
+import { publish } from '../services/ProjectsService';
+import {
+    successResult,
+    failureResult,
+    errorResult
+} from '../services/RequestResult'
+import { useAuth0 } from '@auth0/auth0-react'
+
 
 const Publish = () => {
     {/* TODO: remove static data */ }
@@ -16,6 +24,8 @@ const Publish = () => {
     const [position, setPosition] = useState({});
 
     const [project, setProject] = useState({ positions: [] });
+
+    const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
     function onBasicInfoFormChange(e) {
         setProject({ ...project, [e.target.name]: e.target.value })
@@ -40,7 +50,36 @@ const Publish = () => {
     }
 
     function onPublishProject() {
-        console.log("publishing", project);
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenWithPopup({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await publish(project, token);
+
+                if (result.outcome === successResult) {
+                    document.getElementById('user-action-success-toast').show();
+                    setTimeout(() => window.location.href = "/homepage", 1000);
+                } else if (result.outcome === failureResult) {
+                    document.getElementById('user-action-fail-toast').show();
+                    setTimeout(() => {
+                        document.getElementById('user-action-fail-toast').close();
+                    }, 3000);
+                } else if (result.outcome === errorResult) {
+                    document.getElementById('user-action-fail-toast').show();
+                    setTimeout(() => {
+                        document.getElementById('user-action-fail-toast').close();
+                    }, 3000);
+                }
+            } catch (ex) {
+                document.getElementById('user-action-fail-toast').show();
+                setTimeout(() => {
+                    document.getElementById('user-action-fail-toast').close();
+                }, 3000);
+            }
+        })();
     }
 
     const left = (
@@ -108,7 +147,7 @@ const Publish = () => {
                         <p>Title*</p>
                         <input
                             type="text"
-                            name="title"
+                            name="name"
                             placeholder='e.g. .NET Backend Developer'
                             className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
                     </label>
