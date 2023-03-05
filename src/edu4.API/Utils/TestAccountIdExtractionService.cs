@@ -8,5 +8,5 @@ public class TestAccountIdExtractionService : IAccountIdExtractionService
         => _configuration = configuration;
 
     public string ExtractAccountIdFromHttpRequest(HttpRequest request)
-        => _configuration["TestUserId"];
+        => _configuration["TestUserAccountId"];
 }
