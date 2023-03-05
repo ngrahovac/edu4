@@ -9,7 +9,10 @@ import TopNavbar from './comps/nav/TopNavbar';
 import Homepage from './pages/Homepage';
 import Signup from './pages/Signup';
 import Welcome from './pages/Welcome'
+import Publish from './pages/Publish';
 import { Auth0Provider } from "@auth0/auth0-react"
+import './index.css';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const domain = process.env.REACT_APP_EDU4_APP_DOMAIN;
@@ -32,6 +35,7 @@ root.render(
           {/* navbar layout route + top-level pages as children */}
           <Route element={<TopNavbar></TopNavbar>}>
             <Route path='/homepage' element={<Homepage></Homepage>}></Route>
+            <Route path='/publish' element={<Publish></Publish>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
