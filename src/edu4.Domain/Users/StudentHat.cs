@@ -23,4 +23,10 @@ public class StudentHat : Hat
     }
 
     protected override int GetHashCodeCore() => HashCode.Combine(StudyField, AcademicDegree);
+
+    public override bool Fits(Hat positionRequirements) =>
+        positionRequirements is StudentHat studentRequirements &&
+        StudyField.Equals(studentRequirements.StudyField, StringComparison.Ordinal) &&
+        AcademicDegree >= studentRequirements.AcademicDegree;
+
 }
