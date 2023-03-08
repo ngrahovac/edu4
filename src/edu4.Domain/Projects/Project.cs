@@ -1,4 +1,5 @@
 using edu4.Domain.Common;
+using edu4.Domain.Users;
 
 namespace edu4.Domain.Projects;
 public class Project : AbstractAggregateRoot
@@ -31,4 +32,7 @@ public class Project : AbstractAggregateRoot
 
         _positions = positions.ToList();
     }
+
+
+    public bool IsRecommendedFor(User user) => Positions.Any(p => user.Hats.Any(h => h.Fits(p.Requirements)));
 }

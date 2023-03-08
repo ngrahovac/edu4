@@ -21,4 +21,6 @@ public class Position : AbstractEntity
         Description = description;
         Requirements = requirements;
     }
+
+    public bool IsRecommendedFor(User user) => user.Hats.Any(h => h.Fits(Requirements));
 }
