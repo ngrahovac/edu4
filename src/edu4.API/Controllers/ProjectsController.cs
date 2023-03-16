@@ -1,4 +1,5 @@
-using edu4.API.Models;
+using edu4.API.Models.Display;
+using edu4.API.Models.Input;
 using edu4.API.Utils;
 using edu4.Application.Models;
 using edu4.Application.Services;
@@ -42,4 +43,18 @@ public class ProjectsController : ControllerBase
 
         return Ok(); // TODO: replace with Created
     }
+
+
+    [HttpGet]
+    [Authorize(Policy = "Contributor")]
+    public async Task<IReadOnlyList<ProjectDisplayModel>> GetRecommendedForUserWearing(HatInputModel model)
+    {
+        var hat = HatDTO.ToHat(new HatDTO(model.Type, model.Parameters));
+
+        var projects = await _projects.GetRecommendedForUserWearing(hat);
+
+        return projects.Select(p => new ProjectDisplayModel(p))
+            .ToList();
+    }
+
 }

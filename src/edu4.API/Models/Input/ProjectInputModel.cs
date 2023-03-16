@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace edu4.API.Models;
+namespace edu4.API.Models.Input;
 
 #nullable disable
 public class ProjectInputModel

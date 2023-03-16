@@ -1,4 +1,4 @@
-using edu4.API.Models;
+using edu4.API.Models.Input;
 using edu4.API.Utils;
 using edu4.Application.Models;
 using edu4.Application.Services;
