@@ -1,6 +1,7 @@
 using edu4.Application.Contracts;
 using edu4.Application.Models;
 using edu4.Domain.Projects;
+using edu4.Domain.Users;
 using Microsoft.Extensions.Logging;
 
 namespace edu4.Application.Services;
@@ -18,6 +19,13 @@ public class ProjectsService
         _projects = projects;
         _users = users;
         _logger = logger;
+    }
+
+    public async Task<IReadOnlyList<Project>> GetRecommendedForUserWearing(Hat hat)
+    {
+        var projects = await _projects.GetRecommendedForUserWearing(hat);
+
+        return projects;
     }
 
     public async Task<Project> PublishProjectAsync(

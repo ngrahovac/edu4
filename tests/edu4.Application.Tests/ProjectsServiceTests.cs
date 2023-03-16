@@ -71,4 +71,105 @@ public class ProjectsServiceTests
         retrievedProject.Author.Should().Be(new Author(author.Id));
         retrievedProject.Positions.Count.Should().Be(positions.Count);
     }
+
+    [Fact]
+    public async void Returns_all_projects_with_a_position_with_requirements_fit_for_a_student()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var usersStudentHat = new StudentHat("Software Engineering", AcademicDegree.Masters);
+
+        await TestDataFactory.CreateProjectAsync(
+            "foo",
+            "bar",
+            Guid.NewGuid(),
+            new List<Position>()
+            {
+                new Position("foo", "bar", new StudentHat("Software Engineering", AcademicDegree.Bachelors)),
+                new Position("foo", "bar", new StudentHat("Software Engineering", AcademicDegree.Doctorate))
+            });
+
+        await TestDataFactory.CreateProjectAsync(
+            "foo",
+            "bar",
+            Guid.NewGuid(),
+            new List<Position>()
+            {
+                new Position("foo", "bar", new StudentHat("Software Engineering", AcademicDegree.Masters))
+            });
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var retrievedProjects = await sut.GetRecommendedForUserWearing(usersStudentHat);
+
+        // ASSERT
+        retrievedProjects.Count.Should().Be(2);
+    }
+
+
+    [Fact]
+    public async void Returns_all_projects_with_a_position_with_requirements_fit_for_an_academic()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var usersAcademicHat = new AcademicHat("Software Engineering");
+
+        await TestDataFactory.CreateProjectAsync(
+            "foo",
+            "bar",
+            Guid.NewGuid(),
+            new List<Position>()
+            {
+                new Position("foo", "bar", new StudentHat("Software Engineering", AcademicDegree.Bachelors))
+            });
+
+        await TestDataFactory.CreateProjectAsync(
+            "foo",
+            "bar",
+            Guid.NewGuid(),
+            new List<Position>()
+            {
+                new Position("foo", "bar", new AcademicHat("Software Engineering"))
+            });
+
+        await TestDataFactory.CreateProjectAsync(
+            "foo",
+            "bar",
+            Guid.NewGuid(),
+            new List<Position>()
+            {
+                new Position("foo", "bar", new AcademicHat("Electronics Engineering"))
+            });
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var retrievedProjects = await sut.GetRecommendedForUserWearing(usersAcademicHat);
+
+        // ASSERT
+        retrievedProjects.Count.Should().Be(1);
+    }
 }

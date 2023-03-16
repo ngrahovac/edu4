@@ -1,3 +1,4 @@
+using edu4.Domain.Projects;
 using edu4.Domain.Users;
 using edu4.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -23,5 +24,21 @@ internal static class TestDataFactory
         await users.AddAsync(user);
 
         return user;
+    }
+
+    public static async Task<Project> CreateProjectAsync(
+        string title,
+        string description,
+        Guid authorId,
+        List<Position> positions)
+    {
+        var config = new ConfigurationBuilder().AddUserSecrets(typeof(TestDataFactory).Assembly).Build();
+        var projects = new MongoDBProjectsRepository(config);
+
+        var project = new Project(title, description, new Author(authorId), positions);
+
+        await projects.AddAsync(project);
+
+        return project;
     }
 }
