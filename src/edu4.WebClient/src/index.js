@@ -10,6 +10,7 @@ import Homepage from './pages/Homepage';
 import Signup from './pages/Signup';
 import Welcome from './pages/Welcome'
 import Publish from './pages/Publish';
+import Discover from './pages/Discover';
 import { Auth0Provider } from "@auth0/auth0-react"
 import './index.css';
 
@@ -36,6 +37,7 @@ root.render(
           <Route element={<TopNavbar></TopNavbar>}>
             <Route path='/homepage' element={<Homepage></Homepage>}></Route>
             <Route path='/publish' element={<Publish></Publish>}></Route>
+            <Route path='/discover' element={<Discover></Discover>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
