@@ -4,13 +4,14 @@ import SubsectionTitle from '../../layout/SubsectionTitle';
 import NeutralButton from '../buttons/NeutralButton';
 import PositionCard from './PositionCard';
 import ProjectDescriptor from './ProjectDescriptor';
+import RecommendedPositionCard from './RecommendedPositionCard';
 
 const ProjectCard = (props) => {
     const { project } = props;
 
     return (
         <div
-            className='w-full rounded-2xl shadow-xl shadow-indigo-300/10 border border-gray-200 px-20 py-16 pb-44 relative'>
+            className='w-full rounded-2xl shadow-md shadow-indigo-300/20 border border-gray-20 px-20 py-16 pb-32 relative'>
             <div className='flex flex-row flex-wrap space-x-6 mb-2'>
                 <ProjectDescriptor
                     value={project.authorId.substring(0, 10)}
@@ -39,14 +40,24 @@ const ProjectCard = (props) => {
             </div>
 
 
-            {
+            {/*
                 project.positions.map(p => <>
                     <PositionCard position={p}></PositionCard>
                 </>)
+                */
             }
 
+            <div className='flex flex-col space-y-2'>
+                {
+                    project.positions.map(p => <>
+                        <PositionCard position={p}></PositionCard>
+                    </>)
+                }
+            </div>
+
+
             <div
-                className='absolute bottom-8 right-20'>
+                className='absolute bottom-8 right-16'>
                 <NeutralButton text="Learn more"></NeutralButton>
             </div>
 
