@@ -30,7 +30,10 @@ public class UsersServiceTests
         accountManagementMock.Setup(s => s.MarkUserSignedUpAsync(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        var sut = new UsersService(users, accountManagementMock.Object, new NullLogger<UsersService>());
+        var sut = new UsersService(
+            users,
+            accountManagementMock.Object,
+            new NullLogger<UsersService>());
 
         var accountId = "google-oauth2|0";
         var fullName = "John Doe";

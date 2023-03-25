@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using edu4.Application.Models;
 using edu4.Application.Services;
+using edu4.Application.Tests.TestData;
 using edu4.Domain.Projects;
 using edu4.Domain.Users;
 using edu4.Infrastructure;
@@ -15,27 +16,28 @@ namespace edu4.Application.Tests;
 public class ProjectsServiceTests
 {
     [Fact]
-    public async void Publishes_project_if_valid_data_is_provided()
+    public async void Publishes_the_project_if_valid_data_is_provided()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
             .Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var author = await TestDataFactory.CreateUserAsync(
-            "auth0-test",
-            "John Doe",
-            "mail@example.com",
-            new List<Hat>() { new StudentHat("Computer Science") });
+        var author = await new UserFactory().WithHats(
+            new List<Hat>()
+            {
+                HatFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .Build()
+            })
+            .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
 
         var sut = new ProjectsService(
             projects,
-            users,
+            new MongoDbUsersRepository(config),
             new NullLogger<ProjectsService>());
 
         var positions = new List<PositionDTO>()
@@ -76,43 +78,51 @@ public class ProjectsServiceTests
     public async void Returns_all_projects_with_a_position_with_requirements_fit_for_a_student()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
+        var studentHat = new StudentHat("Software Engineering", AcademicDegree.Masters);
+
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
             .Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var usersStudentHat = new StudentHat("Software Engineering", AcademicDegree.Masters);
-
-        await TestDataFactory.CreateProjectAsync(
-            "foo",
-            "bar",
-            Guid.NewGuid(),
+        await new ProjectFactory().WithPositions(
             new List<Position>()
             {
-                new Position("foo", "bar", new StudentHat("Software Engineering", AcademicDegree.Bachelors)),
-                new Position("foo", "bar", new StudentHat("Software Engineering", AcademicDegree.Doctorate))
-            });
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Software Engineering")
+                    .WithAcademicDegree(AcademicDegree.Bachelors)
+                    .Build())
+                .Build(),
 
-        await TestDataFactory.CreateProjectAsync(
-            "foo",
-            "bar",
-            Guid.NewGuid(),
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Software Engineering")
+                    .WithAcademicDegree(AcademicDegree.Doctorate)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
             new List<Position>()
             {
-                new Position("foo", "bar", new StudentHat("Software Engineering", AcademicDegree.Masters))
-            });
-
-        var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Software Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
 
         var sut = new ProjectsService(
-            projects,
-            users,
+            new MongoDBProjectsRepository(config),
+            new MongoDbUsersRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
-        var retrievedProjects = await sut.GetRecommendedForUserWearing(usersStudentHat);
+        var retrievedProjects = await sut.GetRecommendedForUserWearing(studentHat);
 
         // ASSERT
         retrievedProjects.Count.Should().Be(2);
@@ -131,32 +141,40 @@ public class ProjectsServiceTests
 
         var usersAcademicHat = new AcademicHat("Software Engineering");
 
-        await TestDataFactory.CreateProjectAsync(
-            "foo",
-            "bar",
-            Guid.NewGuid(),
+        await new ProjectFactory().WithPositions(
             new List<Position>()
             {
-                new Position("foo", "bar", new StudentHat("Software Engineering", AcademicDegree.Bachelors))
-            });
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Software Engineering")
+                    .WithAcademicDegree(AcademicDegree.Bachelors)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
 
-        await TestDataFactory.CreateProjectAsync(
-            "foo",
-            "bar",
-            Guid.NewGuid(),
+        await new ProjectFactory().WithPositions(
             new List<Position>()
             {
-                new Position("foo", "bar", new AcademicHat("Software Engineering"))
-            });
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Software Engineering")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
 
-        await TestDataFactory.CreateProjectAsync(
-            "foo",
-            "bar",
-            Guid.NewGuid(),
-            new List<Position>()
-            {
-                new Position("foo", "bar", new AcademicHat("Electronics Engineering"))
-            });
+        await new ProjectFactory().WithPositions(
+           new List<Position>()
+           {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Electronics Engineering")
+                    .Build())
+                .Build()
+           })
+           .SeedAsync();
+
 
         var projects = new MongoDBProjectsRepository(config);
         var users = new MongoDbUsersRepository(config);
