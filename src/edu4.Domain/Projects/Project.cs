@@ -4,7 +4,7 @@ using edu4.Domain.Users;
 namespace edu4.Domain.Projects;
 public class Project : AbstractAggregateRoot
 {
-    public DateTime DatePosted { get; }
+    public DateTime DatePosted { get; private set; }
     public string Title { get; private set; }
     public string Description { get; private set; }
     public Author Author { get; }

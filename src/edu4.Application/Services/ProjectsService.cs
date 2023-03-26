@@ -55,4 +55,11 @@ public class ProjectsService
 
         return project;
     }
+
+    public async Task<IReadOnlyList<Project>> DiscoverAsync(string keyword, ProjectsSortOption sortOption = ProjectsSortOption.Default)
+    {
+        var discoveredProjects = await _projects.DiscoverAsync(keyword, sortOption);
+
+        return discoveredProjects;
+    }
 }

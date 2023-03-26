@@ -75,6 +75,34 @@ public class MongoDBProjectsRepository : IProjectsRepository
         return projects;
     }
 
+    public async Task<IReadOnlyList<Project>> DiscoverAsync(string keyword, ProjectsSortOption sortOption)
+    {
+        var keywordInProjectTitleFilter = Builders<Project>.Filter.Where(p => p.Title.Contains(keyword));
+        var keywordInProjectDescriptionFilter = Builders<Project>.Filter.Where(p => p.Description.Contains(keyword));
+        var keywordInPositionNameFilter = Builders<Position>.Filter.Where(p => p.Name.Contains(keyword));
+        var keywordInPositionDescriptionFilter = Builders<Position>.Filter.Where(p => p.Description.Contains(keyword));
+        var keywordInAnyPositionNameOrDescriptionFilter = Builders<Project>.Filter.ElemMatch("_positions", Builders<Position>.Filter.Or(
+            keywordInPositionNameFilter, keywordInPositionDescriptionFilter));
+
+        var projectsFilter = Builders<Project>.Filter
+            .Or(keywordInProjectTitleFilter,
+            keywordInProjectDescriptionFilter,
+            keywordInAnyPositionNameOrDescriptionFilter);
+
+        var sorting = sortOption switch
+        {
+            ProjectsSortOption.OldestFirst => Builders<Project>.Sort.Ascending(p => p.DatePosted),
+            ProjectsSortOption.NewestFirst => Builders<Project>.Sort.Descending(p => p.DatePosted),
+            ProjectsSortOption.Default => null,
+            _ => throw new NotImplementedException()
+        };
+
+        var projects = sorting is not null ?
+            await _projectsCollection.Find(projectsFilter).Sort(sorting).ToListAsync() :
+            await _projectsCollection.Find(projectsFilter).ToListAsync();
+
+        return projects;
+    }
 
     public Task AddAsync(Project project)
         => _projectsCollection.InsertOneAsync(project);
