@@ -73,7 +73,7 @@ public class ProjectsServiceTests
         retrievedProject.Author.Should().Be(new Author(author.Id));
         retrievedProject.Positions.Count.Should().Be(positions.Count);
     }
-
+    #region remove
     [Fact]
     public async void Returns_all_projects_with_a_position_with_requirements_fit_for_a_student()
     {
@@ -189,6 +189,212 @@ public class ProjectsServiceTests
         // ASSERT
         retrievedProjects.Count.Should().Be(1);
     }
+    #endregion
+    [Fact]
+    public async void Discovering_projects_by_keyword_should_also_return_projects_with_the_keyword_in_title_only()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var keyword = "test";
+
+        await new ProjectFactory().WithTitle(keyword)
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(keyword);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(1);
+
+        foreach (var project in discoveredProjects)
+        {
+            project.Title.Should().Contain(keyword);
+        }
+    }
+
+    [Fact]
+    public async void Discovering_projects_by_keyword_should_also_return_projects_with_the_keyword_in_description_only()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var keyword = "test";
+
+        await new ProjectFactory().WithDescription(keyword)
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(keyword);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(1);
+
+        foreach (var project in discoveredProjects)
+        {
+            project.Description.Should().Contain(keyword);
+        }
+    }
+
+    [Fact]
+    public async void Discovering_projects_by_keyword_should_also_return_projects_with_the_keyword_in_position_name_only()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var keyword = "test";
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName(keyword)
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(keyword);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(1);
+
+        foreach (var project in discoveredProjects)
+        {
+            project.Positions.Any(p => p.Name.Contains(keyword)).Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async void Discovering_projects_by_keyword_should_also_return_projects_with_the_keyword_in_position_description_only()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var keyword = "test";
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithDescription(keyword)
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(keyword);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(1);
+
+        foreach (var project in discoveredProjects)
+        {
+            project.Positions.Any(p => p.Description.Contains(keyword)).Should().BeTrue();
+        }
+    }
 
     [Fact]
     public async void Discovering_projects_by_keyword_should_return_projects_containing_the_keyword_in_title_or_description_or_position_name_or_description()
@@ -284,9 +490,8 @@ public class ProjectsServiceTests
         }
     }
 
-
     [Fact]
-    public async void Discovering_projects_by_keyword_should_also_return_projects_with_the_keyword_in_title_only()
+    public async Task Discovering_projects_by_omitting_the_keyword_should_return_all_projects()
     {
         // ARRANGE
         var config = new ConfigurationBuilder()
@@ -295,9 +500,18 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var keyword = "test";
+        await new ProjectFactory().WithTitle("foo")
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectFactory().WithDescription("bar")
             .WithPositions(
             new List<Position>()
             {
@@ -311,7 +525,8 @@ public class ProjectsServiceTests
         await new ProjectFactory().WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
+                new PositionFactory().WithName("baz")
+                .WithRequirements(
                     HatFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
@@ -327,20 +542,14 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
+        var discoveredProjects = await sut.DiscoverAsync();
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(1);
-
-        foreach (var project in discoveredProjects)
-        {
-            project.Title.Should().Contain(keyword);
-        }
+        discoveredProjects.Count.Should().Be(3);
     }
 
-
     [Fact]
-    public async void Discovering_projects_by_keyword_should_also_return_projects_with_the_keyword_in_description_only()
+    public async Task Discovering_projects_by_requesting_them_to_be_sorted_from_oldest_should_return_all_projects_as_a_sorted_collection()
     {
         // ARRANGE
         var config = new ConfigurationBuilder()
@@ -349,10 +558,7 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var keyword = "test";
-
-        await new ProjectFactory().WithDescription(keyword)
-            .WithPositions(
+        await new ProjectFactory().WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -372,6 +578,16 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
         var projects = new MongoDBProjectsRepository(config);
         var users = new MongoDbUsersRepository(config);
 
@@ -381,20 +597,15 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.OldestFirst);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(1);
-
-        foreach (var project in discoveredProjects)
-        {
-            project.Description.Should().Contain(keyword);
-        }
+        discoveredProjects.Count.Should().Be(3);
+        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderBy(p => p.DatePosted), options => options.WithStrictOrdering());
     }
 
-
     [Fact]
-    public async void Discovering_projects_by_keyword_should_also_return_projects_with_the_keyword_in_position_name_only()
+    public async Task Discovering_projects_by_requesting_them_to_be_sorted_from_newest_should_return_all_projects_as_a_sorted_collection()
     {
         // ARRANGE
         var config = new ConfigurationBuilder()
@@ -403,12 +614,12 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var keyword = "test";
-
         await new ProjectFactory().WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(keyword)
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
                 .Build()
             })
             .SeedAsync();
@@ -423,52 +634,11 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
-
-        var sut = new ProjectsService(
-            projects,
-            users,
-            new NullLogger<ProjectsService>());
-
-        // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
-
-        // ASSERT
-        discoveredProjects.Count.Should().Be(1);
-
-        foreach (var project in discoveredProjects)
-        {
-            project.Positions.Any(p => p.Name.Contains(keyword)).Should().BeTrue();
-        }
-    }
-
-
-    [Fact]
-    public async void Discovering_projects_by_keyword_should_also_return_projects_with_the_keyword_in_position_description_only()
-    {
-        // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
-
-        await new DbUtils(config).CleanDatabaseAsync();
-
-        var keyword = "test";
-
-        await new ProjectFactory().WithPositions(
-            new List<Position>()
-            {
-                new PositionFactory().WithDescription(keyword)
-                .Build()
-            })
-            .SeedAsync();
-
         await new ProjectFactory().WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatFactory.OfType(HatType.Academic)
                     .Build())
                 .Build()
             })
@@ -483,20 +653,15 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.NewestFirst);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(1);
-
-        foreach (var project in discoveredProjects)
-        {
-            project.Positions.Any(p => p.Description.Contains(keyword)).Should().BeTrue();
-        }
+        discoveredProjects.Count.Should().Be(3);
+        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
     }
 
-
     [Fact]
-    public async Task Discovering_projects_and_requesting_them_to_be_sorted_from_oldest_posted_should_return_a_sorted_collection()
+    public async Task Discovering_projects_by_keyword_and_requesting_them_to_be_sorted_from_oldest_posted_should_return_a_sorted_collection()
     {
         // ARRANGE
         var config = new ConfigurationBuilder()
@@ -542,10 +707,23 @@ public class ProjectsServiceTests
 
         // ASSERT
         discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderBy(p => p.DatePosted), options => options.WithStrictOrdering());
+
+        foreach (var project in discoveredProjects)
+        {
+            var titleContainsKeyword = project.Title.Contains(keyword);
+            var descriptionContainsKeyword = project.Description.Contains(keyword);
+            var hasAPositionWithTheKeywordInTitleOrDescription =
+                project.Positions.Any(
+                    p => p.Name.Contains(keyword) ||
+                    p.Description.Contains(keyword));
+
+            (titleContainsKeyword || descriptionContainsKeyword || hasAPositionWithTheKeywordInTitleOrDescription)
+                .Should().BeTrue();
+        }
     }
 
     [Fact]
-    public async Task Discovering_projects_and_requesting_them_to_be_sorted_from_newest_posted_should_return_a_sorted_collection()
+    public async Task Discovering_projects_by_keyword_and_requesting_them_to_be_sorted_from_newest_posted_should_return_a_sorted_collection()
     {
         // ARRANGE
         var config = new ConfigurationBuilder()
@@ -590,6 +768,792 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.NewestFirst);
 
         // ASSERT
+        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
+
+        foreach (var project in discoveredProjects)
+        {
+            var titleContainsKeyword = project.Title.Contains(keyword);
+            var descriptionContainsKeyword = project.Description.Contains(keyword);
+            var hasAPositionWithTheKeywordInTitleOrDescription =
+                project.Positions.Any(
+                    p => p.Name.Contains(keyword) ||
+                    p.Description.Contains(keyword));
+
+            (titleContainsKeyword || descriptionContainsKeyword || hasAPositionWithTheKeywordInTitleOrDescription)
+                .Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task Discovering_projects_by_specifying_users_student_hat_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var studentHat = new StudentHat("Electronics Engineering", AcademicDegree.Masters);
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Bachelors)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName("Recommended position 1")
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithName("Recommended position 2")
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Doctorate)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Software Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Default, studentHat);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(3);
+
+        foreach (var discoveredProject in discoveredProjects)
+        {
+            discoveredProject.Positions.Any(p => studentHat.Fits(p.Requirements)).Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task Discovering_projects_by_specifying_users_academic_hat_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var academicHat = new AcademicHat("Computer Science");
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Electronics Engineering")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Default, academicHat);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(2);
+
+        foreach (var discoveredProject in discoveredProjects)
+        {
+            discoveredProject.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
+        }
+    }
+
+    [Fact]
+    public async Task Discovering_projects_by_keyword_and_a_student_hat_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var studentHat = new StudentHat("Electronics Engineering", AcademicDegree.Masters);
+        var keyword = "keyword";
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Bachelors)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName("Recommended position 1")
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithName("Recommended position 2")
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Doctorate)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Software Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithTitle(keyword)
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Bachelors)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithDescription(keyword)
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName(keyword)
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithName("Recommended position 2")
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Masters)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithDescription(keyword)
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .WithStudyField("Electronics Engineering")
+                    .WithAcademicDegree(AcademicDegree.Doctorate)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Default, studentHat);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(3);
+
+        foreach (var project in discoveredProjects)
+        {
+            project.Positions.Any(p => studentHat.Fits(p.Requirements)).Should().BeTrue();
+
+            var titleContainsKeyword = project.Title.Contains(keyword);
+            var descriptionContainsKeyword = project.Description.Contains(keyword);
+            var hasAPositionWithTheKeywordInTitleOrDescription =
+                project.Positions.Any(
+                    p => p.Name.Contains(keyword) ||
+                    p.Description.Contains(keyword));
+        }
+    }
+
+    [Fact]
+    public async Task Discovering_projects_by_keyword_and_specifying_users_academic_hat_returns_projects_containing_the_keyword_with_min_one_position_with_requirements_that_the_hat_fits()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var academicHat = new AcademicHat("Computer Science");
+        var keyword = "keyword";
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Electronics Engineering")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithTitle(keyword)
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithDescription(keyword)
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Electronics Engineering")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+             new List<Position>()
+             {
+                new PositionFactory().WithName(keyword)
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+             })
+             .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+             new List<Position>()
+             {
+                new PositionFactory().WithDescription(keyword)
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+             })
+             .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Default, academicHat);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(4);
+
+        foreach (var project in discoveredProjects)
+        {
+            project.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
+
+            var titleContainsKeyword = project.Title.Contains(keyword);
+            var descriptionContainsKeyword = project.Description.Contains(keyword);
+            var hasAPositionWithTheKeywordInTitleOrDescription =
+                project.Positions.Any(
+                    p => p.Name.Contains(keyword) ||
+                    p.Description.Contains(keyword));
+        }
+    }
+
+    [Fact]
+    public async Task Discovering_projects_by_specifying_users_academic_hat_and_requesting_they_be_sorted_from_oldest_posted_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits_as_a_sorted_collection()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var academicHat = new AcademicHat("Computer Science");
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Electronics Engineering")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.OldestFirst, academicHat);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(2);
+
+        foreach (var discoveredProject in discoveredProjects)
+        {
+            discoveredProject.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
+        }
+
+        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderBy(p => p.DatePosted), options => options.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task Discovering_projects_by_specifying_users_academic_hat_and_requesting_they_be_sorted_from_newest_posted_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits_as_a_sorted_collection()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var academicHat = new AcademicHat("Computer Science");
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Electronics Engineering")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.NewestFirst, academicHat);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(2);
+
+        foreach (var discoveredProject in discoveredProjects)
+        {
+            discoveredProject.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
+        }
+
+        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task Discovering_projects_by_keyword_and_specifying_users_academic_hat_and_requesting_they_be_sorted_from_newest_posted_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits_as_a_sorted_collection()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var academicHat = new AcademicHat("Computer Science");
+        var keyword = "keyword";
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Electronics Engineering")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Student)
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithTitle(keyword)
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithDescription(keyword)
+            .WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build(),
+
+                new PositionFactory().WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Electronics Engineering")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName(keyword)
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithDescription(keyword)
+                .WithRequirements(
+                    HatFactory.OfType(HatType.Academic)
+                    .WithResearchField("Computer Science")
+                    .Build())
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.NewestFirst, academicHat);
+
+        // ASSERT
+        discoveredProjects.Count.Should().Be(4);
+
+        foreach (var project in discoveredProjects)
+        {
+            project.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
+
+            var titleContainsKeyword = project.Title.Contains(keyword);
+            var descriptionContainsKeyword = project.Description.Contains(keyword);
+            var hasAPositionWithTheKeywordInTitleOrDescription =
+                project.Positions.Any(
+                    p => p.Name.Contains(keyword) ||
+                    p.Description.Contains(keyword));
+
+            (titleContainsKeyword || descriptionContainsKeyword || hasAPositionWithTheKeywordInTitleOrDescription)
+                .Should().BeTrue();
+        }
+
         discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
     }
 }

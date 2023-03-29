@@ -9,6 +9,11 @@ namespace edu4.Infrastructure;
 public class MongoDBProjectsRepository : IProjectsRepository
 {
     private readonly IMongoCollection<Project> _projectsCollection;
+    private readonly FilterDefinition<Project> _emptyProjectFilter =
+        Builders<Project>.Filter.Empty;
+
+    private readonly FilterDefinition<Position> _emptyPositionFilter =
+        Builders<Position>.Filter.Empty;
 
     public MongoDBProjectsRepository(IConfiguration configuration)
     {
@@ -75,19 +80,40 @@ public class MongoDBProjectsRepository : IProjectsRepository
         return projects;
     }
 
-    public async Task<IReadOnlyList<Project>> DiscoverAsync(string keyword, ProjectsSortOption sortOption)
+    public async Task<IReadOnlyList<Project>> DiscoverAsync(string? keyword, ProjectsSortOption sortOption, Hat? usersHat)
     {
-        var keywordInProjectTitleFilter = Builders<Project>.Filter.Where(p => p.Title.Contains(keyword));
-        var keywordInProjectDescriptionFilter = Builders<Project>.Filter.Where(p => p.Description.Contains(keyword));
-        var keywordInPositionNameFilter = Builders<Position>.Filter.Where(p => p.Name.Contains(keyword));
-        var keywordInPositionDescriptionFilter = Builders<Position>.Filter.Where(p => p.Description.Contains(keyword));
+        var keywordInProjectTitleFilter =
+            keyword is not null ?
+            Builders<Project>.Filter.Where(p => p.Title.Contains(keyword)) :
+            _emptyProjectFilter;
+
+        var keywordInProjectDescriptionFilter =
+            keyword is not null ?
+            Builders<Project>.Filter.Where(p => p.Description.Contains(keyword)) :
+            _emptyProjectFilter;
+
+        var keywordInPositionNameFilter =
+            keyword is not null ?
+            Builders<Position>.Filter.Where(p => p.Name.Contains(keyword)) :
+            _emptyPositionFilter;
+
+        var keywordInPositionDescriptionFilter =
+            keyword is not null ?
+            Builders<Position>.Filter.Where(p => p.Description.Contains(keyword)) :
+            _emptyPositionFilter;
+
         var keywordInAnyPositionNameOrDescriptionFilter = Builders<Project>.Filter.ElemMatch("_positions", Builders<Position>.Filter.Or(
             keywordInPositionNameFilter, keywordInPositionDescriptionFilter));
 
-        var projectsFilter = Builders<Project>.Filter
-            .Or(keywordInProjectTitleFilter,
+        var requirementsFilter = usersHat is not null ?
+            GetFilterForProjectsFitForAUserWearingTheHat(usersHat) :
+            _emptyProjectFilter;
+
+        var filter = Builders<Project>.Filter
+            .And(requirementsFilter,
+            Builders<Project>.Filter.Or(keywordInProjectTitleFilter,
             keywordInProjectDescriptionFilter,
-            keywordInAnyPositionNameOrDescriptionFilter);
+            keywordInAnyPositionNameOrDescriptionFilter));
 
         var sorting = sortOption switch
         {
@@ -98,11 +124,63 @@ public class MongoDBProjectsRepository : IProjectsRepository
         };
 
         var projects = sorting is not null ?
-            await _projectsCollection.Find(projectsFilter).Sort(sorting).ToListAsync() :
-            await _projectsCollection.Find(projectsFilter).ToListAsync();
+            await _projectsCollection.Find(filter).Sort(sorting).ToListAsync() :
+            await _projectsCollection.Find(filter).ToListAsync();
 
         return projects;
     }
+
+    private FilterDefinition<Project> GetFilterForProjectsFitForAUserWearingTheHat(Hat usersHat)
+    {
+        if (usersHat is StudentHat studentHat)
+        {
+            return GetFilterForProjectsFitForAUserWearingTheStudentHat(studentHat);
+        }
+        else if (usersHat is AcademicHat academicHat)
+        {
+            return GetFilterForProjectsFitForAUserWearingTheAcademicHat(academicHat);
+        }
+
+        throw new NotImplementedException("Getting recommended projects for hat type not yet supported");
+    }
+
+    private FilterDefinition<Project> GetFilterForProjectsFitForAUserWearingTheStudentHat(StudentHat usersHat)
+    {
+        var requiredEqualOrLowerAcademicDegree = Enum
+            .GetValues<AcademicDegree>()
+            .Where(d => d <= usersHat.AcademicDegree)
+            .Select(d => $"{d}");
+
+        var requirementsFilter = new BsonDocument
+        {
+            { $"{nameof(Position.Requirements)}._t", nameof(StudentHat) },
+            { $"{nameof(Position.Requirements)}.{nameof(StudentHat.StudyField)}", usersHat.StudyField },
+            { $"{nameof(Position.Requirements)}.{nameof(StudentHat.AcademicDegree)}", new BsonDocument {
+                { "$in", new BsonArray(requiredEqualOrLowerAcademicDegree) }
+            }
+            }
+        };
+
+        var stringFilterValue = requirementsFilter.ToString();
+
+        var projectFilter = Builders<Project>.Filter.ElemMatch<Position>("_positions", requirementsFilter);
+        return projectFilter;
+    }
+
+    private FilterDefinition<Project> GetFilterForProjectsFitForAUserWearingTheAcademicHat(AcademicHat usersHat)
+    {
+        var requirementsFilter = new BsonDocument
+        {
+            { $"{nameof(Position.Requirements)}._t", nameof(AcademicHat) },
+            { $"{nameof(Position.Requirements)}.{nameof(AcademicHat.ResearchField)}", usersHat.ResearchField }
+        };
+
+        var projectFilter = Builders<Project>.Filter.ElemMatch<Position>("_positions", requirementsFilter);
+
+        return projectFilter;
+    }
+
+
 
     public Task AddAsync(Project project)
         => _projectsCollection.InsertOneAsync(project);
