@@ -49,19 +49,6 @@ public class ProjectsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = "Contributor")]
-    public async Task<IReadOnlyList<ProjectDisplayModel>> GetRecommendedForUserWearing(HatInputModel model)
-    {
-        var hat = HatDTO.ToHat(new HatDTO(model.Type, model.Parameters));
-
-        var projects = await _projects.GetRecommendedForUserWearing(hat);
-
-        return projects.Select(p => new ProjectDisplayModel(p))
-            .ToList();
-    }
-
-
-    [HttpGet]
-    [Authorize(Policy = "Contributor")]
     public async Task<IReadOnlyList<ProjectDisplayModel>> DiscoverAsync(string? keyword, HatType? selectedHat, ProjectsSortOption? sortBy)
     {
         var userAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
