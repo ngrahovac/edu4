@@ -56,7 +56,8 @@ public class ProjectsService
         return project;
     }
 
-    public async Task<IReadOnlyList<Project>> DiscoverAsync(string? keyword = null,
+    public async Task<IReadOnlyList<Project>> DiscoverAsync(
+        string? keyword = null,
         ProjectsSortOption sortOption = ProjectsSortOption.Default,
         Hat? usersHat = null)
     {
