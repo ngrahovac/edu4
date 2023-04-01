@@ -2,6 +2,8 @@ namespace edu4.Domain.Users;
 
 public class AcademicHat : Hat
 {
+    public override HatType Type => HatType.Academic;
+
     public string ResearchField { get; }
 
     public AcademicHat(string researchField) =>
