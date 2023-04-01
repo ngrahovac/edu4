@@ -75,4 +75,17 @@ public class UsersService
 
         return user.Id;
     }
+
+    public async Task<User> GetByIdAsync(Guid id)
+    {
+        var user = await _users.GetByIdAsync(id);
+
+        if (user is null)
+        {
+            _logger.LogError("User with account id {AccountId} does not exist", id);
+            throw new InvalidOperationException($"User with account id {id} does not exist");
+        }
+
+        return user;
+    }
 }

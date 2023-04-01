@@ -3,6 +3,8 @@ using edu4.API.Models.Input;
 using edu4.API.Utils;
 using edu4.Application.Models;
 using edu4.Application.Services;
+using edu4.Domain.Projects;
+using edu4.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,4 +59,21 @@ public class ProjectsController : ControllerBase
             .ToList();
     }
 
+
+    [HttpGet]
+    [Authorize(Policy = "Contributor")]
+    public async Task<IReadOnlyList<ProjectDisplayModel>> DiscoverAsync(string? keyword, HatType? selectedHat, ProjectsSortOption? sortBy)
+    {
+        var userAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var userId = await _users.GetUserIdFromAccountId(userAccountId);
+        var user = await _users.GetByIdAsync(userId);
+
+        var projects = await _projects.DiscoverAsync(
+            keyword,
+            sortBy ?? ProjectsSortOption.Default,
+            user.Hats.First(h => h.Type.Equals(selectedHat)));
+
+        return projects.Select(p => new ProjectDisplayModel(p))
+            .ToList();
+    }
 }
