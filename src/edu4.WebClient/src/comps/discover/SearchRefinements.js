@@ -4,14 +4,13 @@ import Hat from '../hats/Hat'
 import SelectedHat from '../hats2/SelectedHat';
 import _ from 'lodash';
 import ClearSearchFilter from './ClearSearchFilter';
+import RefreshButton from './RefreshButton';
 
 const SearchRefinements = (props) => {
 
   const {
     onModalClosed,
-    onSearchKeywordChanged,
-    onSelectedSortChanged,
-    onSelectedHatChanged,
+    onSearchRefinementsChanged
   } = props;
 
   const hats = [
@@ -60,20 +59,8 @@ const SearchRefinements = (props) => {
     onModalClosed();
   }
 
-  useEffect(() => {
-    onSearchKeywordChanged(searchKeyword);
-  }, [searchKeyword])
-
-  useEffect(() => {
-    onSelectedSortChanged(selectedSort);
-  }, [selectedSort])
-
-  useEffect(() => {
-    onSelectedHatChanged(selectedHat);
-  }, [selectedHat])
-
   return (
-    <div className='h-screen bg-gray-100 w-full px-16 py-64 relative'>
+    <div className='h-screen bg-gray-100 w-full px-16 pt-32 pb-64 relative'>
       <form onChange={onFormChange} onSubmit={e => e.preventDefault()}>
         {/* Search */}
         <label>
@@ -170,6 +157,12 @@ const SearchRefinements = (props) => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
+
+      <div className='pt-24'>
+        <RefreshButton
+          onClick={() => onSearchRefinementsChanged(searchKeyword, selectedSort, selectedHat)}>
+        </RefreshButton>
+      </div>
     </div>
   )
 }

@@ -75,6 +75,12 @@ const Discover = () => {
     const [hat, setHat] = useState(undefined);
     const [searchRefinementsVisibility, setSearchRefinementsVisibility] = useState(false);
 
+    function updateProjectDiscoveryParameters(keyword, sort, hat) {
+        setKeyword(keyword);
+        setHat(hat);
+        setSort(sort);
+    }
+
     function showSearchRefinements() {
         setSearchRefinementsVisibility(true);
     }
@@ -132,9 +138,7 @@ const Discover = () => {
                 <div className='fixed left-0 top-0'>
                     <SearchRefinements
                         onModalClosed={hideSearchRefinements}
-                        onSearchKeywordChanged={setKeyword}
-                        onSelectedSortChanged={setSort}
-                        onSelectedHatChanged={setHat}>
+                        onSearchRefinementsChanged={updateProjectDiscoveryParameters}>
                     </SearchRefinements>
                 </div>
             }
