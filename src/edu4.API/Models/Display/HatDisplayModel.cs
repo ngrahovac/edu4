@@ -1,3 +1,4 @@
+using edu4.API.Utils;
 using edu4.Domain.Users;
 
 namespace edu4.API.Models.Display;
@@ -16,6 +17,6 @@ public class HatDisplayModel
             .GetType()
             .GetProperties()
             .ToList()
-            .ForEach(prop => Parameters.Add(prop.Name, prop.GetValue(hat)!));
+            .ForEach(prop => Parameters.Add(prop.Name.ToCamelCase(), prop.GetValue(hat)!));
     }
 }
