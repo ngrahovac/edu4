@@ -11,17 +11,41 @@ import SearchRefinements from '../comps/discover/SearchRefinements';
 import { discover } from '../services/ProjectsService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
 import { useAuth0 } from '@auth0/auth0-react';
+import { me } from '../services/UsersService'
 
 const Discover = () => {
     const [projects, setProjects] = useState([
     ]);
 
+    const [hats, setHats] = useState([]);
     const [keyword, setKeyword] = useState(undefined);
     const [sort, setSort] = useState(undefined);
     const [hat, setHat] = useState(undefined);
     const [searchRefinementsVisibility, setSearchRefinementsVisibility] = useState(false);
 
-    const { getAccessTokenWithPopup } = useAuth0();
+    const { getAccessTokenWithPopup, getAccessTokenSilently } = useAuth0();
+
+    useEffect(() => {
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenSilently({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await me(token);
+
+                if (result.outcome === successResult) {
+                    setHats(result.payload.hats);
+                } else {
+                    console.log("error fetching users hats");
+                }
+            } catch (ex) {
+                console.log(ex);
+            }
+        })();
+    }, [])
+
 
     function onSearchRefinementsChanged() {
         (async () => {
@@ -132,6 +156,7 @@ const Discover = () => {
                         keyword={keyword}
                         sort={sort}
                         hat={hat}
+                        hats={hats}
                         onModalClosed={hideSearchRefinements}
                         onSearchRefinementsChanged={updateProjectDiscoveryParameters}>
                     </SearchRefinements>

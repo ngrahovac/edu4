@@ -13,24 +13,9 @@ const SearchRefinements = (props) => {
     onSearchRefinementsChanged,
     keyword,
     sort,
-    hat
+    hat,
+    hats
   } = props;
-
-  const hats = [
-    {
-      "type": "Student",
-      "parameters": {
-        "studyField": "Software Engineering",
-        "academicDegree": "Bachelor's"
-      }
-    },
-    {
-      "type": "Academic",
-      "parameters": {
-        "researchField": "Electronics Engineering"
-      }
-    },
-  ];
 
   const [searchKeyword, setSearchKeyword] = useState(keyword);
 
