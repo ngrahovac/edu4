@@ -129,6 +129,9 @@ const Discover = () => {
                 searchRefinementsVisibility &&
                 <div className='fixed left-0 top-0'>
                     <SearchRefinements
+                        keyword={keyword}
+                        sort={sort}
+                        hat={hat}
                         onModalClosed={hideSearchRefinements}
                         onSearchRefinementsChanged={updateProjectDiscoveryParameters}>
                     </SearchRefinements>

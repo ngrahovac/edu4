@@ -10,7 +10,10 @@ const SearchRefinements = (props) => {
 
   const {
     onModalClosed,
-    onSearchRefinementsChanged
+    onSearchRefinementsChanged,
+    keyword,
+    sort,
+    hat
   } = props;
 
   const hats = [
@@ -29,11 +32,11 @@ const SearchRefinements = (props) => {
     },
   ];
 
-  const [searchKeyword, setSearchKeyword] = useState(undefined);
+  const [searchKeyword, setSearchKeyword] = useState(keyword);
 
-  const [selectedSort, setSelectedSort] = useState(undefined);
+  const [selectedSort, setSelectedSort] = useState(sort);
 
-  const [selectedHat, setSelectedHat] = useState(undefined);
+  const [selectedHat, setSelectedHat] = useState(hat);
 
   function clearSearchKeyword() {
     setSearchKeyword(undefined);
