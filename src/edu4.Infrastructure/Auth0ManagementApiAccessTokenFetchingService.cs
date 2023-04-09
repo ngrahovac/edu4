@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
 
@@ -45,13 +44,8 @@ public class Auth0ManagementApiAccessTokenFetchingService
                 "Exception while fetching an Auth0 Management API access token");
         }
 
-        var deserializedContent = await response.Content.ReadFromJsonAsync<Auth0ManagementApiFetchTokenResponse>();
-
-        if (deserializedContent is null)
-        {
-            throw new InvalidOperationException(
-                "Exception while deserializing response payload after fetching an Auth0 Management API access token");
-        }
+        var deserializedContent = await response.Content.ReadFromJsonAsync<Auth0ManagementApiFetchTokenResponse>() ??
+            throw new InvalidOperationException("Exception while deserializing response payload after fetching an Auth0 Management API access token");
 
         return deserializedContent.Access_token;
     }
