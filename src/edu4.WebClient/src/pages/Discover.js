@@ -5,75 +5,67 @@ import ProjectCard from '../comps/discover/ProjectCard';
 import RefineButton from '../comps/discover/RefineButton';
 import SearchFilter from '../comps/discover/SearchFilter';
 import SearchFilters from '../comps/discover/SearchFilters';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import RecommendedProjectCard from '../comps/discover/RecommendedProjectCard';
 import SearchRefinements from '../comps/discover/SearchRefinements';
+import { discover } from '../services/ProjectsService';
+import { successResult, failureResult, errorResult } from '../services/RequestResult';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Discover = () => {
-    const projects = [
-        {
-            "id": "string",
-            "datePosted": "01/02/03",
-            "title": "platform development and maintenance",
-            "description": "We are looking for new members to join the platform development team",
-            "authorId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            "positions": [
-                {
-                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                    "datePosted": "2023-03-17T16:07:08.110Z",
-                    "name": ".NET Backend Developer",
-                    "description": "Develop and maintain platform backend",
-                    "requirements": {
-                        "type": "Student",
-                        "parameters": {
-                            "studyField": "Software Engineering",
-                            "academicDegree": "Bachelor's"
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "id": "string",
-            "datePosted": "01/02/03",
-            "title": "platform development and maintenance",
-            "description": "We are looking for new members to join the platform development team",
-            "authorId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            "positions": [
-                {
-                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                    "datePosted": "2023-03-17T16:07:08.110Z",
-                    "name": ".NET Backend Developer",
-                    "description": "Develop and maintain platform backend",
-                    "requirements": {
-                        "type": "Student",
-                        "parameters": {
-                            "studyField": "Software Engineering",
-                            "academicDegree": "Bachelor's"
-                        }
-                    }
-                },
-                {
-                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                    "datePosted": "2023-03-17T16:07:08.110Z",
-                    "name": ".NET Backend Developer",
-                    "description": "Develop and maintain platform backend",
-                    "requirements": {
-                        "type": "Student",
-                        "parameters": {
-                            "studyField": "Software Engineering",
-                            "academicDegree": "Bachelor's"
-                        }
-                    }
-                }
-            ]
-        }
-    ];
+    const [projects, setProjects] = useState([
+    ]);
 
     const [keyword, setKeyword] = useState(undefined);
     const [sort, setSort] = useState(undefined);
     const [hat, setHat] = useState(undefined);
     const [searchRefinementsVisibility, setSearchRefinementsVisibility] = useState(false);
+
+    const { getAccessTokenWithPopup } = useAuth0();
+
+    function onSearchRefinementsChanged() {
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenWithPopup({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await discover(keyword, sort, hat != undefined ? hat.type : undefined, token);
+
+                if (result.outcome === successResult) {
+                    console.log("dohvaceni projekti");
+                    var projects = result.payload;
+                    setProjects(projects);
+                    // document.getElementById('user-action-success-toast').show();
+                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                } else if (result.outcome === failureResult) {
+                    console.log("neuspjesan status code");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                } else if (result.outcome === errorResult) {
+                    console.log("nesto je do mreze");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                }
+            } catch (ex) {
+                console.log(ex);
+                // document.getElementById('user-action-fail-toast').show();
+                // setTimeout(() => {
+                //     document.getElementById('user-action-fail-toast').close();
+                // }, 3000);
+            }
+        })();
+    }
+
+    useEffect(() => {
+        onSearchRefinementsChanged();
+    }, [keyword, sort, hat])
+
 
     function updateProjectDiscoveryParameters(keyword, sort, hat) {
         setKeyword(keyword);
