@@ -1,7 +1,5 @@
 import React from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
-import { SectionTitle } from '../layout/SectionTitle'
-import ProjectCard from '../comps/discover/ProjectCard';
 import RefineButton from '../comps/discover/RefineButton';
 import SearchFilter from '../comps/discover/SearchFilter';
 import SearchFilters from '../comps/discover/SearchFilters';
