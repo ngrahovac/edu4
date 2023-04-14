@@ -49,7 +49,7 @@ public class ProjectsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = "Contributor")]
-    public async Task<IReadOnlyList<ProjectDisplayModel>> DiscoverAsync(string? keyword, HatType? selectedHat, ProjectsSortOption? sortBy)
+    public async Task<IReadOnlyList<ProjectDisplayModel>> DiscoverAsync(string? keyword, HatType? hatType, ProjectsSortOption? sort)
     {
         var userAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var userId = await _users.GetUserIdFromAccountId(userAccountId);
@@ -57,8 +57,8 @@ public class ProjectsController : ControllerBase
 
         var projects = await _projects.DiscoverAsync(
             keyword,
-            sortBy ?? ProjectsSortOption.Default,
-            selectedHat is null ? null : user.Hats.FirstOrDefault(h => h.Type.Equals(selectedHat)));
+            sort ?? ProjectsSortOption.Default,
+            hatType is null ? null : user.Hats.FirstOrDefault(h => h.Type.Equals(hatType)));
 
         return projects.Select(p => new ProjectDisplayModel(p))
             .ToList();
