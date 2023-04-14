@@ -1,0 +1,30 @@
+[
+  {
+    "_id": "ce075dea-7706-409e-91e8-7f27580d2da0",
+    "AccountId": "google-oauth2|0",
+    "ContactEmail": "mail@example.com",
+    "FullName": "John Doe",
+    "Hats": [
+      {
+        "_t": "StudentHat",
+        "StudyField": "Computer Science",
+        "AcademicDegree": "Doctorate"
+      },
+      {
+        "_t": "AcademicHat",
+        "ResearchField": "Distributed Systems"
+      }
+    ],
+    "_hats": [
+      {
+        "_t": "StudentHat",
+        "StudyField": "Computer Science",
+        "AcademicDegree": "Doctorate"
+      },
+      {
+        "_t": "AcademicHat",
+        "ResearchField": "Distributed Systems"
+      }
+    ]
+  }
+]

@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{0104256C-F
 		.gitignore = .gitignore
 		tests\edu4.postman_collection.json = tests\edu4.postman_collection.json
 		edu4.sln = edu4.sln
+		sample_projects.json = sample_projects.json
+		sample_users.json = sample_users.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Domain", "src\edu4.Domain\edu4.Domain.csproj", "{0469A734-5FED-44DC-87EC-53BFD26F1515}"
@@ -25,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Domain.Tests", "tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Application.Tests", "tests\edu4.Application.Tests\edu4.Application.Tests.csproj", "{FE9DDDCC-5150-4291-A46F-323BEC4C044B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "edu4.Application.External.Tests", "tests\edu4.Application.External.Tests\edu4.Application.External.Tests.csproj", "{342FAF8B-9C11-4569-A471-C12695154144}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "edu4.Application.External.Tests", "tests\edu4.Application.External.Tests\edu4.Application.External.Tests.csproj", "{342FAF8B-9C11-4569-A471-C12695154144}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
