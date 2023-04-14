@@ -13,6 +13,7 @@ import Publish from './pages/Publish';
 import Discover from './pages/Discover';
 import { Auth0Provider } from "@auth0/auth0-react"
 import './index.css';
+import Project from './pages/Project';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -38,6 +39,7 @@ root.render(
             <Route path='/homepage' element={<Homepage></Homepage>}></Route>
             <Route path='/publish' element={<Publish></Publish>}></Route>
             <Route path='/discover' element={<Discover></Discover>}></Route>
+            <Route path='/project' element={<Project></Project>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
