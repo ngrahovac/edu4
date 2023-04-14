@@ -7,7 +7,7 @@ const PositionCard = (props) => {
         position
     } = props;
 
-    return (
+    let positionComponent = (
         function () {
             switch (position.requirements.type) {
                 case "Student":
@@ -17,7 +17,12 @@ const PositionCard = (props) => {
                 default:
                     return;
             }
-        }.call(this)
+        }.call(this));
+
+    return (
+        <div className='px-8 py-6 border border-gray-300 rounded-lg'>
+            {positionComponent}
+        </div>
     )
 }
 
