@@ -50,6 +50,12 @@ const SearchRefinements = (props) => {
   return (
     <div className='h-screen bg-gray-100 w-full px-16 pt-32 pb-64 relative'>
       <form onChange={onFormChange} onSubmit={e => e.preventDefault()}>
+        <div className='mb-24'>
+          <RefreshButton
+            onClick={() => onSearchRefinementsChanged(searchKeyword, selectedSort, selectedHat)}>
+          </RefreshButton>
+        </div>
+
         {/* Search */}
         <label>
           <div className='flex flex-row shrink-0 items-center content-center mb-2'>
@@ -67,7 +73,6 @@ const SearchRefinements = (props) => {
         </label>
 
         {/* Sort */}
-
         <div className='flex flex-col mt-20'>
           <div className='flex flex-row shrink-0 items-center content-center mb-2'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 mr-1">
@@ -145,12 +150,6 @@ const SearchRefinements = (props) => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
-
-      <div className='pt-24'>
-        <RefreshButton
-          onClick={() => onSearchRefinementsChanged(searchKeyword, selectedSort, selectedHat)}>
-        </RefreshButton>
-      </div>
     </div>
   )
 }
