@@ -49,10 +49,12 @@ const RecommendedProjectCard = ({ project }) => {
 
                 <div className='flex flex-col space-y-2'>
                     {
-                        project.positions.map(p => <>
-                            <PositionCard position={p}></PositionCard>
-                        </>)
+                        project.positions.filter(p => p.recommended).map(p => <>
+                            {
+                                <RecommendedPositionCard position={p}></RecommendedPositionCard>
 
+                            }
+                        </>)
                     }
                 </div>
 

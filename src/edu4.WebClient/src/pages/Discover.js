@@ -4,6 +4,7 @@ import RefineButton from '../comps/discover/RefineButton';
 import SearchFilter from '../comps/discover/SearchFilter';
 import SearchFilters from '../comps/discover/SearchFilters';
 import { useState, useEffect } from 'react';
+import ProjectCard from '../comps/discover/ProjectCard';
 import RecommendedProjectCard from '../comps/discover/RecommendedProjectCard';
 import SearchRefinements from '../comps/discover/SearchRefinements';
 import { discover } from '../services/ProjectsService';
@@ -142,9 +143,18 @@ const Discover = () => {
                 <div className='mt-16 flex flex-col space-y-8'>
                     {
                         projects.map(p => <>
-                            <div className=''>
-                                <RecommendedProjectCard project={p}></RecommendedProjectCard>
-                            </div>
+                            {
+                                p.recommended &&
+                                <div className=''>
+                                    <RecommendedProjectCard project={p}></RecommendedProjectCard>
+                                </div>
+                            }
+                            {
+                                !p.recommended &&
+                                <div className=''>
+                                    <ProjectCard project={p}></ProjectCard>
+                                </div>
+                            }
                         </>)
                     }
                 </div>

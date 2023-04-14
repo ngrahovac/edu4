@@ -36,7 +36,7 @@ const ProjectCard = (props) => {
             <p className='mb-10'>{project.description}</p>
 
             <div className='mb-8'>
-                <SubsectionTitle title="Recommended positions"></SubsectionTitle>
+                <SubsectionTitle title="Positions"></SubsectionTitle>
             </div>
 
 

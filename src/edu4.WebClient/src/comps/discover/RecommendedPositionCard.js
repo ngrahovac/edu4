@@ -9,7 +9,7 @@ const RecommendedPositionCard = (props) => {
     } = props;
 
     return (
-        <div className=''>
+        <div className=''>  
             {
                 function () {
                     switch (position.requirements.type) {
