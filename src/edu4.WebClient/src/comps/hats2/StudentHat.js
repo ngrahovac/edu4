@@ -1,6 +1,12 @@
 import React from 'react'
 
 const StudentHat = ({ hat }) => {
+    let degree = hat.parameters.academicDegree == 1 ?
+    "BSc" :
+    hat.parameters.academicDegree == 2 ?
+    "MSc" :
+    "PHd";
+
     return (
         <div className='flex flex-row flex-wrap'>
             <div className='flex flex-row shrink-0 items-center'>
@@ -10,6 +16,8 @@ const StudentHat = ({ hat }) => {
 
                 <span>Student |</span>
             </div>
+            <span>{'\u00A0'}</span>
+            <span>{`${degree} |`}</span>
             <span>{'\u00A0'}</span>
             <span className='font-semibold'>{hat.parameters.studyField}</span>
         </div>
