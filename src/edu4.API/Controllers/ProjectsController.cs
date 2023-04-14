@@ -60,7 +60,7 @@ public class ProjectsController : ControllerBase
             sort ?? ProjectsSortOption.Default,
             hatType is null ? null : user.Hats.FirstOrDefault(h => h.Type.Equals(hatType)));
 
-        return projects.Select(p => new ProjectDisplayModel(p))
+        return projects.Select(p => new ProjectDisplayModel(p, user))
             .ToList();
     }
 }
