@@ -34,5 +34,7 @@ public class Project : AbstractAggregateRoot
     }
 
 
-    public bool IsRecommendedFor(User user) => Positions.Any(p => user.Hats.Any(h => h.Fits(p.Requirements)));
+    public bool IsRecommendedFor(User user) =>
+        user.Id != Author.Id &&
+        Positions.Any(p => user.Hats.Any(h => h.Fits(p.Requirements)));
 }
