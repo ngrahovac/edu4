@@ -1,0 +1,699 @@
+[
+  {
+    "_id": "a0b6bcd0-1bd6-44c6-842b-3386250e829e",
+    "DatePosted": "2023-03-28T11:25:13.123Z",
+    "Title": "Data Analysis for E-commerce Site",
+    "Description": "We need a data analyst to help us understand customer behaviour on our e-commerce site.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "9b93a173-656c-4088-bee2-291c58ad255e",
+        "DatePosted": "2023-03-28T11:25:13.123Z",
+        "Name": "Data Analyst",
+        "Description": "Responsible for analyzing and interpreting data to inform business decisions.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Data Science"
+        }
+      },
+      {
+        "_id": "43cf5358-1d49-41ae-a147-d2576f97b940",
+        "DatePosted": "2023-03-28T11:25:13.123Z",
+        "Name": "Web Developer",
+        "Description": "Responsible for designing and developing web pages for our e-commerce site.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "9b93a173-656c-4088-bee2-291c58ad255e",
+        "DatePosted": "2023-03-28T11:25:13.123Z",
+        "Name": "Data Analyst",
+        "Description": "Responsible for analyzing and interpreting data to inform business decisions.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Data Science"
+        }
+      },
+      {
+        "_id": "43cf5358-1d49-41ae-a147-d2576f97b940",
+        "DatePosted": "2023-03-28T11:25:13.123Z",
+        "Name": "Web Developer",
+        "Description": "Responsible for designing and developing web pages for our e-commerce site.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "74c6895a-1fdd-4149-aeda-f3c71d3a07db",
+    "DatePosted": "2023-03-31T08:15:37.684Z",
+    "Title": "Mobile App Development",
+    "Description": "We are looking for a team of developers to create a mobile app for our company.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "aa454375-2469-46c5-83ee-aaee3ad2ee0e",
+        "DatePosted": "2023-03-31T08:15:37.684Z",
+        "Name": "Android Developer",
+        "Description": "Responsible for developing and maintaining the Android version of the app.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "c76ec284-ed62-4099-b1ed-fc0bef743def",
+        "DatePosted": "2023-03-31T08:15:37.684Z",
+        "Name": "iOS Developer",
+        "Description": "Responsible for developing and maintaining the iOS version of the app.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "aa454375-2469-46c5-83ee-aaee3ad2ee0e",
+        "DatePosted": "2023-03-31T08:15:37.684Z",
+        "Name": "Android Developer",
+        "Description": "Responsible for developing and maintaining the Android version of the app.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "c76ec284-ed62-4099-b1ed-fc0bef743def",
+        "DatePosted": "2023-03-31T08:15:37.684Z",
+        "Name": "iOS Developer",
+        "Description": "Responsible for developing and maintaining the iOS version of the app.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "70a8e120-d84d-4368-be40-79b7e43b2994",
+    "DatePosted": "2023-04-01T14:30:22.743Z",
+    "Title": "Social Media Marketing",
+    "Description": "We need a marketing professional to help us increase our social media presence and engagement.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "22f7b670-2019-40fc-baa0-9151d772a7a0",
+        "DatePosted": "2023-04-01T14:30:22.743Z",
+        "Name": "Social Media Manager",
+        "Description": "Responsible for managing and executing social media campaigns.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Marketing"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "22f7b670-2019-40fc-baa0-9151d772a7a0",
+        "DatePosted": "2023-04-01T14:30:22.743Z",
+        "Name": "Social Media Manager",
+        "Description": "Responsible for managing and executing social media campaigns.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Marketing"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "f0837a7d-90b6-40d6-b704-279307ba94ad",
+    "DatePosted": "2023-04-03T19:45:12.103Z",
+    "Title": "Developing an AI-powered Chatbot",
+    "Description": "We are looking for a team of two students and an academic mentor to develop an AI-powered chatbot that can help users with basic customer service queries.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "b4a0d903-f801-4e18-addc-d399c74aadbb",
+        "DatePosted": "2023-04-03T19:45:12.103Z",
+        "Name": "AI Engineer",
+        "Description": "Responsible for developing the AI algorithms that power the chatbot.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "7e625fe5-a2f8-4eaa-aa31-42aa258d04a4",
+        "DatePosted": "2023-04-03T19:45:12.103Z",
+        "Name": "Chatbot Developer",
+        "Description": "Responsible for developing and integrating the chatbot software with the AI algorithms.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Software Engineering"
+        }
+      },
+      {
+        "_id": "41e50fa3-87b9-4c42-b275-b75974db7585",
+        "DatePosted": "2023-04-03T19:45:12.103Z",
+        "Name": "Academic Mentor",
+        "Description": "Responsible for providing guidance and mentorship to the student team throughout the project.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Artificial Intelligence"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "b4a0d903-f801-4e18-addc-d399c74aadbb",
+        "DatePosted": "2023-04-03T19:45:12.103Z",
+        "Name": "AI Engineer",
+        "Description": "Responsible for developing the AI algorithms that power the chatbot.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "7e625fe5-a2f8-4eaa-aa31-42aa258d04a4",
+        "DatePosted": "2023-04-03T19:45:12.103Z",
+        "Name": "Chatbot Developer",
+        "Description": "Responsible for developing and integrating the chatbot software with the AI algorithms.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Software Engineering"
+        }
+      },
+      {
+        "_id": "41e50fa3-87b9-4c42-b275-b75974db7585",
+        "DatePosted": "2023-04-03T19:45:12.103Z",
+        "Name": "Academic Mentor",
+        "Description": "Responsible for providing guidance and mentorship to the student team throughout the project.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Artificial Intelligence"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "ffdf69f6-c263-4fd8-be92-cf1a171b0da1",
+    "DatePosted": "2023-04-04T10:30:00.000Z",
+    "Title": "Developing a Medical Information System",
+    "Description": "We are looking for a team to develop a medical information system that will help doctors and healthcare providers to store and access medical records of patients. The system will be designed to comply with HIPAA regulations.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "03b7f217-a5ea-4740-8e89-7f5fa356eb50",
+        "DatePosted": "2023-04-04T10:30:00.000Z",
+        "Name": "Backend Developer",
+        "Description": "Responsible for developing the backend architecture of the medical information system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "0f06149a-377c-4b18-9257-7b17613d89c3",
+        "DatePosted": "2023-04-04T10:30:00.000Z",
+        "Name": "Frontend Developer",
+        "Description": "Responsible for developing the frontend of the medical information system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "92b1bdc4-8b50-448f-9b68-111035f7f597",
+        "DatePosted": "2023-04-04T10:30:00.000Z",
+        "Name": "Medical Advisor",
+        "Description": "Responsible for providing medical expertise to ensure that the system is compliant with HIPAA regulations and meets the needs of healthcare providers.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "General Medicine"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "03b7f217-a5ea-4740-8e89-7f5fa356eb50",
+        "DatePosted": "2023-04-04T10:30:00.000Z",
+        "Name": "Backend Developer",
+        "Description": "Responsible for developing the backend architecture of the medical information system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "0f06149a-377c-4b18-9257-7b17613d89c3",
+        "DatePosted": "2023-04-04T10:30:00.000Z",
+        "Name": "Frontend Developer",
+        "Description": "Responsible for developing the frontend of the medical information system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "92b1bdc4-8b50-448f-9b68-111035f7f597",
+        "DatePosted": "2023-04-04T10:30:00.000Z",
+        "Name": "Medical Advisor",
+        "Description": "Responsible for providing medical expertise to ensure that the system is compliant with HIPAA regulations and meets the needs of healthcare providers.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "General Medicine"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "4cd9a166-cc68-44d1-a76c-71ffda52cc73",
+    "DatePosted": "2023-04-07T13:00:00.000Z",
+    "Title": "Developing an Emotion Detection System",
+    "Description": "We are looking for a team to develop an emotion detection system that can identify the emotional state of individuals in real-time using facial recognition technology. The system will be used for psychological research purposes.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "ad257272-ef91-4be9-8399-d7516e0fd7a1",
+        "DatePosted": "2023-04-07T13:00:00.000Z",
+        "Name": "Data Scientist",
+        "Description": "Responsible for developing the machine learning algorithms used in the emotion detection system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "6080d538-4baa-4dec-932b-42b49a7eaf86",
+        "DatePosted": "2023-04-07T13:00:00.000Z",
+        "Name": "Psychology Researcher",
+        "Description": "Responsible for designing the study, collecting and analyzing data, and interpreting the results.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Psychology"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "ad257272-ef91-4be9-8399-d7516e0fd7a1",
+        "DatePosted": "2023-04-07T13:00:00.000Z",
+        "Name": "Data Scientist",
+        "Description": "Responsible for developing the machine learning algorithms used in the emotion detection system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "6080d538-4baa-4dec-932b-42b49a7eaf86",
+        "DatePosted": "2023-04-07T13:00:00.000Z",
+        "Name": "Psychology Researcher",
+        "Description": "Responsible for designing the study, collecting and analyzing data, and interpreting the results.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Psychology"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "2babd0b0-a5c7-427c-a252-4e85a3bc39d7",
+    "DatePosted": "2023-04-10T10:00:00.000Z",
+    "Title": "Developing a Mental Health Chatbot",
+    "Description": "We are looking for a team to develop a mental health chatbot that can help users manage their mental health and provide them with resources and support. The chatbot should be capable of detecting early signs of mental health issues, and provide users with personalized recommendations based on their symptoms. The project will involve a collaboration between a Psychology master's student and a Computer Science student.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "ca8310e6-d13e-4801-9685-c53c12283b38",
+        "DatePosted": "2023-04-10T10:00:00.000Z",
+        "Name": "Psychology Master's Student",
+        "Description": "Responsible for designing the conversation flows of the mental health chatbot, and for developing recommendations based on users' symptoms.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Psychology"
+        }
+      },
+      {
+        "_id": "eadbda95-339e-4ce9-9827-ec74d333c1a7",
+        "DatePosted": "2023-04-10T10:00:00.000Z",
+        "Name": "Computer Science Student",
+        "Description": "Responsible for developing the backend architecture and natural language processing algorithms of the mental health chatbot.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "ca8310e6-d13e-4801-9685-c53c12283b38",
+        "DatePosted": "2023-04-10T10:00:00.000Z",
+        "Name": "Psychology Master's Student",
+        "Description": "Responsible for designing the conversation flows of the mental health chatbot, and for developing recommendations based on users' symptoms.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Psychology"
+        }
+      },
+      {
+        "_id": "eadbda95-339e-4ce9-9827-ec74d333c1a7",
+        "DatePosted": "2023-04-10T10:00:00.000Z",
+        "Name": "Computer Science Student",
+        "Description": "Responsible for developing the backend architecture and natural language processing algorithms of the mental health chatbot.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "e8cb9729-a8be-4ef3-adf9-ac508816d24a",
+    "DatePosted": "2023-04-11T12:00:00.000Z",
+    "Title": "Creating a Technical Magazine",
+    "Description": "We are looking for a team of students to create a technical magazine that focuses on cutting-edge technology and trends. The magazine should feature articles, infographics, and other visual aids that help readers understand complex concepts in an easy-to-digest format. The project requires a collaboration between students of Computer Science and a student of Graphical Design.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "ddab112f-94c0-4fc6-ae7f-72544d47f300",
+        "DatePosted": "2023-04-11T12:00:00.000Z",
+        "Name": "Computer Science Student",
+        "Description": "Responsible for writing articles and creating infographics that explain complex technical concepts to readers.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "6c04095f-9d94-499b-8b3e-fb2f60d4aa7a",
+        "DatePosted": "2023-04-11T12:00:00.000Z",
+        "Name": "Graphical Design Student",
+        "Description": "Responsible for designing the layout and creating visual aids that help readers understand complex technical concepts.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Graphic Design"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "ddab112f-94c0-4fc6-ae7f-72544d47f300",
+        "DatePosted": "2023-04-11T12:00:00.000Z",
+        "Name": "Computer Science Student",
+        "Description": "Responsible for writing articles and creating infographics that explain complex technical concepts to readers.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "6c04095f-9d94-499b-8b3e-fb2f60d4aa7a",
+        "DatePosted": "2023-04-11T12:00:00.000Z",
+        "Name": "Graphical Design Student",
+        "Description": "Responsible for designing the layout and creating visual aids that help readers understand complex technical concepts.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Graphic Design"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "02a1e9ce-ccf4-45be-9929-5abbcac58525",
+    "DatePosted": "2023-04-16T09:30:00.000Z",
+    "Title": "Smart Home Security System",
+    "Description": "Design and develop a smart home security system that incorporates computer vision and machine learning algorithms to detect and prevent break-ins. The system should also include a user-friendly interface for managing and monitoring the security system remotely.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "65baef85-697e-4d53-8b0b-a2f44c00615c",
+        "DatePosted": "2023-04-16T09:30:00.000Z",
+        "Name": "Computer Science student",
+        "Description": "Develop software and algorithms for the security system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "6a74bcef-f6d6-440d-a17d-d9e0839ce9af",
+        "DatePosted": "2023-04-16T09:30:00.000Z",
+        "Name": "Computer Science academic",
+        "Description": "Provide guidance and mentorship to the student developers.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Computer Science"
+        }
+      },
+      {
+        "_id": "fe7cb75c-847b-4973-a03e-f501bc5b4c9a",
+        "DatePosted": "2023-04-16T09:30:00.000Z",
+        "Name": "Electrical Engineering student",
+        "Description": "Design and implement the hardware components of the security system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Electrical Engineering"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "65baef85-697e-4d53-8b0b-a2f44c00615c",
+        "DatePosted": "2023-04-16T09:30:00.000Z",
+        "Name": "Computer Science student",
+        "Description": "Develop software and algorithms for the security system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "6a74bcef-f6d6-440d-a17d-d9e0839ce9af",
+        "DatePosted": "2023-04-16T09:30:00.000Z",
+        "Name": "Computer Science academic",
+        "Description": "Provide guidance and mentorship to the student developers.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Computer Science"
+        }
+      },
+      {
+        "_id": "fe7cb75c-847b-4973-a03e-f501bc5b4c9a",
+        "DatePosted": "2023-04-16T09:30:00.000Z",
+        "Name": "Electrical Engineering student",
+        "Description": "Design and implement the hardware components of the security system.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Electrical Engineering"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "ed5bf281-a609-41a0-b552-068b6b6993ac",
+    "DatePosted": "2023-04-09T19:25:53.742Z",
+    "Title": "Genetic Data Analysis Software",
+    "Description": "We are seeking computer science students and academics to collaborate with a biology professor on a project to develop software for analyzing genetic data. The software will need to be able to process large amounts of data and provide insights and visualizations to help researchers make sense of the data. Experience with bioinformatics and genomics is a plus, but not required.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "cc423d5c-2290-4125-8d66-357a26cbee62",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Computer Science Student",
+        "Description": "We are looking for a computer science student to help develop the software and work with the biology professor to ensure it meets the needs of the research team. The ideal candidates will have experience with large-scale data processing and be comfortable working with researchers outside of their field.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "16d66466-26ee-4c09-8181-cf14738eda23",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Computer Science Academic",
+        "Description": "We are seeking a computer science academic with expertise in software engineering and data processing to lead the development of the software and mentor the student team. The ideal candidate will have experience working with large data sets and be comfortable working with researchers outside of their field.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Computer Science"
+        }
+      },
+      {
+        "_id": "f0523240-7b80-490e-8ca4-38d98666a56f",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Biology Professor",
+        "Description": "We are looking for a biology professor with experience in genetics and genomics to work with the computer science team to ensure the software meets the needs of the research team. The ideal candidate will be comfortable working with computer scientists and have experience with bioinformatics tools and techniques.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Genetics and Genomics"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "cc423d5c-2290-4125-8d66-357a26cbee62",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Computer Science Student",
+        "Description": "We are looking for a computer science student to help develop the software and work with the biology professor to ensure it meets the needs of the research team. The ideal candidates will have experience with large-scale data processing and be comfortable working with researchers outside of their field.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Bachelors",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "16d66466-26ee-4c09-8181-cf14738eda23",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Computer Science Academic",
+        "Description": "We are seeking a computer science academic with expertise in software engineering and data processing to lead the development of the software and mentor the student team. The ideal candidate will have experience working with large data sets and be comfortable working with researchers outside of their field.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Computer Science"
+        }
+      },
+      {
+        "_id": "f0523240-7b80-490e-8ca4-38d98666a56f",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Biology Professor",
+        "Description": "We are looking for a biology professor with experience in genetics and genomics to work with the computer science team to ensure the software meets the needs of the research team. The ideal candidate will be comfortable working with computer scientists and have experience with bioinformatics tools and techniques.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Genetics and Genomics"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "6a7d88d3-67e6-4835-815f-cb16af9a7e2d",
+    "DatePosted": "2023-04-09T19:25:53.742Z",
+    "Title": "Language Learning App",
+    "Description": "We are looking for computer science students and academics to collaborate with a linguistics expert on the development of a language learning app. The app will include features such as flashcards, quizzes, and speech recognition.",
+    "Author": {
+      "_id": "ce075dea-7706-409e-91e8-7f27580d2da0"
+    },
+    "Positions": [
+      {
+        "_id": "44dadff5-2e64-41f9-a276-796c9c0ddd1a",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Computer Science Student",
+        "Description": "We are seeking computer science students to help develop the technical aspects of the app, such as the speech recognition feature.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "3a52354a-cebe-471e-8ca2-a9946c9fe346",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Computer Science Academic",
+        "Description": "We are seeking computer science academics to oversee the development of the app and provide technical guidance to the student team.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Computer Science"
+        }
+      },
+      {
+        "_id": "10be255d-38a9-498a-863d-6a6d3c2fc2db",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Linguistics Expert",
+        "Description": "We are seeking a linguistics expert to provide guidance on the development of the language learning content for the app.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Linguistics"
+        }
+      }
+    ],
+    "_positions": [
+      {
+        "_id": "44dadff5-2e64-41f9-a276-796c9c0ddd1a",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Computer Science Student",
+        "Description": "We are seeking computer science students to help develop the technical aspects of the app, such as the speech recognition feature.",
+        "Requirements": {
+          "_t": "StudentHat",
+          "AcademicDegree": "Masters",
+          "StudyField": "Computer Science"
+        }
+      },
+      {
+        "_id": "3a52354a-cebe-471e-8ca2-a9946c9fe346",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Computer Science Academic",
+        "Description": "We are seeking computer science academics to oversee the development of the app and provide technical guidance to the student team.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Computer Science"
+        }
+      },
+      {
+        "_id": "10be255d-38a9-498a-863d-6a6d3c2fc2db",
+        "DatePosted": "2023-04-09T19:25:53.742Z",
+        "Name": "Linguistics Expert",
+        "Description": "We are seeking a linguistics expert to provide guidance on the development of the language learning content for the app.",
+        "Requirements": {
+          "_t": "AcademicHat",
+          "ResearchField": "Linguistics"
+        }
+      }
+    ]
+  }
+]

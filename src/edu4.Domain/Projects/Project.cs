@@ -1,9 +1,10 @@
 using edu4.Domain.Common;
+using edu4.Domain.Users;
 
 namespace edu4.Domain.Projects;
 public class Project : AbstractAggregateRoot
 {
-    public DateTime DatePosted { get; }
+    public DateTime DatePosted { get; private set; }
     public string Title { get; private set; }
     public string Description { get; private set; }
     public Author Author { get; }
@@ -31,4 +32,9 @@ public class Project : AbstractAggregateRoot
 
         _positions = positions.ToList();
     }
+
+
+    public bool IsRecommendedFor(User user) =>
+        user.Id != Author.Id &&
+        Positions.Any(p => user.Hats.Any(h => h.Fits(p.Requirements)));
 }

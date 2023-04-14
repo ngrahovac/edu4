@@ -2,6 +2,8 @@ namespace edu4.Domain.Users;
 
 public class AcademicHat : Hat
 {
+    public override HatType Type => HatType.Academic;
+
     public string ResearchField { get; }
 
     public AcademicHat(string researchField) =>
@@ -15,5 +17,10 @@ public class AcademicHat : Hat
         return ResearchField.Equals(otherAcademicHat!.ResearchField, StringComparison.Ordinal);
     }
 
-    protected override int GetHashCodeCore() => HashCode.Combine(ResearchField);
+    protected override int GetHashCodeCore()
+        => HashCode.Combine(ResearchField);
+
+    public override bool Fits(Hat positionRequirements) =>
+        positionRequirements is AcademicHat academicRequirements &&
+        ResearchField.Equals(academicRequirements.ResearchField, StringComparison.OrdinalIgnoreCase);
 }

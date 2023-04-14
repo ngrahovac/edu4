@@ -1,21 +1,22 @@
 import React from 'react'
+import PageTitle from './PageTitle';
+import PageDescription from './PageDescription';
 
 const SingleColumnLayout = (props) => {
 
-    const { title, children } = props;
+    const { 
+        title, 
+        description, 
+        children 
+    } = props;
 
     return (
         <div
-            className='h-max w-5/6 md:w-2/3 lg:w-1/3 mx-auto'>
-            <h1
-                className='mt-28 mb-24 font-semibold text-4xl text-slate-800'>
-                {title}
-            </h1>
+            className='w-5/6 md:w-2/3 lg:w-1/2 mx-auto absolute mt-16 right-0 left-0 py-32'>
+            <PageTitle title={title}></PageTitle>
+            <PageDescription description={description}></PageDescription>
 
-            <div
-                className='relative flex flex-col bottom-0 h-max'>
-                {children}
-            </div>
+            {children}
         </div>
     )
 }

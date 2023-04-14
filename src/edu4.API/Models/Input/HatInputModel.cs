@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using edu4.Domain.Users;
 
-namespace edu4.API.Models;
+namespace edu4.API.Models.Input;
 
 #nullable disable
 public class HatInputModel : IValidatableObject

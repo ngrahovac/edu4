@@ -1,4 +1,4 @@
-import { postAsync } from './ApiService'
+import { getAsync, postAsync} from './ApiService'
 import {
     successResult,
     failureResult,
@@ -31,4 +31,57 @@ async function publish(publishModel, accessToken) {
     }
 }
 
-export { publish }
+async function discover(keyword, sort, hatType, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+
+        var requestUri = `${apiRootUri}/projects`;
+
+        var searchRefinemets = [];
+
+        if (keyword != undefined)
+            searchRefinemets["keyword"] = keyword;
+        
+        if (sort != undefined)
+            searchRefinemets["sort"] = sort;
+
+        if (hatType != undefined) 
+            searchRefinemets["hatType"] = hatType;
+
+        if (Object.keys(searchRefinemets).length > 0) {
+            requestUri += "?";
+
+            for (let parameter in searchRefinemets) 
+                if (searchRefinemets[parameter] != undefined)
+                    requestUri += `${parameter}=${searchRefinemets[parameter]}&`    
+            
+            requestUri = requestUri.slice(0, -1);
+        }            
+
+        var response = await getAsync(requestUri, accessToken);
+
+        if (response.ok) {
+            var body = await response.json();
+
+            return {
+                outcome: successResult,
+                message: "Signup successfully completed!",
+                payload: body
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
+export { publish, discover }

@@ -1,15 +1,14 @@
 import React from 'react'
-import AcademicHat from '../hats2/AcademicHat';
-import StudentHat from '../hats2/StudentHat';
+import AcademicHat from './AcademicHat';
+import StudentHat from './StudentHat';
 
-const Hat = (props) => {
-
+const SelectedHat = (props) => {
     const { hat } = props;
     const hatType = hat.type;
 
     return (
         <div
-            className='my-4 bg-stone-50 px-4 py-6 rounded-md w-full border border-slate-300 overflow-clip'>
+            className='my-4 bg-stone-50 px-4 py-6 rounded-md w-full border border-lime-500 bg-lime-50 overflow-clip'>
             {
                 (() => {
                     switch (hatType) {
@@ -26,4 +25,4 @@ const Hat = (props) => {
     )
 }
 
-export default Hat
+export default SelectedHat

@@ -1,4 +1,5 @@
-using edu4.API.Models;
+using edu4.API.Models.Display;
+using edu4.API.Models.Input;
 using edu4.API.Utils;
 using edu4.Application.Models;
 using edu4.Application.Services;
@@ -18,6 +19,18 @@ public class UsersController : ControllerBase
     {
         _users = users;
         _accountIdExtractionService = accountIdExtractionService;
+    }
+
+    [HttpGet("me")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult<UserDisplayModel>> GetMeAsync()
+    {
+        var accountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var userId = await _users.GetUserIdFromAccountId(accountId);
+
+        var user = await _users.GetByIdAsync(userId);
+
+        return new UserDisplayModel(user);
     }
 
     [HttpPost]
