@@ -137,15 +137,25 @@ const Discover = () => {
                 </SearchFilters>
             </div>
 
-            <div className='mt-16 flex flex-col space-y-8'>
-                {
-                    projects.map(p => <>
-                        <div className=''>
-                            <RecommendedProjectCard project={p}></RecommendedProjectCard>
-                        </div>
-                    </>)
-                }
-            </div>
+            {
+                projects.length > 0 &&
+                <div className='mt-16 flex flex-col space-y-8'>
+                    {
+                        projects.map(p => <>
+                            <div className=''>
+                                <RecommendedProjectCard project={p}></RecommendedProjectCard>
+                            </div>
+                        </>)
+                    }
+                </div>
+            }
+
+            {
+                projects.length <= 0 &&
+                <div className='mt-16'>
+                    <p>There are currently no projects satisfying the criteria.</p>
+                </div>
+            }
 
             {
                 searchRefinementsVisibility &&
