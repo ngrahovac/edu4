@@ -48,10 +48,15 @@ async function discover(keyword, sort, hatType, accessToken) {
         if (hatType != undefined) 
             searchRefinemets["hatType"] = hatType;
 
-        if (searchRefinemets.length > 0)
+        if (Object.keys(searchRefinemets).length > 0) {
+            requestUri += "?";
+
             for (let parameter in searchRefinemets) 
                 if (searchRefinemets[parameter] != undefined)
-                    requestUri += `${parameter}=${searchRefinemets[parameter]}`        
+                    requestUri += `${parameter}=${searchRefinemets[parameter]}&`    
+            
+            requestUri = requestUri.slice(0, -1);
+        }            
 
         var response = await getAsync(requestUri, accessToken);
 
