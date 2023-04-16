@@ -13,7 +13,7 @@ async function publish(publishModel, accessToken) {
         if (response.ok) {
             return {
                 outcome: successResult,
-                message: "Signup successfully completed!"
+                message: "Project published successfully!"
             };
         } else {
             var responseMessage = await response.text();
@@ -30,6 +30,33 @@ async function publish(publishModel, accessToken) {
         };
     }
 }
+
+async function addPositions(projectId, positions, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+        var response = await postAsync(`${apiRootUri}/projects/${projectId}/positions`, positions, accessToken);
+
+        if (response.ok) {
+            return {
+                outcome: successResult,
+                message: "Positions added successfully!"
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
 
 async function discover(keyword, sort, hatType, accessToken) {
     try {
@@ -84,4 +111,4 @@ async function discover(keyword, sort, hatType, accessToken) {
     }
 }
 
-export { publish, discover }
+export { publish, addPositions, discover }

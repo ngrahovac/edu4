@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import HatForm from '../comps/hat-forms/HatForm';
 import AddedPosition from '../comps/hats2/AddedPosition';
@@ -7,23 +7,79 @@ import { SectionTitle } from '../layout/SectionTitle'
 import SubsectionTitle from '../layout/SubsectionTitle';
 import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
-import { publish } from '../services/ProjectsService';
+import { addPositions } from '../services/ProjectsService';
 import {
     successResult,
     failureResult,
     errorResult
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react'
+import PositionCard from '../comps/discover/PositionCard';
 
 
-const Publish = () => {
-    {/* TODO: remove static data */ }
-
+const EditProject = () => {
     const [selectedPositionType, setSelectedPositionType] = useState("Student");
 
     const [position, setPosition] = useState({});
 
-    const [project, setProject] = useState({ positions: [] });
+    const [project, setProject] = useState({
+        "id": "74c6895a-1fdd-4149-aeda-f3c71d3a07db",
+        "datePosted": "2023-03-31T08:15:37.684Z",
+        "title": "Mobile App Development",
+        "description": "We are looking for a team of developers to create a mobile app for our company.",
+        "authorId": "ce075dea-7706-409e-91e8-7f27580d2da0",
+        "authored": true,
+        "recommended": false,
+        "positions": [
+            {
+                "id": "aa454375-2469-46c5-83ee-aaee3ad2ee0e",
+                "datePosted": "2023-04-14T22:53:55.0701872Z",
+                "name": "Android Developer",
+                "description": "Responsible for developing and maintaining the Android version of the app.",
+                "requirements": {
+                    "type": "Student",
+                    "parameters": {
+                        "type": 0,
+                        "studyField": "Computer Science",
+                        "academicDegree": 1
+                    }
+                },
+                "recommended": true
+            },
+            {
+                "id": "c76ec284-ed62-4099-b1ed-fc0bef743def",
+                "datePosted": "2023-04-14T22:53:55.0702114Z",
+                "name": "iOS Developer",
+                "description": "Responsible for developing and maintaining the iOS version of the app.",
+                "requirements": {
+                    "type": "Student",
+                    "parameters": {
+                        "type": 0,
+                        "studyField": "Computer Science",
+                        "academicDegree": 2
+                    }
+                },
+                "recommended": true
+            },
+            {
+                "id": "c76ec284-ed62-4099-b1ed-fc0bef743def",
+                "datePosted": "2023-04-14T22:53:55.0702114Z",
+                "name": "iOS Developer",
+                "description": "Not much",
+                "requirements": {
+                    "type": "Student",
+                    "parameters": {
+                        "type": 0,
+                        "studyField": "Electrical engineering",
+                        "academicDegree": 2
+                    }
+                },
+                "recommended": false
+            }
+        ]
+    });
+
+    const [newPositions, setNewPositions] = useState([]);
 
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
@@ -43,13 +99,12 @@ const Publish = () => {
         setPosition({ ...position, requirements: hat });
     }
 
-    function removePosition(positionToRemove) {
-        let filteredPositions = project.positions.filter(p => p != positionToRemove);
-        console.log(filteredPositions)
-        setProject({ ...project, positions: filteredPositions });
+    function removeNewPosition(positionToRemove) {
+        let filteredPositions = newPositions.filter(p => p != positionToRemove);
+        setNewPositions(filteredPositions);
     }
 
-    function onPublishProject() {
+    function onAddPositions() {
         (async () => {
             try {
                 {/* add validation */ }
@@ -57,27 +112,31 @@ const Publish = () => {
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await publish(project, token);
+                let result = await addPositions(project.id, newPositions, token);
 
                 if (result.outcome === successResult) {
-                    document.getElementById('user-action-success-toast').show();
-                    setTimeout(() => window.location.href = "/homepage", 1000);
+                    console.log("success");
+                    // document.getElementById('user-action-success-toast').show();
+                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
-                    document.getElementById('user-action-fail-toast').show();
-                    setTimeout(() => {
-                        document.getElementById('user-action-fail-toast').close();
-                    }, 3000);
+                    console.log("failure");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
                 } else if (result.outcome === errorResult) {
-                    document.getElementById('user-action-fail-toast').show();
-                    setTimeout(() => {
-                        document.getElementById('user-action-fail-toast').close();
-                    }, 3000);
+                    console.log("network error");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
                 }
             } catch (ex) {
-                document.getElementById('user-action-fail-toast').show();
-                setTimeout(() => {
-                    document.getElementById('user-action-fail-toast').close();
-                }, 3000);
+                console.log("error");
+                // document.getElementById('user-action-fail-toast').show();
+                // setTimeout(() => {
+                //     document.getElementById('user-action-fail-toast').close();
+                // }, 3000);
             }
         })();
     }
@@ -137,14 +196,43 @@ const Publish = () => {
 
     const right = (
         <div className='relative pb-32'>
-            <form
-                onChange={onPositionFormChange}>
+
+            <div className='mb-2'>
                 <div className="mb-8">
                     <SectionTitle title="Positions"></SectionTitle>
                     <p>Describe the profiles of people you're looking to find and collaborate with</p>
                 </div>
 
-                <div className='mb-8'>
+                <SubsectionTitle title="Existing positions"></SubsectionTitle>
+            </div>
+            {
+                project.positions.length == 0 &&
+                <p className='text-gray-500'>Currently there are no added positions.</p>
+            }
+            {
+                project.positions.length > 0 &&
+                <div className="mt-4">
+                    {
+                        project.positions.map(p => (
+                            <div key={Math.random() * 1000}>
+                                <div className='mb-2'>
+                                    {/*  <Position position={p}></Position> */}
+                                    <PositionCard
+                                        position={p}>
+                                    </PositionCard>
+                                </div>
+                            </div>)
+                        )
+                    }
+                </div>
+            }
+
+            <form
+                onChange={onPositionFormChange}>
+                <div className='mb-8 mt-16'>
+                    <div className='mb-2'>
+                        <SubsectionTitle title="Add a position"></SubsectionTitle>
+                    </div>
                     <label>
                         <p>Title*</p>
                         <input
@@ -193,41 +281,45 @@ const Publish = () => {
                     <NeutralButton
                         text="Add"
                         onClick={() => {
-                            setProject({ ...project, positions: [...project.positions, position] })
+                            setNewPositions([...newPositions, position])
                         }}>
                     </NeutralButton>
                 </div>
             </div>
 
-            <div className='mb-2'>
-                <SubsectionTitle title="Added positions"></SubsectionTitle>
+
+
+            <div className='mb-4 mt-12'>
+                <SubsectionTitle title="New positions"></SubsectionTitle>
             </div>
             {
-                project.positions.length == 0 &&
+                newPositions.length == 0 &&
                 <p className='text-gray-500'>Currently there are no added positions.</p>
             }
+
             {
-                project.positions.length > 0 &&
-                <div className="mt-4"> {
-                    project.positions.map(p => (
-                        <div key={Math.random() * 1000}>
-                            <div className='mb-2'>
-                                {/*  <Position position={p}></Position> */}
-                                <AddedPosition
-                                    position={p}
-                                    onRemoved={() => removePosition(p)}>
-                                </AddedPosition>
-                            </div>
-                        </div>)
-                    )
-                }
-                </div>
+                newPositions.map(p => (
+                    <div key={Math.random() * 1000}>
+                        <div className='mb-2'>
+                            {/*  <Position position={p}></Position> */}
+                            <AddedPosition
+                                position={p}
+                                onRemoved={() => removeNewPosition(p)}>
+                            </AddedPosition>
+                        </div>
+                    </div>)
+                )
             }
 
-            <div className='absolute bottom-2 right-0'>
+            <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
+                <NeutralButton
+                    text="Cancel"
+                    onClick={() => { }}>
+                </NeutralButton>
+
                 <PrimaryButton
-                    text="Publish"
-                    onClick={onPublishProject}>
+                    text="Update positions"
+                    onClick={onAddPositions}>
                 </PrimaryButton>
             </div>
         </div>
@@ -235,12 +327,12 @@ const Publish = () => {
 
     return (
         <DoubleColumnLayout
-            title="Publish a project"
-            description="Describe the project or an idea you're working on, let the world know about it and find your people."
+            title="Edit project"
+            description=""
             left={left}
             right={right}>
         </DoubleColumnLayout>
     );
 }
 
-export default Publish
+export default EditProject
