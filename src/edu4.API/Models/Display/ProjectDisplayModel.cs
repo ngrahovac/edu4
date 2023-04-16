@@ -10,6 +10,7 @@ public class ProjectDisplayModel
     public string Title { get; set; }
     public string Description { get; set; }
     public Guid AuthorId { get; set; }
+    public bool Authored { get; set; }
     public bool Recommended { get; set; }
     public IReadOnlyCollection<PositionDisplayModel> Positions { get; set; }
 
@@ -20,6 +21,7 @@ public class ProjectDisplayModel
         Title = project.Title;
         Description = project.Description;
         AuthorId = project.Author.Id;
+        Authored = project.IsAuthoredBy(requester);
         Recommended = project.IsRecommendedFor(requester);
         Positions = project.Positions.Select(p => new PositionDisplayModel(p, requester)).ToList();
     }
