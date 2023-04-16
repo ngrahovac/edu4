@@ -6,8 +6,13 @@ import SubsectionTitle from '../layout/SubsectionTitle';
 import { SectionTitle } from '../layout/SectionTitle';
 import PositionCard from '../comps/discover/PositionCard';
 import RecommendedPositionCard from '../comps/discover/RecommendedPositionCard';
+import Collaborators from '../comps/project/Collaborators';
+import Author from '../comps/project/Author';
+import Collaborator from '../comps/project/Collaborator';
 
 const Project = () => {
+
+    const avatar = "https://www.gravatar.com/avatar/93e9084aa289b7f1f5e4ab6716a56c3b?s=80";
 
     const [project, setProject] = useState({
         "id": "74c6895a-1fdd-4149-aeda-f3c71d3a07db",
@@ -65,6 +70,17 @@ const Project = () => {
         ]
     });
 
+    const [author, setAuthor] = useState({
+        name: "John Doe",
+    });
+
+    const [collaborators, setCollaborators] = useState([
+        {
+            name: "John Doe",
+            position: "Not much"
+        }
+    ]);
+
     return (
         <SingleColumnLayout
             title={project.title}
@@ -90,9 +106,31 @@ const Project = () => {
                     </ProjectDescriptor>
                 </div>
 
-                <div>
+                <div className='space-y-4'>
                     <SectionTitle title="Description"></SectionTitle>
                     <p>{project.description}</p>
+                </div>
+
+                <div className='space-y-4'>
+                    <SectionTitle title="Collaborators"></SectionTitle>
+                    <Collaborators>
+                        <Author
+                            avatar={avatar}
+                            name={author.name}
+                            onVisited={() => { }}>
+                        </Author>
+
+                        {
+                            collaborators.map(c => <>
+                            <Collaborator
+                                avatar={avatar}
+                                name={c.name}
+                                position={c.position}
+                                onVisited={() => { }}>
+                            </Collaborator>
+                            </>)
+                        }
+                    </Collaborators>
                 </div>
 
                 <div>
@@ -100,14 +138,14 @@ const Project = () => {
                     <div className='flex flex-col space-y-2 mt-4'>
                         {
                             project.positions.map(p => <>
-                        {
-                            !p.recommended &&
-                                <PositionCard position={p}></PositionCard>
-                        }
-                        {
-                            p.recommended &&
-                                <RecommendedPositionCard position={p}></RecommendedPositionCard>
-                        }
+                                {
+                                    !p.recommended &&
+                                    <PositionCard position={p}></PositionCard>
+                                }
+                                {
+                                    p.recommended &&
+                                    <RecommendedPositionCard position={p}></RecommendedPositionCard>
+                                }
                             </>)
                         }
                     </div>
