@@ -65,4 +65,24 @@ public class ProjectsService
 
         return discoveredProjects;
     }
+
+    public async Task AddPositionAsync(
+        Guid projectId,
+        Guid requesterId,
+        string positionName,
+        string positionDescription,
+        HatDTO positionRequirements)
+    {
+        var project = await _projects.GetByIdAsync(projectId) ??
+            throw new InvalidOperationException("The project with the given Id does not exist");
+
+        if (project.Author.Id != requesterId)
+        {
+            throw new InvalidOperationException("The requester doesn't have permission to update the project");
+        }
+
+        project.AddPosition(positionName, positionDescription, HatDTO.ToHat(positionRequirements));
+
+        await _projects.UpdateAsync(project);
+    }
 }

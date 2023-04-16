@@ -13,4 +13,5 @@ public interface IProjectsRepository
         string? keyword,
         ProjectsSortOption sortOption,
         Hat? usersHat);
+    public Task UpdateAsync(Project project);
 }
