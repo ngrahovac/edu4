@@ -85,4 +85,19 @@ public class ProjectsService
 
         await _projects.UpdateAsync(project);
     }
+
+    public async Task UpdateDetailsAsync(Guid projectId, Guid requesterId, string title, string description)
+    {
+        var project = await _projects.GetByIdAsync(projectId) ??
+            throw new InvalidOperationException("The project with the given Id does not exist");
+
+        if (project.Author.Id != requesterId)
+        {
+            throw new InvalidCastException("The requester doesn't have permission to update the project");
+        }
+
+        project.UpdateDetails(title, description);
+
+        await _projects.UpdateAsync(project);
+    }
 }

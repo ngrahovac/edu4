@@ -50,4 +50,10 @@ public class Project : AbstractAggregateRoot
         var position = new Position(name, description, requirements);
         _positions.Add(position);
     }
+
+    public void UpdateDetails(string title, string description)
+    {
+        Title = title;
+        Description = description;
+    }
 }

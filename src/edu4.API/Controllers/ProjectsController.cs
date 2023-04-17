@@ -84,4 +84,21 @@ public class ProjectsController : ControllerBase
 
         return Ok();
     }
+
+
+    [HttpPut("{projectId}/details")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult> UpdateDetailsAsync(Guid projectId, string title, string description)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _users.GetUserIdFromAccountId(requesterAccountId);
+
+        await _projects.UpdateDetailsAsync(
+            projectId,
+            requesterId,
+            title,
+            description);
+
+        return Ok();
+    }
 }
