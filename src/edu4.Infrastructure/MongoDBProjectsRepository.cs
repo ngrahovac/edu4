@@ -192,4 +192,9 @@ public class MongoDBProjectsRepository : IProjectsRepository
 
         await _projectsCollection.UpdateOneAsync(p => p.Id == project.Id, updateFilter);
     }
+
+    public async Task DeleteAsync(Guid projectId)
+    {
+        await _projectsCollection.DeleteOneAsync(p => p.Id == projectId);
+    }
 }

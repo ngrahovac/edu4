@@ -14,4 +14,5 @@ public interface IProjectsRepository
         ProjectsSortOption sortOption,
         Hat? usersHat);
     public Task UpdateAsync(Project project);
+    public Task DeleteAsync(Guid projectId);
 }

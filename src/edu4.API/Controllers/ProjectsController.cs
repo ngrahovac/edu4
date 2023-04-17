@@ -101,4 +101,17 @@ public class ProjectsController : ControllerBase
 
         return Ok();
     }
+
+
+    [HttpDelete("{projectId}")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult> RemoveAsync(Guid projectId)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _users.GetUserIdFromAccountId(requesterAccountId);
+
+        await _projects.RemoveAsync(projectId, requesterId);
+
+        return Ok();
+    }
 }

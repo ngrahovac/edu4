@@ -100,4 +100,17 @@ public class ProjectsService
 
         await _projects.UpdateAsync(project);
     }
+
+    public async Task RemoveAsync(Guid projectId, Guid requesterId)
+    {
+        var project = await _projects.GetByIdAsync(projectId) ??
+            throw new InvalidOperationException("The project with the given Id does not exist");
+
+        if (project.Author.Id != requesterId)
+        {
+            throw new InvalidOperationException("The requester doesn't have permission to update the project");
+        }
+
+        await _projects.DeleteAsync(projectId);
+    }
 }
