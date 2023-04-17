@@ -32,7 +32,7 @@ public record HatDTO(HatType Type, Dictionary<string, object> Parameters)
         var parameters = new Dictionary<string, object>();
         var properties = hat.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
-        foreach(var property in properties)
+        foreach (var property in properties)
         {
             parameters.Add(property.Name.ToCamelCase(), property.GetValue(hat)!);
         }
