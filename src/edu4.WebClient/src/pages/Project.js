@@ -181,23 +181,40 @@ const Project = () => {
                     </Collaborators>
                 </div>
 
-                <div>
-                    <SectionTitle title="Open positions"></SectionTitle>
-                    <div className='flex flex-col space-y-2 mt-4'>
-                        {
-                            project.positions.map(p => <>
-                                {
-                                    !p.recommended &&
+                {
+                    project.authored &&
+                    <div>
+                        <SectionTitle title="Positions"></SectionTitle>
+                        <div className='flex flex-col space-y-2 mt-4'>
+                            {
+                                project.positions.map(p => <>
                                     <PositionCard position={p}></PositionCard>
-                                }
-                                {
-                                    p.recommended &&
-                                    <RecommendedPositionCard position={p}></RecommendedPositionCard>
-                                }
-                            </>)
-                        }
+                                </>)
+                            }
+                        </div>
                     </div>
-                </div>
+                }
+
+                {
+                    !project.authored &&
+                    <div>
+                        <SectionTitle title="Open positions"></SectionTitle>
+                        <div className='flex flex-col space-y-2 mt-4'>
+                            {
+                                project.positions.map(p => <>
+                                    {
+                                        !p.recommended &&
+                                        <PositionCard position={p}></PositionCard>
+                                    }
+                                    {
+                                        p.recommended &&
+                                        <RecommendedPositionCard position={p}></RecommendedPositionCard>
+                                    }
+                                </>)
+                            }
+                        </div>
+                    </div>
+                }
 
                 {
                     project.authored &&
