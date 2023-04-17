@@ -1,4 +1,4 @@
-import { getAsync, postAsync} from './ApiService'
+import { getAsync, postAsync, putAsync} from './ApiService'
 import {
     successResult,
     failureResult,
@@ -40,6 +40,35 @@ async function addPositions(projectId, positions, accessToken) {
             return {
                 outcome: successResult,
                 message: "Positions added successfully!"
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
+async function updateDetails(projectId, title, description, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+        var response = await putAsync(
+            `${apiRootUri}/projects/${projectId}/details`, 
+            {title: title, description: description}, 
+            accessToken);
+
+        if (response.ok) {
+            return {
+                outcome: successResult,
+                message: "Project details updated successfully!"
             };
         } else {
             var responseMessage = await response.text();
@@ -111,4 +140,9 @@ async function discover(keyword, sort, hatType, accessToken) {
     }
 }
 
-export { publish, addPositions, discover }
+export { 
+    publish, 
+    addPositions, 
+    discover, 
+    updateDetails
+}

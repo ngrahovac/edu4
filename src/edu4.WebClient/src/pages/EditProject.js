@@ -7,7 +7,7 @@ import { SectionTitle } from '../layout/SectionTitle'
 import SubsectionTitle from '../layout/SubsectionTitle';
 import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
-import { addPositions } from '../services/ProjectsService';
+import { addPositions, updateDetails } from '../services/ProjectsService';
 import {
     successResult,
     failureResult,
@@ -141,8 +141,45 @@ const EditProject = () => {
         })();
     }
 
+    function onUpdateDetails() {
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenWithPopup({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await updateDetails(project.id, project.title, project.description, token);
+
+                if (result.outcome === successResult) {
+                    console.log("success");
+                    // document.getElementById('user-action-success-toast').show();
+                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                } else if (result.outcome === failureResult) {
+                    console.log("failure");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                } else if (result.outcome === errorResult) {
+                    console.log("network error");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                }
+            } catch (ex) {
+                console.log("error");
+                // document.getElementById('user-action-fail-toast').show();
+                // setTimeout(() => {
+                //     document.getElementById('user-action-fail-toast').close();
+                // }, 3000);
+            }
+        })();
+    }
+
     const left = (
-        <>
+        <div className='relative pb-32'>
             <div className='mb-12'>
                 <SectionTitle title="Basic info"></SectionTitle>
             </div>
@@ -191,12 +228,23 @@ const EditProject = () => {
                     </label>
                 </div>
             </form>
-        </>
+
+            <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
+                <NeutralButton
+                    text="Cancel"
+                    onClick={() => { }}>
+                </NeutralButton>
+
+                <PrimaryButton
+                    text="Update details"
+                    onClick={onUpdateDetails}>
+                </PrimaryButton>
+            </div>
+        </div>
     );
 
     const right = (
         <div className='relative pb-32'>
-
             <div className='mb-2'>
                 <div className="mb-8">
                     <SectionTitle title="Positions"></SectionTitle>

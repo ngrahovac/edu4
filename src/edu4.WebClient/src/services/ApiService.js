@@ -12,7 +12,6 @@ async function getAsync(resourceUri, accessToken) {
     return response;
 }
 
-
 async function postAsync(resourceUri, payload, accessToken) {
     const params = {
         method: "POST",
@@ -27,6 +26,20 @@ async function postAsync(resourceUri, payload, accessToken) {
     return response;
 }
 
+async function putAsync(resourceUri, payload, accessToken) {
+    const params = {
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    };
+
+    var response = await fetch(resourceUri, params);
+    return response;
+}
 
 
-export { getAsync, postAsync };
+
+export { getAsync, postAsync, putAsync };
