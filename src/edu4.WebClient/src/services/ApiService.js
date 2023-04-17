@@ -40,6 +40,19 @@ async function putAsync(resourceUri, payload, accessToken) {
     return response;
 }
 
+async function deleteAsync(resourceUri, accessToken) {
+    const params = {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+        }
+    };
+
+    var response = await fetch(resourceUri, params);
+    return response;
+}
 
 
-export { getAsync, postAsync, putAsync };
+
+export { getAsync, postAsync, putAsync, deleteAsync };
