@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
 import ProjectDescriptor from '../comps/discover/ProjectDescriptor';
-import RecommendedFlair from '../comps/discover/RecommendedFlair';
-import SubsectionTitle from '../layout/SubsectionTitle';
 import { SectionTitle } from '../layout/SectionTitle';
 import PositionCard from '../comps/discover/PositionCard';
 import RecommendedPositionCard from '../comps/discover/RecommendedPositionCard';
@@ -134,7 +132,8 @@ const Project = () => {
             title={project.title}
             description="">
             <div className='flex flex-col space-y-16'>
-                <div className='flex flex-row flex-wrap space-x-6 mb-2'>
+                {/* project descriptors */}
+                <div className='flex flex-row flex-wrap space-x-6 absolute top-40'>
                     <ProjectDescriptor
                         value={project.authorId.substring(0, 10)}
                         icon=
@@ -154,11 +153,13 @@ const Project = () => {
                     </ProjectDescriptor>
                 </div>
 
-                <div className='space-y-4'>
+                {/* description */}
+                <div className='space-y-1'>
                     <SectionTitle title="Description"></SectionTitle>
                     <p>{project.description}</p>
                 </div>
 
+                {/* collaborators */}
                 <div className='space-y-4'>
                     <SectionTitle title="Collaborators"></SectionTitle>
                     <Collaborators>
@@ -181,44 +182,48 @@ const Project = () => {
                     </Collaborators>
                 </div>
 
-                {
-                    project.authored &&
-                    <div>
-                        <SectionTitle title="Positions"></SectionTitle>
-                        <div className='flex flex-col space-y-2 mt-4'>
-                            {
-                                project.positions.map(p => <>
-                                    <PositionCard position={p}></PositionCard>
-                                </>)
-                            }
-                        </div>
-                    </div>
-                }
-
-                {
-                    !project.authored &&
-                    <div>
-                        <SectionTitle title="Open positions"></SectionTitle>
-                        <div className='flex flex-col space-y-2 mt-4'>
-                            {
-                                project.positions.map(p => <>
-                                    {
-                                        !p.recommended &&
+                {/* positions */}
+                <div className='mt-4'>
+                    {
+                        project.authored &&
+                        <div>
+                            <SectionTitle title="Positions"></SectionTitle>
+                            <div className='flex flex-col space-y-2 mt-4'>
+                                {
+                                    project.positions.map(p => <>
                                         <PositionCard position={p}></PositionCard>
-                                    }
-                                    {
-                                        p.recommended &&
-                                        <RecommendedPositionCard position={p}></RecommendedPositionCard>
-                                    }
-                                </>)
-                            }
+                                    </>)
+                                }
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
+
+                    {
+                        !project.authored &&
+                        <div>
+                            <SectionTitle title="Open positions"></SectionTitle>
+                            <div className='flex flex-col space-y-2 mt-4'>
+                                {
+                                    project.positions.map(p => <>
+                                        {
+                                            !p.recommended &&
+                                            <PositionCard position={p}></PositionCard>
+                                        }
+                                        {
+                                            p.recommended &&
+                                            <RecommendedPositionCard position={p}></RecommendedPositionCard>
+                                        }
+                                    </>)
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
 
                 {
                     project.authored &&
-                    <div className='absolute top-0 right-0 flex flex-row space-x-8'>
+                    <div className='absolute top-8 right-0 flex flex-row space-x-8'>
                         <BorderlessButtonWithIcon
                             text="Edit"
                             icon={
