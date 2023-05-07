@@ -180,8 +180,21 @@ public class MongoDBProjectsRepository : IProjectsRepository
         return projectFilter;
     }
 
-
-
     public Task AddAsync(Project project)
         => _projectsCollection.InsertOneAsync(project);
+
+    public async Task UpdateAsync(Project project)
+    {
+        var updateFilter = Builders<Project>.Update
+            .Set(p => p.Title, project.Title)
+            .Set(p => p.Description, project.Description)
+            .Set(p => p.Positions, project.Positions);
+
+        await _projectsCollection.UpdateOneAsync(p => p.Id == project.Id, updateFilter);
+    }
+
+    public async Task DeleteAsync(Guid projectId)
+    {
+        await _projectsCollection.DeleteOneAsync(p => p.Id == projectId);
+    }
 }

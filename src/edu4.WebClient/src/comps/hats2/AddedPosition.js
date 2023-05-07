@@ -1,5 +1,5 @@
 import React from 'react'
-import Position from './Position'
+import PositionCard from '../discover/PositionCard';
 
 const AddedPosition = (props) => {
     const {
@@ -17,8 +17,7 @@ const AddedPosition = (props) => {
                 </svg>
             </div>
 
-            <Position position={position}>
-            </Position>
+            <PositionCard position={position}></PositionCard>
         </div>
     )
 }

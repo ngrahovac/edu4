@@ -63,4 +63,55 @@ public class ProjectsController : ControllerBase
         return projects.Select(p => new ProjectDisplayModel(p, user))
             .ToList();
     }
+
+
+    [HttpPost("{projectId}/positions")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult> AddPositionsAsync(Guid projectId, IReadOnlyList<PositionInputModel> positions)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _users.GetUserIdFromAccountId(requesterAccountId);
+
+        foreach (var positionModel in positions)
+        {
+            await _projects.AddPositionAsync(
+                projectId,
+                requesterId,
+                positionModel.Name,
+                positionModel.Description,
+                new HatDTO(positionModel.Requirements.Type, positionModel.Requirements.Parameters));
+        }
+
+        return Ok();
+    }
+
+
+    [HttpPut("{projectId}/details")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult> UpdateDetailsAsync(Guid projectId, string title, string description)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _users.GetUserIdFromAccountId(requesterAccountId);
+
+        await _projects.UpdateDetailsAsync(
+            projectId,
+            requesterId,
+            title,
+            description);
+
+        return Ok();
+    }
+
+
+    [HttpDelete("{projectId}")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult> RemoveAsync(Guid projectId)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _users.GetUserIdFromAccountId(requesterAccountId);
+
+        await _projects.RemoveAsync(projectId, requesterId);
+
+        return Ok();
+    }
 }

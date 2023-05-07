@@ -95,6 +95,7 @@ const Publish = () => {
                         <input
                             type="text"
                             name="title"
+                            value={project.title}
                             className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
                     </label>
                 </div>
@@ -106,6 +107,7 @@ const Publish = () => {
                             rows={5}
                             maxLength={1000}
                             name="description"
+                            value={project.description}
                             className="resize-y mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></textarea>
                     </label>
                 </div>
@@ -148,6 +150,7 @@ const Publish = () => {
                         <input
                             type="text"
                             name="name"
+                            value={position.name}
                             placeholder='e.g. .NET Backend Developer'
                             className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
                     </label>
@@ -160,6 +163,7 @@ const Publish = () => {
                             name="description"
                             rows={5}
                             maxLength={1000}
+                            value={position.description}
                             className="resize-y mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></textarea>
                     </label>
                 </div>
@@ -169,6 +173,7 @@ const Publish = () => {
                         <p>Type*</p>
                         <select
                             name="positionType"
+                            value={selectedPositionType}
                             className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
                             <option name="Student">Student</option>
                             <option name="Academic">Academic</option>

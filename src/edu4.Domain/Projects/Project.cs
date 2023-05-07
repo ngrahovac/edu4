@@ -33,8 +33,27 @@ public class Project : AbstractAggregateRoot
         _positions = positions.ToList();
     }
 
-
     public bool IsRecommendedFor(User user) =>
         user.Id != Author.Id &&
         Positions.Any(p => user.Hats.Any(h => h.Fits(p.Requirements)));
+
+    public bool IsAuthoredBy(User user) =>
+        user.Id == Author.Id;
+
+    public void AddPosition(string name, string description, Hat requirements)
+    {
+        if (Positions.Any(p => p.Name.Equals(name, StringComparison.Ordinal) && p.Requirements.Equals(requirements)))
+        {
+            throw new InvalidOperationException("A project cannot have two positions with the same name and requirements");
+        }
+
+        var position = new Position(name, description, requirements);
+        _positions.Add(position);
+    }
+
+    public void UpdateDetails(string title, string description)
+    {
+        Title = title;
+        Description = description;
+    }
 }

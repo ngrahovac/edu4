@@ -75,6 +75,180 @@ public class ProjectsServiceTests
     }
 
     [Fact]
+    public async Task Project_author_cant_add_a_new_position_to_an_existing_project_with_the_same_name_and_requirements_as_an_existing_position()
+    {
+        //  ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var existingPositionName = "test";
+        var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
+
+        var existingProject = await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName(existingPositionName)
+                .WithRequirements(existingPositionRequirements)
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var addingNewPosition = async () => await sut.AddPositionAsync(
+            existingProject.Id,
+            existingProject.Author.Id,
+            existingPositionName,
+            "Position description",
+            HatDTO.FromHat(existingPositionRequirements));
+
+        // ASSERT
+        await addingNewPosition.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task Project_author_can_add_a_new_position_to_an_existing_project_with_name_different_from_all_existing_positions()
+    {
+        //  ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var existingPositionName = "test";
+        var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
+
+        var existingProject = await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName(existingPositionName)
+                .WithRequirements(existingPositionRequirements)
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var addingNewPosition = async () => await sut.AddPositionAsync(
+            existingProject.Id,
+            existingProject.Author.Id,
+            "test2",
+            "Position description",
+            HatDTO.FromHat(existingPositionRequirements));
+
+        // ASSERT
+        await addingNewPosition.Should().NotThrowAsync<InvalidOperationException>();
+
+        var retrievedProject = await projects.GetByIdAsync(existingProject.Id);
+        retrievedProject.Positions.Count.Should().Be(existingProject.Positions.Count + 1);
+    }
+
+    [Fact]
+    public async Task Project_author_can_add_a_new_position_to_an_existing_project_with_requirements_different_from_all_existing_positions()
+    {
+        //  ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var existingPositionName = "test";
+        var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
+
+        var existingProject = await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName(existingPositionName)
+                .WithRequirements(existingPositionRequirements)
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var addingNewPosition = async () => await sut.AddPositionAsync(
+            existingProject.Id,
+            existingProject.Author.Id,
+            existingPositionName,
+            "Position description",
+            HatDTO.FromHat(new AcademicHat("Computer Science")));
+
+        // ASSERT
+        await addingNewPosition.Should().NotThrowAsync<InvalidOperationException>();
+
+        var retrievedProject = await projects.GetByIdAsync(existingProject.Id);
+        retrievedProject.Positions.Count.Should().Be(existingProject.Positions.Count + 1);
+    }
+
+    [Fact]
+    public async Task Only_the_project_author_can_add_positions_to_an_existing_project()
+    {
+        //  ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var existingPositionName = "test";
+        var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
+
+        var existingProject = await new ProjectFactory().WithPositions(
+            new List<Position>()
+            {
+                new PositionFactory().WithName(existingPositionName)
+                .WithRequirements(existingPositionRequirements)
+                .Build()
+            })
+            .SeedAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var users = new MongoDbUsersRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            users,
+            new NullLogger<ProjectsService>());
+
+        // ACT
+        var addingNewPosition = async () => await sut.AddPositionAsync(
+            existingProject.Id,
+            Guid.NewGuid(),
+            existingPositionName,
+            "Position description",
+            HatDTO.FromHat(new AcademicHat("Computer Science")));
+
+        // ASSERT
+        await addingNewPosition.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
     public async void Discovering_projects_by_keyword_should_include_projects_with_the_keyword_in_title_only()
     {
         // ARRANGE
