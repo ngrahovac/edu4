@@ -6,7 +6,7 @@ import SearchFilters from '../comps/discover/SearchFilters';
 import { useState, useEffect } from 'react';
 import ProjectCard from '../comps/discover/ProjectCard';
 import RecommendedProjectCard from '../comps/discover/RecommendedProjectCard';
-import SearchRefinements from '../comps/discover/SearchRefinements';
+import DiscoveryRefinementSidebar from '../comps/discover/DiscoveryRefinementSidebar';
 import { discover } from '../services/ProjectsService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -20,7 +20,7 @@ const Discover = () => {
     const [keyword, setKeyword] = useState(undefined);
     const [sort, setSort] = useState(undefined);
     const [hat, setHat] = useState(undefined);
-    const [searchRefinementsVisibility, setSearchRefinementsVisibility] = useState(false);
+    const [discoveryRefinementSidebarVisibility, setDiscoveryRefinementSidebarVisibility] = useState(false);
 
     const { getAccessTokenWithPopup, getAccessTokenSilently } = useAuth0();
 
@@ -45,8 +45,7 @@ const Discover = () => {
         })();
     }, [])
 
-
-    function onSearchRefinementsChanged() {
+    function onDiscoveryRefinementChanged() {
         (async () => {
             try {
                 {/* add validation */ }
@@ -86,22 +85,21 @@ const Discover = () => {
     }
 
     useEffect(() => {
-        onSearchRefinementsChanged();
+        onDiscoveryRefinementChanged();
     }, [keyword, sort, hat])
 
-
-    function updateProjectDiscoveryParameters(keyword, sort, hat) {
+    function updateDiscoveryRefinementParams(keyword, sort, hat) {
         setKeyword(keyword);
         setHat(hat);
         setSort(sort);
     }
 
-    function showSearchRefinements() {
-        setSearchRefinementsVisibility(true);
+    function showDiscoveryRefinementSidebar() {
+        setDiscoveryRefinementSidebarVisibility(true);
     }
 
-    function hideSearchRefinements() {
-        setSearchRefinementsVisibility(false);
+    function hideDiscoveryRefinementSidebar() {
+        setDiscoveryRefinementSidebarVisibility(false);
     }
 
     return (
@@ -109,8 +107,9 @@ const Discover = () => {
             title="Discover projects"
             description="Something encouraging here">
 
-            <div className='mt-8 flex flex-col'>
-                <RefineButton onClick={showSearchRefinements}></RefineButton>
+            {/* refine button and the current refinement params */}
+            <div className='flex flex-col'>
+                <RefineButton onClick={showDiscoveryRefinementSidebar}></RefineButton>
 
                 {/* filters */}
                 <SearchFilters>
@@ -138,46 +137,41 @@ const Discover = () => {
                 </SearchFilters>
             </div>
 
-            {
-                projects.length > 0 &&
-                <div className='mt-16 flex flex-col space-y-8'>
-                    {
-                        projects.map(p => <>
-                            {
-                                p.recommended &&
-                                <div className=''>
-                                    <RecommendedProjectCard project={p}></RecommendedProjectCard>
-                                </div>
-                            }
-                            {
-                                !p.recommended &&
-                                <div className=''>
-                                    <ProjectCard project={p}></ProjectCard>
-                                </div>
-                            }
-                        </>)
-                    }
-                </div>
-            }
+            { /* discovery results */}
+            <div className='mt-16'>
+                {
+                    projects.length > 0 &&
+                    <div className='flex flex-col space-y-8'>
+                        {
+                            projects.map(p => <>
+                                {
+                                    p.recommended ?
+                                        <RecommendedProjectCard project={p}></RecommendedProjectCard> :
+                                        <ProjectCard project={p}></ProjectCard>
+                                }
+                            </>)
+                        }
+                    </div>
+                }
 
-            {
-                projects.length <= 0 &&
-                <div className='mt-16'>
+                {
+                    projects.length <= 0 &&
                     <p>There are currently no projects satisfying the criteria.</p>
-                </div>
-            }
+                }
+            </div>
 
+            { /* discovery refinement sidebar */}
             {
-                searchRefinementsVisibility &&
+                discoveryRefinementSidebarVisibility &&
                 <div className='fixed left-0 top-0'>
-                    <SearchRefinements
+                    <DiscoveryRefinementSidebar
                         keyword={keyword}
                         sort={sort}
                         hat={hat}
                         hats={hats}
-                        onModalClosed={hideSearchRefinements}
-                        onSearchRefinementsChanged={updateProjectDiscoveryParameters}>
-                    </SearchRefinements>
+                        onModalClosed={hideDiscoveryRefinementSidebar}
+                        onDiscoveryRefinementParamsChanged={updateDiscoveryRefinementParams}>
+                    </DiscoveryRefinementSidebar>
                 </div>
             }
         </SingleColumnLayout>
