@@ -16,10 +16,10 @@ namespace edu4.API.Controllers;
 public class ProjectsController : ControllerBase
 {
     private readonly ProjectsService _projects;
-    private readonly UsersService _users;
+    private readonly ContributorsService _users;
     private readonly IAccountIdExtractionService _accountIdExtractionService;
 
-    public ProjectsController(ProjectsService projects, UsersService users, IAccountIdExtractionService accountIdExtractionService)
+    public ProjectsController(ProjectsService projects, ContributorsService users, IAccountIdExtractionService accountIdExtractionService)
     {
         _projects = projects;
         _users = users;

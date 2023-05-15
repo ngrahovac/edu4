@@ -12,10 +12,10 @@ namespace edu4.API.Controllers;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly UsersService _users;
+    private readonly ContributorsService _users;
     private readonly IAccountIdExtractionService _accountIdExtractionService;
 
-    public UsersController(UsersService users, IAccountIdExtractionService accountIdExtractionService)
+    public UsersController(ContributorsService users, IAccountIdExtractionService accountIdExtractionService)
     {
         _users = users;
         _accountIdExtractionService = accountIdExtractionService;

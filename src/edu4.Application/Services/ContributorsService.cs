@@ -5,16 +5,16 @@ using Microsoft.Extensions.Logging;
 
 namespace edu4.Application.Services;
 
-public class UsersService
+public class ContributorsService
 {
     private readonly IUsersRepository _users;
     private readonly IAccountManagementService _accountManagement;
-    private readonly ILogger<UsersService> _logger;
+    private readonly ILogger<ContributorsService> _logger;
 
-    public UsersService(
+    public ContributorsService(
         IUsersRepository users,
         IAccountManagementService accountManagement,
-        ILogger<UsersService> logger)
+        ILogger<ContributorsService> logger)
     {
         _users = users;
         _accountManagement = accountManagement;

@@ -49,7 +49,7 @@ public class Auth0ManagementApiTests
         var users = new MongoDbUsersRepository(config);
         var accountManagement = new Auth0AccountManagementService(auth0ManagementApiHttpClient);
 
-        var sut = new UsersService(users, accountManagement, new NullLogger<UsersService>());
+        var sut = new ContributorsService(users, accountManagement, new NullLogger<ContributorsService>());
 
         // ACT
         await sut.SignUpAsync(

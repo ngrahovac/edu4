@@ -43,7 +43,7 @@ public static class DependencyInjectionExtensions
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<UsersService>();
+        services.AddScoped<ContributorsService>();
         services.AddScoped<ProjectsService>();
 
         return services;
