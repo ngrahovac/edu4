@@ -36,7 +36,7 @@ public class MongoDBSetupUtils
             cm.MapProperty(ah => ah.ResearchField);
         });
 
-        BsonClassMap.RegisterClassMap<User>(cm =>
+        BsonClassMap.RegisterClassMap<Contributor>(cm =>
         {
             cm.MapProperty(u => u.AccountId);
             cm.MapProperty(u => u.ContactEmail);
@@ -47,7 +47,7 @@ public class MongoDBSetupUtils
             // as a consequence, both _hats and Hats are mapped and a part of documents
             cm.MapProperty(u => u.Hats);
             cm.MapField("_hats").SetElementName("_hats");
-            cm.MapCreator(u => new User(
+            cm.MapCreator(u => new Contributor(
                 u.AccountId,
                 u.FullName,
                 u.ContactEmail,

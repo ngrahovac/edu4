@@ -14,7 +14,7 @@ public class ProjectDisplayModel
     public bool Recommended { get; set; }
     public IReadOnlyCollection<PositionDisplayModel> Positions { get; set; }
 
-    public ProjectDisplayModel(Project project, User requester)
+    public ProjectDisplayModel(Project project, Contributor requester)
     {
         Id = project.Id;
         DatePosted = project.DatePosted;

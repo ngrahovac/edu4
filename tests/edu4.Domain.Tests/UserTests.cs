@@ -14,7 +14,7 @@ public class UserTests
         var hat1 = new StudentHat("Computer Science", AcademicDegree.Masters);
         var hat2 = new AcademicHat("Computer Science");
 
-        var createUser = () => new User(
+        var createUser = () => new Contributor(
             "google-auth|0",
             "John Doe",
             "example@mail.com",
@@ -31,7 +31,7 @@ public class UserTests
         var hat1 = new StudentHat("Computer Science");
         var hat2 = new StudentHat("Computer Science");
 
-        var createUser = () => new User(
+        var createUser = () => new Contributor(
             "google-auth|0",
             "John Doe",
             "example@mail.com",

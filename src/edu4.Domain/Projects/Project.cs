@@ -33,11 +33,11 @@ public class Project : AbstractAggregateRoot
         _positions = positions.ToList();
     }
 
-    public bool IsRecommendedFor(User user) =>
+    public bool IsRecommendedFor(Contributor user) =>
         user.Id != Author.Id &&
         Positions.Any(p => user.Hats.Any(h => h.Fits(p.Requirements)));
 
-    public bool IsAuthoredBy(User user) =>
+    public bool IsAuthoredBy(Contributor user) =>
         user.Id == Author.Id;
 
     public void AddPosition(string name, string description, Hat requirements)

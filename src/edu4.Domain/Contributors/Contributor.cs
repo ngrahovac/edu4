@@ -1,7 +1,7 @@
 using edu4.Domain.Common;
 
 namespace edu4.Domain.Contributors;
-public class User : AbstractAggregateRoot
+public class Contributor : AbstractAggregateRoot
 {
     public string AccountId { get; }
 
@@ -14,7 +14,7 @@ public class User : AbstractAggregateRoot
     public IReadOnlyList<Hat> Hats => _hats.ToList();
 
 
-    public User(
+    public Contributor(
         string accountId,
         string fullName,
         string contactEmail,

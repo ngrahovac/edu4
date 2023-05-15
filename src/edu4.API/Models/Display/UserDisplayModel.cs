@@ -9,7 +9,7 @@ public class UserDisplayModel
     public string Email { get; set; }
     public IReadOnlyCollection<HatDisplayModel> Hats { get; set; }
 
-    public UserDisplayModel(User user)
+    public UserDisplayModel(Contributor user)
     {
         FullName = user.FullName;
         Email = user.ContactEmail;

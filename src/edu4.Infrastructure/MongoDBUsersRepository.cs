@@ -7,7 +7,7 @@ namespace edu4.Infrastructure;
 
 public class MongoDbUsersRepository : IUsersRepository
 {
-    private readonly IMongoCollection<User> _usersCollection;
+    private readonly IMongoCollection<Contributor> _usersCollection;
 
     public MongoDbUsersRepository(IConfiguration configuration)
     {
@@ -16,16 +16,16 @@ public class MongoDbUsersRepository : IUsersRepository
         var usersCollectionName = configuration["MongoDb:UsersCollectionName"];
 
         var mongoDb = new MongoClient(clusterConnectionString).GetDatabase(dbName);
-        _usersCollection = mongoDb.GetCollection<User>(usersCollectionName);
+        _usersCollection = mongoDb.GetCollection<Contributor>(usersCollectionName);
     }
 
-    public Task AddAsync(User user)
+    public Task AddAsync(Contributor user)
         => _usersCollection.InsertOneAsync(user);
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<Contributor?> GetByIdAsync(Guid id)
         => await _usersCollection.Find(u => u.Id == id).FirstOrDefaultAsync();
 
-    public async Task<User?> GetByAccountIdAsync(string accountId)
+    public async Task<Contributor?> GetByAccountIdAsync(string accountId)
         => await _usersCollection.Find(u => u.AccountId == accountId).FirstOrDefaultAsync();
 
 }

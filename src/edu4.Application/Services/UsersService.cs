@@ -29,13 +29,13 @@ public class UsersService
     /// <param name="hatData"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public async Task<User> SignUpAsync(
+    public async Task<Contributor> SignUpAsync(
         string accountId,
         string fullName,
         string contactEmail,
         List<HatDTO> hatData)
     {
-        var user = new User(
+        var user = new Contributor(
             accountId,
             fullName,
             contactEmail,
@@ -76,7 +76,7 @@ public class UsersService
         return user.Id;
     }
 
-    public async Task<User> GetByIdAsync(Guid id)
+    public async Task<Contributor> GetByIdAsync(Guid id)
     {
         var user = await _users.GetByIdAsync(id);
 

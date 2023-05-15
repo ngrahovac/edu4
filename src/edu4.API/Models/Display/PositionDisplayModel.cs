@@ -12,7 +12,7 @@ public class PositionDisplayModel
     public HatDisplayModel Requirements { get; set; }
     public bool Recommended { get; set; }
 
-    public PositionDisplayModel(Position position, User requester)
+    public PositionDisplayModel(Position position, Contributor requester)
     {
         Id = position.Id;
         DatePosted = position.DatePosted;

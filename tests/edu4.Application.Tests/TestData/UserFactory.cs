@@ -43,9 +43,9 @@ internal class UserFactory
         return this;
     }
 
-    public async Task<User> SeedAsync()
+    public async Task<Contributor> SeedAsync()
     {
-        var user = new User(
+        var user = new Contributor(
             _accountId,
             _fullName,
             _email,
