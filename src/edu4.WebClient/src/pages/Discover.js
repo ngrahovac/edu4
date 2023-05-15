@@ -108,7 +108,7 @@ const Discover = () => {
             description="Something encouraging here">
 
             {/* refine button and the current refinement params */}
-            <div className='flex flex-col'>
+            <div className='flex flex-col mt-16'>
                 <RefineButton onClick={showDiscoveryRefinementSidebar}></RefineButton>
 
                 {/* filters */}
