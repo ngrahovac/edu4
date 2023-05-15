@@ -4,7 +4,6 @@ using edu4.Application.Services;
 using edu4.Application.Tests.TestData;
 using edu4.Domain.Contributors;
 using edu4.Domain.Projects;
-using edu4.Domain.Users;
 using edu4.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;

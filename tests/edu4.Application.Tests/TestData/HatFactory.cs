@@ -1,5 +1,4 @@
 using edu4.Domain.Contributors;
-using edu4.Domain.Users;
 
 namespace edu4.Application.Tests.TestData;
 internal abstract class HatFactory
