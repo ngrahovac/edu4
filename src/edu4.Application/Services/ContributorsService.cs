@@ -7,12 +7,12 @@ namespace edu4.Application.Services;
 
 public class ContributorsService
 {
-    private readonly IUsersRepository _users;
+    private readonly IContributorsRepository _users;
     private readonly IAccountManagementService _accountManagement;
     private readonly ILogger<ContributorsService> _logger;
 
     public ContributorsService(
-        IUsersRepository users,
+        IContributorsRepository users,
         IAccountManagementService accountManagement,
         ILogger<ContributorsService> logger)
     {

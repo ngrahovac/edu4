@@ -8,12 +8,12 @@ namespace edu4.Application.Services;
 public class ProjectsService
 {
     private readonly IProjectsRepository _projects;
-    private readonly IUsersRepository _users;
+    private readonly IContributorsRepository _users;
     private readonly ILogger<ProjectsService> _logger;
 
     public ProjectsService(
         IProjectsRepository projects,
-        IUsersRepository users,
+        IContributorsRepository users,
         ILogger<ProjectsService> logger)
     {
         _projects = projects;

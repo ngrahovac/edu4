@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace edu4.Infrastructure;
 
-public class MongoDbUsersRepository : IUsersRepository
+public class MongoDbUsersRepository : IContributorsRepository
 {
     private readonly IMongoCollection<Contributor> _usersCollection;
 

@@ -10,7 +10,7 @@ internal class UserFactory
     private string _fullName = "John Doe";
     private string _email = "mail@example.com";
     private List<Hat> _hats = new();
-    private readonly IUsersRepository _users;
+    private readonly IContributorsRepository _users;
 
     public UserFactory()
     {

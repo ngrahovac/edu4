@@ -1,7 +1,7 @@
 using edu4.Domain.Contributors;
 
 namespace edu4.Application.Contracts;
-public interface IUsersRepository
+public interface IContributorsRepository
 {
     public Task AddAsync(Contributor user);
 

@@ -35,7 +35,7 @@ public static class DependencyInjectionExtensions
     {
         MongoDBSetupUtils.RegisterClassMaps();
 
-        services.AddScoped<IUsersRepository, MongoDbUsersRepository>();
+        services.AddScoped<IContributorsRepository, MongoDbUsersRepository>();
         services.AddScoped<IProjectsRepository, MongoDBProjectsRepository>();
 
         return services;
