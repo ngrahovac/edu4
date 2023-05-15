@@ -1,5 +1,5 @@
 using edu4.Domain.Common;
-using edu4.Domain.Users;
+using edu4.Domain.Contributors;
 
 namespace edu4.Domain.Projects;
 public class Position : AbstractEntity

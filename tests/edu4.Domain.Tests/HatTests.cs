@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using edu4.Domain.Users;
+using edu4.Domain.Contributors;
 using FluentAssertions;
 
 namespace edu4.Domain.Tests;

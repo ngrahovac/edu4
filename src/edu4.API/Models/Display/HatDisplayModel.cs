@@ -1,5 +1,5 @@
 using edu4.API.Utils;
-using edu4.Domain.Users;
+using edu4.Domain.Contributors;
 
 namespace edu4.API.Models.Display;
 

@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
 using edu4.Application.Models;
 using edu4.Application.Services;
-using edu4.Domain.Users;
+using edu4.Domain.Contributors;
 using edu4.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;

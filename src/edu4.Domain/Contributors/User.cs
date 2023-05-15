@@ -1,6 +1,6 @@
 using edu4.Domain.Common;
 
-namespace edu4.Domain.Users;
+namespace edu4.Domain.Contributors;
 public class User : AbstractAggregateRoot
 {
     public string AccountId { get; }

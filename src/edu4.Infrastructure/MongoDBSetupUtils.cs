@@ -3,8 +3,8 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.IdGenerators;
 using edu4.Domain.Common;
-using edu4.Domain.Users;
 using edu4.Domain.Projects;
+using edu4.Domain.Contributors;
 
 namespace edu4.Infrastructure;
 public class MongoDBSetupUtils

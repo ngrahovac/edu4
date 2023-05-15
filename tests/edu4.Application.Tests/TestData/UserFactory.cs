@@ -1,5 +1,5 @@
 using edu4.Application.Contracts;
-using edu4.Domain.Users;
+using edu4.Domain.Contributors;
 using edu4.Infrastructure;
 using Microsoft.Extensions.Configuration;
 

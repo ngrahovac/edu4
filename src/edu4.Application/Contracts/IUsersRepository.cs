@@ -1,4 +1,4 @@
-using edu4.Domain.Users;
+using edu4.Domain.Contributors;
 
 namespace edu4.Application.Contracts;
 public interface IUsersRepository

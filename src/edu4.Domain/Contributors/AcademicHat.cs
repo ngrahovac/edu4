@@ -1,4 +1,4 @@
-namespace edu4.Domain.Users;
+namespace edu4.Domain.Contributors;
 
 public class AcademicHat : Hat
 {

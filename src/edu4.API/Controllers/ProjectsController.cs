@@ -3,8 +3,8 @@ using edu4.API.Models.Input;
 using edu4.API.Utils;
 using edu4.Application.Models;
 using edu4.Application.Services;
+using edu4.Domain.Contributors;
 using edu4.Domain.Projects;
-using edu4.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

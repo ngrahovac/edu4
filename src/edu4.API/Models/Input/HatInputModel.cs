@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using edu4.Domain.Users;
+using edu4.Domain.Contributors;
 
 namespace edu4.API.Models.Input;
 

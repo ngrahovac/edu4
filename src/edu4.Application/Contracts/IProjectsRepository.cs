@@ -1,5 +1,5 @@
+using edu4.Domain.Contributors;
 using edu4.Domain.Projects;
-using edu4.Domain.Users;
 
 namespace edu4.Application.Contracts;
 
