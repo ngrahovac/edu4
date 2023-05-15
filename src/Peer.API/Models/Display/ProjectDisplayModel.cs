@@ -21,7 +21,7 @@ public class ProjectDisplayModel
         Title = project.Title;
         Description = project.Description;
         AuthorId = project.AuthorId;
-        Authored = project.IsAuthoredBy(requester);
+        Authored = project.WasPublishedBy(requester);
         Recommended = project.IsRecommendedFor(requester);
         Positions = project.Positions.Select(p => new PositionDisplayModel(p, requester)).ToList();
     }

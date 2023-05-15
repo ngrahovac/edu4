@@ -37,7 +37,7 @@ public class Project : AbstractAggregateRoot
         user.Id != AuthorId &&
         Positions.Any(p => user.Hats.Any(h => h.Fits(p.Requirements)));
 
-    public bool IsAuthoredBy(Contributor user) =>
+    public bool WasPublishedBy(Contributor user) =>
         user.Id == AuthorId;
 
     public void AddPosition(string name, string description, Hat requirements)
