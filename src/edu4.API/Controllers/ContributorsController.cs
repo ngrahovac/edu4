@@ -10,12 +10,12 @@ namespace edu4.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 [ApiController]
-public class UsersController : ControllerBase
+public class ContributorsController : ControllerBase
 {
     private readonly ContributorsService _contributors;
     private readonly IAccountIdExtractionService _accountIdExtractionService;
 
-    public UsersController(ContributorsService contributors, IAccountIdExtractionService accountIdExtractionService)
+    public ContributorsController(ContributorsService contributors, IAccountIdExtractionService accountIdExtractionService)
     {
         _contributors = contributors;
         _accountIdExtractionService = accountIdExtractionService;
