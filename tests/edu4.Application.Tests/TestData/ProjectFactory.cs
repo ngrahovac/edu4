@@ -50,7 +50,7 @@ internal class ProjectFactory
         var project = new Project(
             _title,
             _description,
-            new Author(_authorId),
+            _authorId,
             _positions);
 
         await _projects.AddAsync(project);

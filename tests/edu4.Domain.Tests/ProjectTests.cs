@@ -14,7 +14,7 @@ public class ProjectTests
             => _ = new Project(
                 string.Empty,
                 string.Empty,
-                new Author(Guid.NewGuid()),
+                Guid.NewGuid(),
                 new List<Position>());
 
         action.Should().Throw<InvalidOperationException>();

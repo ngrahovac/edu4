@@ -45,7 +45,7 @@ public class ProjectsService
         var project = new Project(
             title,
             description,
-            new Author(authorId),
+            authorId,
             positionData.Select(
                 p => new Position(p.Name, p.Description, HatDTO.ToHat(p.Requirements))).ToList());
 
@@ -76,7 +76,7 @@ public class ProjectsService
         var project = await _projects.GetByIdAsync(projectId) ??
             throw new InvalidOperationException("The project with the given Id does not exist");
 
-        if (project.Author.Id != requesterId)
+        if (project.AuthorId != requesterId)
         {
             throw new InvalidOperationException("The requester doesn't have permission to update the project");
         }
@@ -91,7 +91,7 @@ public class ProjectsService
         var project = await _projects.GetByIdAsync(projectId) ??
             throw new InvalidOperationException("The project with the given Id does not exist");
 
-        if (project.Author.Id != requesterId)
+        if (project.AuthorId != requesterId)
         {
             throw new InvalidCastException("The requester doesn't have permission to update the project");
         }
@@ -106,7 +106,7 @@ public class ProjectsService
         var project = await _projects.GetByIdAsync(projectId) ??
             throw new InvalidOperationException("The project with the given Id does not exist");
 
-        if (project.Author.Id != requesterId)
+        if (project.AuthorId != requesterId)
         {
             throw new InvalidOperationException("The requester doesn't have permission to update the project");
         }

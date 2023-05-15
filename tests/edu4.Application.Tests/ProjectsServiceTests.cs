@@ -70,7 +70,7 @@ public class ProjectsServiceTests
 
         retrievedProject.Title.Should().Be(title);
         retrievedProject.Description.Should().Be(description);
-        retrievedProject.Author.Should().Be(new Author(author.Id));
+        retrievedProject.AuthorId.Should().Be(author.Id);
         retrievedProject.Positions.Count.Should().Be(positions.Count);
     }
 
@@ -107,7 +107,7 @@ public class ProjectsServiceTests
         // ACT
         var addingNewPosition = async () => await sut.AddPositionAsync(
             existingProject.Id,
-            existingProject.Author.Id,
+            existingProject.AuthorId,
             existingPositionName,
             "Position description",
             HatDTO.FromHat(existingPositionRequirements));
@@ -149,7 +149,7 @@ public class ProjectsServiceTests
         // ACT
         var addingNewPosition = async () => await sut.AddPositionAsync(
             existingProject.Id,
-            existingProject.Author.Id,
+            existingProject.AuthorId,
             "test2",
             "Position description",
             HatDTO.FromHat(existingPositionRequirements));
@@ -194,7 +194,7 @@ public class ProjectsServiceTests
         // ACT
         var addingNewPosition = async () => await sut.AddPositionAsync(
             existingProject.Id,
-            existingProject.Author.Id,
+            existingProject.AuthorId,
             existingPositionName,
             "Position description",
             HatDTO.FromHat(new AcademicHat("Computer Science")));

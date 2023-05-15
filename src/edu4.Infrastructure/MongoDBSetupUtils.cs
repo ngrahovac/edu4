@@ -59,7 +59,7 @@ public class MongoDBSetupUtils
             cm.MapProperty(p => p.Title);
             cm.MapProperty(p => p.Description);
             cm.MapProperty(p => p.DatePosted);
-            cm.MapProperty(p => p.Author);
+            cm.MapProperty(p => p.AuthorId);
 
             // Mapping both for the creator map and not breaking encapsulation
             cm.MapProperty(p => p.Positions);
@@ -68,7 +68,7 @@ public class MongoDBSetupUtils
             cm.MapCreator(p => new Project(
                 p.Title,
                 p.Description,
-                p.Author,
+                p.AuthorId,
                 p.Positions.ToList()));
         });
 
