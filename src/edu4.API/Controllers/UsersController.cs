@@ -12,12 +12,12 @@ namespace edu4.API.Controllers;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly ContributorsService _users;
+    private readonly ContributorsService _contributors;
     private readonly IAccountIdExtractionService _accountIdExtractionService;
 
-    public UsersController(ContributorsService users, IAccountIdExtractionService accountIdExtractionService)
+    public UsersController(ContributorsService contributors, IAccountIdExtractionService accountIdExtractionService)
     {
-        _users = users;
+        _contributors = contributors;
         _accountIdExtractionService = accountIdExtractionService;
     }
 
@@ -26,9 +26,9 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserDisplayModel>> GetMeAsync()
     {
         var accountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
-        var userId = await _users.GetUserIdFromAccountId(accountId);
+        var userId = await _contributors.GetUserIdFromAccountId(accountId);
 
-        var user = await _users.GetByIdAsync(userId);
+        var user = await _contributors.GetByIdAsync(userId);
 
         return new UserDisplayModel(user);
     }
@@ -39,7 +39,7 @@ public class UsersController : ControllerBase
     {
         var accountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
 
-        await _users.SignUpAsync(
+        await _contributors.SignUpAsync(
                 accountId,
                 model.FullName!,
                 model.ContactEmail!,
