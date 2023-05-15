@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\edu4.Application\Peer.Application.csproj" />
-    <ProjectReference Include="..\edu4.Infrastructure\Peer.Infrastructure.csproj" />
+    <ProjectReference Include="..\Peer.Application\Peer.Application.csproj" />
+    <ProjectReference Include="..\Peer.Infrastructure\Peer.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
