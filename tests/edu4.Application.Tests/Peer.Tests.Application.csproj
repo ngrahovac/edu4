@@ -36,8 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\edu4.Application\edu4.Application.csproj" />
-    <ProjectReference Include="..\..\src\edu4.Infrastructure\edu4.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\edu4.Application\Peer.Application.csproj" />
+    <ProjectReference Include="..\..\src\edu4.Infrastructure\Peer.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

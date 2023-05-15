@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\edu4.Domain\edu4.Domain.csproj" />
+    <ProjectReference Include="..\edu4.Domain\Peer.Domain.csproj" />
   </ItemGroup>
 
 </Project>
