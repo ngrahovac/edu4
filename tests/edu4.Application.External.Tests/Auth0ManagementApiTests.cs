@@ -46,7 +46,7 @@ public class Auth0ManagementApiTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
         var accountManagement = new Auth0AccountManagementService(auth0ManagementApiHttpClient);
 
         var sut = new ContributorsService(users, accountManagement, new NullLogger<ContributorsService>());

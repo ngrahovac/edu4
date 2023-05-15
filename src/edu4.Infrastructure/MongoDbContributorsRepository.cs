@@ -5,11 +5,11 @@ using MongoDB.Driver;
 
 namespace edu4.Infrastructure;
 
-public class MongoDbUsersRepository : IContributorsRepository
+public class MongoDbContributorsRepository : IContributorsRepository
 {
     private readonly IMongoCollection<Contributor> _usersCollection;
 
-    public MongoDbUsersRepository(IConfiguration configuration)
+    public MongoDbContributorsRepository(IConfiguration configuration)
     {
         var clusterConnectionString = configuration["MongoDb:ClusterConnectionString"];
         var dbName = configuration["MongoDb:DbName"];

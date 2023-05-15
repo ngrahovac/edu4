@@ -38,7 +38,7 @@ public class ProjectsServiceTests
 
         var sut = new ProjectsService(
             projects,
-            new MongoDbUsersRepository(config),
+            new MongoDbContributorsRepository(config),
             new NullLogger<ProjectsService>());
 
         var positions = new List<PositionDTO>()
@@ -98,7 +98,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -140,7 +140,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -185,7 +185,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -230,7 +230,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -283,7 +283,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -336,7 +336,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -386,7 +386,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -436,7 +436,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -522,7 +522,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -593,7 +593,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -648,7 +648,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -704,7 +704,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -754,7 +754,7 @@ public class ProjectsServiceTests
              .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -816,7 +816,7 @@ public class ProjectsServiceTests
              .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -935,7 +935,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -1005,7 +1005,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -1177,7 +1177,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -1309,7 +1309,7 @@ public class ProjectsServiceTests
              .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -1386,7 +1386,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -1458,7 +1458,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -1533,7 +1533,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -1608,7 +1608,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,
@@ -1735,7 +1735,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
 
         var sut = new ProjectsService(
             projects,

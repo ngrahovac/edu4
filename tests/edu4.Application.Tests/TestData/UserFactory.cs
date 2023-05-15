@@ -17,7 +17,7 @@ internal class UserFactory
         var config = new ConfigurationBuilder().AddUserSecrets(typeof(UserFactory).Assembly)
             .Build();
 
-        _users = new MongoDbUsersRepository(config);
+        _users = new MongoDbContributorsRepository(config);
     }
     public UserFactory WithAccountId(string accountId)
     {

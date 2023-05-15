@@ -25,7 +25,7 @@ public class UsersServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
         var accountManagementMock = new Mock<IAccountManagementService>(MockBehavior.Strict);
         accountManagementMock.Setup(s => s.MarkUserSignedUpAsync(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
@@ -89,7 +89,7 @@ public class UsersServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var users = new MongoDbUsersRepository(config);
+        var users = new MongoDbContributorsRepository(config);
         var accountManagementMock = new Mock<IAccountManagementService>(MockBehavior.Strict);
         accountManagementMock.Setup(s => s.MarkUserSignedUpAsync(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
