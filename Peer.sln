@@ -23,11 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Application", "src\Pee
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Infrastructure", "src\Peer.Infrastructure\Peer.Infrastructure.csproj", "{F3394B9B-7A01-4A03-829B-884193A32CE0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Tests.Domain", "tests\Peer.Domain.Tests\Peer.Tests.Domain.csproj", "{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Tests.Domain", "tests\Peer.Tests.Domain\Peer.Tests.Domain.csproj", "{AF070A2E-89F7-4CF1-BDD4-A3CAAA19A8DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Tests.Application", "tests\Peer.Application.Tests\Peer.Tests.Application.csproj", "{FE9DDDCC-5150-4291-A46F-323BEC4C044B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Tests.Application", "tests\Peer.Tests.Application\Peer.Tests.Application.csproj", "{FE9DDDCC-5150-4291-A46F-323BEC4C044B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Tests.Application.External", "tests\Peer.Application.External.Tests\Peer.Tests.Application.External.csproj", "{342FAF8B-9C11-4569-A471-C12695154144}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peer.Tests.Application.External", "tests\Peer.Tests.Application.External\Peer.Tests.Application.External.csproj", "{342FAF8B-9C11-4569-A471-C12695154144}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
