@@ -1,6 +1,6 @@
-using edu4.Domain.Contributors;
+using Peer.Domain.Contributors;
 
-namespace edu4.Application.Contracts;
+namespace Peer.Application.Contracts;
 public interface IContributorsRepository
 {
     public Task AddAsync(Contributor user);

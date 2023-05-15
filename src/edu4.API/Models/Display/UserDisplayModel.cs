@@ -1,6 +1,6 @@
-using edu4.Domain.Contributors;
+using Peer.Domain.Contributors;
 
-namespace edu4.API.Models.Display;
+namespace Peer.API.Models.Display;
 
 #nullable disable
 public class UserDisplayModel

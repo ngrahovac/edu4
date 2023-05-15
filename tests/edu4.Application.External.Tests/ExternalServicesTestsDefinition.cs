@@ -1,4 +1,4 @@
-namespace edu4.Application.External.Tests;
+namespace Peer.Tests.Application.External;
 
 [CollectionDefinition("External services integration tests")]
 public class ExternalServicesTestsDefinition : ICollectionFixture<MongoDbClassMapRegistrationCollectionFixture>

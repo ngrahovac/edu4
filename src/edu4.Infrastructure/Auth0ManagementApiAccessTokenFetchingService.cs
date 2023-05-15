@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
 
-namespace edu4.Infrastructure;
+namespace Peer.Infrastructure;
 
 public class Auth0ManagementApiAccessTokenFetchingService
 {

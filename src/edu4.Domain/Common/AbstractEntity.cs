@@ -1,4 +1,4 @@
-namespace edu4.Domain.Common;
+namespace Peer.Domain.Common;
 
 public abstract class AbstractEntity
 {

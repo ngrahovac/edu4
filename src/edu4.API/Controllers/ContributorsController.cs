@@ -1,12 +1,12 @@
-using edu4.API.Models.Display;
-using edu4.API.Models.Input;
-using edu4.API.Utils;
-using edu4.Application.Models;
-using edu4.Application.Services;
+using Peer.API.Models.Display;
+using Peer.API.Models.Input;
+using Peer.API.Utils;
+using Peer.Application.Models;
+using Peer.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace edu4.API.Controllers;
+namespace Peer.API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 [ApiController]

@@ -1,4 +1,4 @@
-namespace edu4.API.Utils;
+namespace Peer.API.Utils;
 
 public interface IAccountIdExtractionService
 {

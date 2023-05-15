@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using edu4.Domain.Contributors;
+using Peer.Domain.Contributors;
 
-namespace edu4.API.Models.Input;
+namespace Peer.API.Models.Input;
 
 #nullable disable
 public class HatInputModel : IValidatableObject

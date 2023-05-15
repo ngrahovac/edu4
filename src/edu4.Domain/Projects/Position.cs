@@ -1,7 +1,7 @@
-using edu4.Domain.Common;
-using edu4.Domain.Contributors;
+using Peer.Domain.Common;
+using Peer.Domain.Contributors;
 
-namespace edu4.Domain.Projects;
+namespace Peer.Domain.Projects;
 public class Position : AbstractEntity
 {
     public DateTime DatePosted { get; }

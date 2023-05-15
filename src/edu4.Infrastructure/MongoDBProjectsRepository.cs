@@ -1,11 +1,11 @@
-using edu4.Application.Contracts;
-using edu4.Domain.Contributors;
-using edu4.Domain.Projects;
+using Peer.Application.Contracts;
+using Peer.Domain.Contributors;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Peer.Domain.Projects;
 
-namespace edu4.Infrastructure;
+namespace Peer.Infrastructure;
 public class MongoDBProjectsRepository : IProjectsRepository
 {
     private readonly IMongoCollection<Project> _projectsCollection;

@@ -1,9 +1,9 @@
-using edu4.Application.Utils;
-using edu4.Domain.Contributors;
+using Peer.Application.Utils;
+using Peer.Domain.Contributors;
 using System.Reflection;
 using System.Text.Json;
 
-namespace edu4.Application.Models;
+namespace Peer.Application.Models;
 
 public record HatDTO(HatType Type, Dictionary<string, object> Parameters)
 {

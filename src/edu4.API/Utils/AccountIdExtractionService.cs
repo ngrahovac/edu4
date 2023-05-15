@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace edu4.API.Utils;
+namespace Peer.API.Utils;
 
 public class AccountIdExtractionService : IAccountIdExtractionService
 {

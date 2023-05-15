@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using edu4.Application.Contracts;
+using Peer.Application.Contracts;
 
-namespace edu4.Infrastructure;
+namespace Peer.Infrastructure;
 public class Auth0AccountManagementService : IAccountManagementService
 {
     private readonly HttpClient _auth0ManagementApiClient;

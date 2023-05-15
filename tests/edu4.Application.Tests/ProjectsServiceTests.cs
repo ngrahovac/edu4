@@ -1,15 +1,15 @@
 using System.Diagnostics.CodeAnalysis;
-using edu4.Application.Models;
-using edu4.Application.Services;
-using edu4.Application.Tests.TestData;
-using edu4.Domain.Contributors;
-using edu4.Domain.Projects;
-using edu4.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using Peer.Application.Models;
+using Peer.Domain.Contributors;
+using Peer.Tests.Application.TestData;
+using Peer.Infrastructure;
+using Peer.Application.Services;
+using Peer.Domain.Projects;
 
-namespace edu4.Application.Tests;
+namespace Peer.Tests.Application;
 
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
 [Collection("App services integration tests")]

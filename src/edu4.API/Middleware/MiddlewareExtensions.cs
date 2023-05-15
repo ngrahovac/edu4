@@ -1,4 +1,4 @@
-namespace edu4.API.Middleware;
+namespace Peer.API.Middleware;
 
 public static class MiddlewareExtensions
 {

@@ -1,9 +1,9 @@
-using edu4.Application.Contracts;
-using edu4.Domain.Contributors;
-using edu4.Infrastructure;
+using Peer.Domain.Contributors;
+using Peer.Infrastructure;
 using Microsoft.Extensions.Configuration;
+using Peer.Application.Contracts;
 
-namespace edu4.Application.Tests.TestData;
+namespace Peer.Tests.Application.TestData;
 internal class UserFactory
 {
     private string _accountId = Guid.NewGuid().ToString();

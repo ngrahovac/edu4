@@ -1,4 +1,4 @@
-namespace edu4.Domain.Contributors;
+namespace Peer.Domain.Contributors;
 public enum AcademicDegree
 {
     Bachelors = 1,

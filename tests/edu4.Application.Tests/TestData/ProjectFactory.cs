@@ -1,9 +1,9 @@
-using edu4.Application.Contracts;
-using edu4.Domain.Projects;
-using edu4.Infrastructure;
+using Peer.Application.Contracts;
+using Peer.Infrastructure;
 using Microsoft.Extensions.Configuration;
+using Peer.Domain.Projects;
 
-namespace edu4.Application.Tests.TestData;
+namespace Peer.Tests.Application.TestData;
 
 internal class ProjectFactory
 {

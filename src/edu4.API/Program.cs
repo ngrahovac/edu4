@@ -1,9 +1,9 @@
 using System.Security.Claims;
-using edu4.API.DI;
-using edu4.API.Middleware;
-using edu4.API.Utils;
+using Peer.API.Middleware;
+using Peer.API.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Peer.API.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 

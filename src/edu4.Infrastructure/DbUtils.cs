@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace edu4.Infrastructure;
+namespace Peer.Infrastructure;
 public class DbUtils
 {
     private readonly IConfiguration _configuration;

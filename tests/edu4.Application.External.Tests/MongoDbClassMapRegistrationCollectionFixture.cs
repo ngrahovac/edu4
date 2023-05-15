@@ -1,6 +1,6 @@
-using edu4.Infrastructure;
+using Peer.Infrastructure;
 
-namespace edu4.Application.External.Tests;
+namespace Peer.Tests.Application.External;
 internal class MongoDbClassMapRegistrationCollectionFixture
 {
     public MongoDbClassMapRegistrationCollectionFixture() => MongoDBSetupUtils.RegisterClassMaps();

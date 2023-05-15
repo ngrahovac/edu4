@@ -1,9 +1,9 @@
-using edu4.Application.Contracts;
-using edu4.Application.Models;
-using edu4.Domain.Contributors;
+using Peer.Domain.Contributors;
 using Microsoft.Extensions.Logging;
+using Peer.Application.Contracts;
+using Peer.Application.Models;
 
-namespace edu4.Application.Services;
+namespace Peer.Application.Services;
 
 public class ContributorsService
 {

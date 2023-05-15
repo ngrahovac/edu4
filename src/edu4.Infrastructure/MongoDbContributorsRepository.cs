@@ -1,9 +1,9 @@
-using edu4.Application.Contracts;
-using edu4.Domain.Contributors;
+using Peer.Domain.Contributors;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
+using Peer.Application.Contracts;
 
-namespace edu4.Infrastructure;
+namespace Peer.Infrastructure;
 
 public class MongoDbContributorsRepository : IContributorsRepository
 {

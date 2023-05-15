@@ -1,4 +1,4 @@
-namespace edu4.Domain.Projects;
+namespace Peer.Domain.Projects;
 public enum ProjectsSortOption
 {
     Default,

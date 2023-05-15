@@ -1,6 +1,6 @@
-using edu4.Domain.Projects;
+using Peer.Domain.Projects;
 
-namespace edu4.Application.Models;
+namespace Peer.Application.Models;
 
 public record PositionDTO(string Name, string Description, HatDTO Requirements)
 {

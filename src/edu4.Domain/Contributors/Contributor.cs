@@ -1,6 +1,6 @@
-using edu4.Domain.Common;
+using Peer.Domain.Common;
 
-namespace edu4.Domain.Contributors;
+namespace Peer.Domain.Contributors;
 public class Contributor : AbstractAggregateRoot
 {
     public string AccountId { get; }

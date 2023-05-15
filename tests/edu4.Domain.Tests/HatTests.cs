@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using edu4.Domain.Contributors;
 using FluentAssertions;
+using Peer.Domain.Contributors;
 
-namespace edu4.Domain.Tests;
+namespace Peer.Domain.Tests;
 
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
 public class HatTests

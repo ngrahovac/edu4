@@ -1,8 +1,8 @@
-using edu4.Infrastructure;
-using edu4.Application.Contracts;
-using edu4.Application.Services;
+using Peer.Application.Contracts;
+using Peer.Application.Services;
+using Peer.Infrastructure;
 
-namespace edu4.API.DI;
+namespace Peer.API.DI;
 
 public static class DependencyInjectionExtensions
 {

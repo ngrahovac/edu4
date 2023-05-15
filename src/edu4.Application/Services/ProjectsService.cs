@@ -1,10 +1,10 @@
-using edu4.Application.Contracts;
-using edu4.Application.Models;
-using edu4.Domain.Contributors;
-using edu4.Domain.Projects;
+using Peer.Domain.Projects;
 using Microsoft.Extensions.Logging;
+using Peer.Application.Contracts;
+using Peer.Application.Models;
+using Peer.Domain.Contributors;
 
-namespace edu4.Application.Services;
+namespace Peer.Application.Services;
 public class ProjectsService
 {
     private readonly IProjectsRepository _projects;

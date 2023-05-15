@@ -1,4 +1,4 @@
-namespace edu4.Application.Utils;
+namespace Peer.Application.Utils;
 
 public static class StringExtensionMethods
 {

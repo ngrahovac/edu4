@@ -1,6 +1,6 @@
-using edu4.Domain.Contributors;
+using Peer.Domain.Contributors;
 
-namespace edu4.Application.Tests.TestData;
+namespace Peer.Tests.Application.TestData;
 internal abstract class HatFactory
 {
     public static HatFactory OfType(HatType type)

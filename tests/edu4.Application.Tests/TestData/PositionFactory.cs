@@ -1,7 +1,7 @@
-using edu4.Domain.Contributors;
-using edu4.Domain.Projects;
+using Peer.Domain.Contributors;
+using Peer.Domain.Projects;
 
-namespace edu4.Application.Tests.TestData;
+namespace Peer.Tests.Application.TestData;
 internal class PositionFactory
 {
     private string _name = "Test position name";

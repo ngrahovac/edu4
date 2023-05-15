@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace edu4.API.Models.Input;
+namespace Peer.API.Models.Input;
 
 public class UserSignupInputModel
 {

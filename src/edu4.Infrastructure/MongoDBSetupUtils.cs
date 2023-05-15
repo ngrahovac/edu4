@@ -2,11 +2,11 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.IdGenerators;
-using edu4.Domain.Common;
-using edu4.Domain.Projects;
-using edu4.Domain.Contributors;
+using Peer.Domain.Common;
+using Peer.Domain.Contributors;
+using Peer.Domain.Projects;
 
-namespace edu4.Infrastructure;
+namespace Peer.Infrastructure;
 public class MongoDBSetupUtils
 {
     public static void RegisterClassMaps()

@@ -1,14 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
-using edu4.Application.Models;
-using edu4.Application.Services;
-using edu4.Domain.Contributors;
-using edu4.Infrastructure;
+using Peer.Application.Services;
+using Peer.Domain.Contributors;
+using Peer.Infrastructure;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using Peer.Application.Models;
 
-namespace edu4.Application.External.Tests;
+namespace Peer.Tests.Application.External;
 
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
 [Collection("External services integration tests")]

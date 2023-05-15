@@ -1,7 +1,7 @@
-using edu4.API.Utils;
-using edu4.Domain.Contributors;
+using Peer.API.Utils;
+using Peer.Domain.Contributors;
 
-namespace edu4.API.Models.Display;
+namespace Peer.API.Models.Display;
 
 public class HatDisplayModel
 {

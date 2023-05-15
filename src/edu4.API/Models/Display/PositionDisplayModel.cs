@@ -1,7 +1,7 @@
-using edu4.Domain.Contributors;
-using edu4.Domain.Projects;
+using Peer.Domain.Contributors;
+using Peer.Domain.Projects;
 
-namespace edu4.API.Models.Display;
+namespace Peer.API.Models.Display;
 
 public class PositionDisplayModel
 {
