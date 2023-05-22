@@ -160,7 +160,7 @@ public class ContributorsServiceTests
             .SeedAsync();
 
         // ACT
-        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, fullName, newContactEmail, hats);
+        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, fullName, newContactEmail, hats.Select(h => HatDTO.FromHat(h)).ToList());
 
         // ASSERT
         var retrievedContributor = await contributors.GetByAccountIdAsync(contributorId);
@@ -200,7 +200,7 @@ public class ContributorsServiceTests
             .SeedAsync();
 
         // ACT
-        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, newName, contactEmail, hats);
+        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, newName, contactEmail, hats.Select(h => HatDTO.FromHat(h)).ToList());
 
         // ASSERT
         var retrievedContributor = await contributors.GetByAccountIdAsync(contributorId);
@@ -240,7 +240,7 @@ public class ContributorsServiceTests
             .SeedAsync();
 
         // ACT
-        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, fullName, contactEmail, newHats);
+        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, fullName, contactEmail, newHats.Select(h => HatDTO.FromHat(h)).ToList());
 
         // ASSERT
         var retrievedContributor = await contributors.GetByAccountIdAsync(contributorId);
@@ -275,7 +275,7 @@ public class ContributorsServiceTests
             contributor.Id,
             contributor.FullName + "*",
             contributor.ContactEmail,
-            contributor.Hats.ToList());
+            contributor.Hats.Select(h => HatDTO.FromHat(h)).ToList());
 
         // ASSERT
         await updatingAnotherContributor.Should().ThrowAsync<InvalidOperationException>();

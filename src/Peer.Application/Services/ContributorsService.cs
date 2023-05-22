@@ -89,7 +89,7 @@ public class ContributorsService
         return user;
     }
 
-    public async Task UpdateSelfAsync(Guid requesterId, Guid contributorId, string fullName, string contactEmail, List<Hat> hats)
+    public async Task UpdateSelfAsync(Guid requesterId, Guid contributorId, string fullName, string contactEmail, List<HatDTO> hats)
     {
         var contributor = await _contributors.GetByIdAsync(contributorId) ??
             throw new InvalidOperationException("The contributor with the given Id doesn't exist");
@@ -101,7 +101,7 @@ public class ContributorsService
 
         contributor.UpdateFullName(fullName);
         contributor.UpdateContactEmail(contactEmail);
-        contributor.UpdateHats(hats);
+        contributor.UpdateHats(hats.Select(h => HatDTO.ToHat(h)).ToList());
 
         await _contributors.UpdateAsync(contributor);
     }
