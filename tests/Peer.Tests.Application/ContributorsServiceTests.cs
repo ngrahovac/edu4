@@ -8,6 +8,7 @@ using Peer.Application.Models;
 using Peer.Application.Services;
 using Peer.Domain.Contributors;
 using Peer.Infrastructure;
+using Peer.Tests.Application.TestData;
 
 namespace Peer.Tests.Application;
 
@@ -128,4 +129,157 @@ public class ContributorsServiceTests
         // ASSERT
         await signUserUp.Should().ThrowAsync<InvalidOperationException>();
     }
+
+    [Fact]
+    public async void A_contributor_can_update_own_contact_email()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().
+            AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var accountManagement = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        var contributors = new MongoDbContributorsRepository(config);
+
+        var sut = new ContributorsService(
+            contributors,
+            accountManagement.Object,
+            new NullLogger<ContributorsService>());
+
+        var contributorId = Guid.NewGuid().ToString();
+        var fullName = "John Doe";
+        var contactEmail = "mail1@example.com";
+        var newContactEmail = "mail2@example.com";
+        var hats = new List<Hat>() { new AcademicHat("Computer Science") };
+
+        var existingContributor = await new ContributorFactory()
+            .WithAccountId(contributorId)
+            .WithFullName(fullName)
+            .WithEmail(contactEmail)
+            .WithHats(hats)
+            .SeedAsync();
+
+        // ACT
+        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, fullName, newContactEmail, hats);
+
+        // ASSERT
+        var retrievedContributor = await contributors.GetByAccountIdAsync(contributorId);
+        retrievedContributor!.AccountId.Should().Be(contributorId);
+        retrievedContributor.FullName.Should().Be(fullName);
+        retrievedContributor.Hats.Should().BeEquivalentTo(hats);
+        retrievedContributor.ContactEmail.Should().Be(newContactEmail);
+    }
+
+    [Fact]
+    public async void A_contributor_can_update_own_full_name()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().
+            AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var accountManagement = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        var contributors = new MongoDbContributorsRepository(config);
+
+        var sut = new ContributorsService(
+            contributors,
+            accountManagement.Object,
+            new NullLogger<ContributorsService>());
+
+        var contributorId = Guid.NewGuid().ToString();
+        var fullName = "John Doe";
+        var newName = "Johnny Doe";
+        var contactEmail = "mail1@example.com";
+        var hats = new List<Hat>() { new AcademicHat("Computer Science") };
+
+        var existingContributor = await new ContributorFactory()
+            .WithAccountId(contributorId)
+            .WithFullName(fullName)
+            .WithEmail(contactEmail)
+            .WithHats(hats)
+            .SeedAsync();
+
+        // ACT
+        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, newName, contactEmail, hats);
+
+        // ASSERT
+        var retrievedContributor = await contributors.GetByAccountIdAsync(contributorId);
+        retrievedContributor!.AccountId.Should().Be(contributorId);
+        retrievedContributor.Hats.Should().BeEquivalentTo(hats);
+        retrievedContributor.ContactEmail.Should().Be(contactEmail);
+        retrievedContributor.FullName.Should().Be(newName);
+    }
+
+    [Fact]
+    public async void A_contributor_can_update_own_hats()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().
+            AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var accountManagement = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        var contributors = new MongoDbContributorsRepository(config);
+
+        var sut = new ContributorsService(
+            contributors,
+            accountManagement.Object,
+            new NullLogger<ContributorsService>());
+
+        var contributorId = Guid.NewGuid().ToString();
+        var fullName = "John Doe";
+        var contactEmail = "mail1@example.com";
+        var hats = new List<Hat>() { new AcademicHat("Computer Science") };
+        var newHats = new List<Hat>() { new StudentHat("Computer Science", AcademicDegree.Doctorate) };
+
+        var existingContributor = await new ContributorFactory()
+            .WithAccountId(contributorId)
+            .WithFullName(fullName)
+            .WithEmail(contactEmail)
+            .WithHats(hats)
+            .SeedAsync();
+
+        // ACT
+        await sut.UpdateSelfAsync(existingContributor.Id, existingContributor.Id, fullName, contactEmail, newHats);
+
+        // ASSERT
+        var retrievedContributor = await contributors.GetByAccountIdAsync(contributorId);
+        retrievedContributor!.AccountId.Should().Be(contributorId);
+        retrievedContributor.FullName.Should().Be(fullName);
+        retrievedContributor.ContactEmail.Should().Be(contactEmail);
+        retrievedContributor.Hats.Should().BeEquivalentTo(newHats);
+    }
+
+    [Fact]
+    public async void A_contributor_cannot_update_another()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().
+            AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var accountManagement = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        var contributors = new MongoDbContributorsRepository(config);
+
+        var sut = new ContributorsService(
+            contributors,
+            accountManagement.Object,
+            new NullLogger<ContributorsService>());
+
+        var requester = await new ContributorFactory().SeedAsync();
+        var contributor = await new ContributorFactory().SeedAsync();
+
+        // ACT
+        var updatingAnotherContributor = async () => await sut.UpdateSelfAsync(
+            requester.Id,
+            contributor.Id,
+            contributor.FullName + "*",
+            contributor.ContactEmail,
+            contributor.Hats.ToList());
+
+        // ASSERT
+        await updatingAnotherContributor.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+
 }
