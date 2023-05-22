@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Peer.Application.Contracts;
 
 namespace Peer.Tests.Application.TestData;
-internal class UserFactory
+internal class ContributorFactory
 {
     private string _accountId = Guid.NewGuid().ToString();
     private string _fullName = "John Doe";
@@ -12,32 +12,32 @@ internal class UserFactory
     private List<Hat> _hats = new();
     private readonly IContributorsRepository _users;
 
-    public UserFactory()
+    public ContributorFactory()
     {
-        var config = new ConfigurationBuilder().AddUserSecrets(typeof(UserFactory).Assembly)
+        var config = new ConfigurationBuilder().AddUserSecrets(typeof(ContributorFactory).Assembly)
             .Build();
 
         _users = new MongoDbContributorsRepository(config);
     }
-    public UserFactory WithAccountId(string accountId)
+    public ContributorFactory WithAccountId(string accountId)
     {
         _accountId = accountId;
         return this;
     }
 
-    public UserFactory WithFullName(string fullName)
+    public ContributorFactory WithFullName(string fullName)
     {
         _fullName = fullName;
         return this;
     }
 
-    public UserFactory WithEmail(string email)
+    public ContributorFactory WithEmail(string email)
     {
         _email = email;
         return this;
     }
 
-    public UserFactory WithHats(List<Hat> hats)
+    public ContributorFactory WithHats(List<Hat> hats)
     {
         _hats = hats;
         return this;
