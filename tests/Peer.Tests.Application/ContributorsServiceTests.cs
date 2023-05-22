@@ -13,7 +13,7 @@ namespace Peer.Tests.Application;
 
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
 [Collection("App services integration tests")]
-public class UsersServiceTests
+public class ContributorsServiceTests
 {
     [Fact]
     public async void Successfully_signs_up_a_new_user_providing_valid_email_account_id_and_hat_list()
