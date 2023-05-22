@@ -47,4 +47,23 @@ public class ContributorsController : ControllerBase
 
         return Ok(); // TODO: replace with Created
     }
+
+
+    [HttpPut]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult> UpdateSelfAsync(UserSignupInputModel model)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+
+        await _contributors.UpdateSelfAsync(
+            requesterId,
+            requesterId,
+            model!.FullName,
+            model!.ContactEmail,
+            model!.Hats.Select(h => new HatDTO(h.Type, h.Parameters)).ToList());
+
+        return Ok();
+
+    }
 }

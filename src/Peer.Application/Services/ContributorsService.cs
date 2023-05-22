@@ -7,7 +7,7 @@ namespace Peer.Application.Services;
 
 public class ContributorsService
 {
-    private readonly IContributorsRepository _users;
+    private readonly IContributorsRepository _contributors;
     private readonly IAccountManagementService _accountManagement;
     private readonly ILogger<ContributorsService> _logger;
 
@@ -16,7 +16,7 @@ public class ContributorsService
         IAccountManagementService accountManagement,
         ILogger<ContributorsService> logger)
     {
-        _users = users;
+        _contributors = users;
         _accountManagement = accountManagement;
         _logger = logger;
     }
@@ -42,13 +42,13 @@ public class ContributorsService
             hatData.Select(
                 h => HatDTO.ToHat(h)).ToList());
 
-        if (await _users.GetByAccountIdAsync(accountId) is not null)
+        if (await _contributors.GetByAccountIdAsync(accountId) is not null)
         {
             _logger.LogError("User with {AccountId} already signed up", accountId);
             throw new InvalidOperationException($"User with account id {accountId} already signed up");
         }
 
-        await _users.AddAsync(user);
+        await _contributors.AddAsync(user);
         await _accountManagement.MarkUserSignedUpAsync(accountId);  // Q: cross-process transaction?
 
         _logger.LogInformation("User {User} successfully signed in", user);
@@ -65,7 +65,7 @@ public class ContributorsService
     /// <returns></returns>
     public async Task<Guid> GetUserIdFromAccountId(string accountId)
     {
-        var user = await _users.GetByAccountIdAsync(accountId);
+        var user = await _contributors.GetByAccountIdAsync(accountId);
 
         if (user is null)
         {
@@ -78,7 +78,7 @@ public class ContributorsService
 
     public async Task<Contributor> GetByIdAsync(Guid id)
     {
-        var user = await _users.GetByIdAsync(id);
+        var user = await _contributors.GetByIdAsync(id);
 
         if (user is null)
         {
@@ -87,5 +87,22 @@ public class ContributorsService
         }
 
         return user;
+    }
+
+    public async Task UpdateSelfAsync(Guid requesterId, Guid contributorId, string fullName, string contactEmail, List<HatDTO> hats)
+    {
+        var contributor = await _contributors.GetByIdAsync(contributorId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        if (requesterId != contributor.Id)
+        {
+            throw new InvalidOperationException("The requester doesn't have permissions to update the given contributor");
+        }
+
+        contributor.UpdateFullName(fullName);
+        contributor.UpdateContactEmail(contactEmail);
+        contributor.UpdateHats(hats.Select(h => HatDTO.ToHat(h)).ToList());
+
+        await _contributors.UpdateAsync(contributor);
     }
 }

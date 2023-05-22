@@ -24,7 +24,7 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var author = await new UserFactory().WithHats(
+        var author = await new ContributorFactory().WithHats(
             new List<Hat>()
             {
                 HatFactory.OfType(HatType.Student)
