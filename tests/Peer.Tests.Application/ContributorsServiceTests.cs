@@ -281,5 +281,58 @@ public class ContributorsServiceTests
         await updatingAnotherContributor.Should().ThrowAsync<InvalidOperationException>();
     }
 
+    [Fact]
+    public async void A_contributor_can_remove_themselves_from_the_platform()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().
+            AddUserSecrets(GetType().Assembly)
+            .Build();
 
+        var accountManagement = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        var contributors = new MongoDbContributorsRepository(config);
+
+        var sut = new ContributorsService(
+            contributors,
+            accountManagement.Object,
+            new NullLogger<ContributorsService>());
+
+        var contributor = await new ContributorFactory()
+            .SeedAsync();
+
+        // ACT
+        await sut.RemoveSelfAsync(contributor.Id, contributor.Id);
+
+        // ASSERT
+        var retrievedContributor = await contributors.GetByIdAsync(contributor.Id);
+        retrievedContributor.Should().BeNull();
+    }
+
+    [Fact]
+    public async void A_contributor_cannot_remove_others_from_the_platform()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().
+            AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var accountManagement = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        var contributors = new MongoDbContributorsRepository(config);
+
+        var sut = new ContributorsService(
+            contributors,
+            accountManagement.Object,
+            new NullLogger<ContributorsService>());
+
+        var requester = await new ContributorFactory().SeedAsync();
+        var contributor = await new ContributorFactory().SeedAsync();
+
+        // ACT
+        var removingAnotherContributor = async () => await sut.RemoveSelfAsync(requester.Id, contributor.Id);
+
+        // ASSERT
+        await removingAnotherContributor.Should().ThrowAsync<InvalidOperationException>();
+        var retrievedContributor = await contributors.GetByIdAsync(contributor.Id);
+        retrievedContributor.Should().NotBeNull();
+    }
 }

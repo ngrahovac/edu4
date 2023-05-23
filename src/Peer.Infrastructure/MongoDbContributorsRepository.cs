@@ -37,4 +37,7 @@ public class MongoDbContributorsRepository : IContributorsRepository
 
         await _contributorsCollection.UpdateOneAsync(c => c.Id == contributor.Id, updateFilter);
     }
+
+    public Task RemoveAsync(Contributor contributor) =>
+        _contributorsCollection.DeleteOneAsync(c => c.Id == contributor.Id);
 }

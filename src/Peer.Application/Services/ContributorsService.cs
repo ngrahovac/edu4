@@ -105,4 +105,17 @@ public class ContributorsService
 
         await _contributors.UpdateAsync(contributor);
     }
+
+    public async Task RemoveSelfAsync(Guid requesterId, Guid contributorId)
+    {
+        var contributor = await _contributors.GetByIdAsync(contributorId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        if (requesterId != contributor.Id)
+        {
+            throw new InvalidOperationException("The requester doesn't have permission to remove the contributor");
+        }
+
+        await _contributors.RemoveAsync(contributor);
+    }
 }
