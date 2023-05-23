@@ -64,6 +64,17 @@ public class ContributorsController : ControllerBase
             model!.Hats.Select(h => new HatDTO(h.Type, h.Parameters)).ToList());
 
         return Ok();
+    }
 
+    [HttpDelete("me")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult> DeleteSelfAsync()
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+
+        await _contributors.RemoveSelfAsync(requesterId, requesterId);
+
+        return Ok();
     }
 }
