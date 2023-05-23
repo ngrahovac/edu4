@@ -48,8 +48,7 @@ public class ContributorsController : ControllerBase
         return Ok(); // TODO: replace with Created
     }
 
-
-    [HttpPut]
+    [HttpPut("me")]
     [Authorize(Policy = "Contributor")]
     public async Task<ActionResult> UpdateSelfAsync(UserSignupInputModel model)
     {
