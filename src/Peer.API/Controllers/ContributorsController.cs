@@ -21,6 +21,28 @@ public class ContributorsController : ControllerBase
         _accountIdExtractionService = accountIdExtractionService;
     }
 
+
+    [HttpGet("{id}")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult<ContributorDisplayModel>> GetByIdAsync(Guid id)
+    {
+        var contributor = await _contributors.GetByIdAsync(id);
+
+        if (contributor is null)
+        {
+            return NotFound();
+        }
+
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+        var requester = await _contributors.GetByIdAsync(requesterId);
+
+        return new ContributorDisplayModel(
+            contributor,
+            requester.Equals(contributor));
+    }
+
+
     [HttpGet("me")]
     [Authorize(Policy = "Contributor")]
     public async Task<ActionResult<ContributorDisplayModel>> GetMeAsync()
