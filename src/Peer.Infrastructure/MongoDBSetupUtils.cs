@@ -80,5 +80,13 @@ public class MongoDBSetupUtils
             cm.MapProperty(p => p.Description);
             cm.MapProperty(p => p.Requirements);
         });
+
+        BsonClassMap.RegisterClassMap<Domain.Applications.Application>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(cm => cm.ApplicantId);
+            cm.MapProperty(cm => cm.ProjectId);
+            cm.MapProperty(cm => cm.PositionId);
+        });
     }
 }
