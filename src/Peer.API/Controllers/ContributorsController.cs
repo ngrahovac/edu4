@@ -23,14 +23,14 @@ public class ContributorsController : ControllerBase
 
     [HttpGet("me")]
     [Authorize(Policy = "Contributor")]
-    public async Task<ActionResult<UserDisplayModel>> GetMeAsync()
+    public async Task<ActionResult<ContributorDisplayModel>> GetMeAsync()
     {
         var accountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var userId = await _contributors.GetUserIdFromAccountId(accountId);
 
         var user = await _contributors.GetByIdAsync(userId);
 
-        return new UserDisplayModel(user);
+        return new ContributorDisplayModel(user);
     }
 
     [HttpPost]
