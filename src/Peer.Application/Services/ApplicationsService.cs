@@ -31,6 +31,13 @@ public class ApplicationsService
         var project = await _projects.GetByIdAsync(projectId) ??
             throw new InvalidOperationException("The project doesn't exist");
 
+        var alreadyApplied = await _applications.GetByApplicantAndPosition(applicantId, positionId) is not null;
+
+        if (alreadyApplied)
+        {
+            throw new InvalidOperationException("Cant apply for the same position multiple times");
+        }
+
         var application = project.SubmitApplication(applicant.Id, positionId);
 
         await _applications.AddAsync(application);

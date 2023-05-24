@@ -142,4 +142,41 @@ public class ApplicationsServiceTests
         // ASSERT
         await applyingForANonExistantPosition.Should().ThrowAsync<InvalidOperationException>();
     }
+
+    [Fact]
+    public async void A_contributor_cant_apply_for_a_position_they_already_applied_for()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var applications = new MongoDbApplicationsRepository(config);
+        var sut = new ApplicationsService(
+            applications,
+            new MongoDbContributorsRepository(config),
+            new MongoDBProjectsRepository(config),
+            new NullLogger<ApplicationsService>());
+
+        var project = await new ProjectFactory()
+            .WithPositions(new List<Position>() { new PositionFactory().Build() })
+            .SeedAsync();
+
+        var contributor = await new ContributorFactory().SeedAsync();
+
+        var application = await sut.SubmitAsync(
+           contributor.Id,
+           project.Id,
+           project.Positions.ElementAt(0).Id);
+
+        // ACT
+        var submittingApplicationForTheSamePositionForTheSecondTime = async () => await sut.SubmitAsync(
+            contributor.Id,
+            project.Id,
+            project.Positions.ElementAt(0).Id);
+
+
+        // ASSERT
+        await submittingApplicationForTheSamePositionForTheSecondTime.Should().ThrowAsync<InvalidOperationException>();
+    }
 }
