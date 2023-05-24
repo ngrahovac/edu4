@@ -1,3 +1,4 @@
+using Peer.Domain.Applications;
 using Peer.Domain.Common;
 using Peer.Domain.Contributors;
 
@@ -56,4 +57,20 @@ public class Project : AbstractAggregateRoot
         Title = title;
         Description = description;
     }
+
+    public Application SubmitApplication(Guid applicantId, Guid positionId)
+    {
+        var position = GetById(positionId) ??
+            throw new InvalidOperationException("Can't apply for a position that doesn't exist");
+
+        if (applicantId == AuthorId)
+        {
+            throw new InvalidOperationException("The author can't apply for a position on own project");
+        }
+
+        return new Application(applicantId, Id, positionId);
+    }
+
+    private Position? GetById(Guid positionId) =>
+        _positions.FirstOrDefault(p => p.Id == positionId);
 }
