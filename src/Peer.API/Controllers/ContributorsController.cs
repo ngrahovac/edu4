@@ -30,7 +30,7 @@ public class ContributorsController : ControllerBase
 
         var user = await _contributors.GetByIdAsync(userId);
 
-        return new ContributorDisplayModel(user);
+        return new ContributorDisplayModel(user, true);
     }
 
     [HttpPost]
