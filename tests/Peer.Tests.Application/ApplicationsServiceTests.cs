@@ -28,9 +28,7 @@ public class ApplicationsServiceTests
             new MongoDBProjectsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
         var project = await new ProjectFactory()
-            .WithAuthorId(author.Id)
             .WithPositions(new List<Position>() { new PositionFactory().Build() })
             .SeedAsync();
 
