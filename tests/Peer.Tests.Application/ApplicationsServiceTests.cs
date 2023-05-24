@@ -41,7 +41,7 @@ public class ApplicationsServiceTests
             project.Positions.ElementAt(0).Id);
 
         // ASSERT
-        var retrievedApplication = await applications.GetByApplicantAndPosition(
+        var retrievedApplication = await applications.GetByApplicantAndPositionAsync(
             contributorToApply.Id,
             project.Positions.ElementAt(0).Id);
 

@@ -31,7 +31,7 @@ public class ApplicationsService
         var project = await _projects.GetByIdAsync(projectId) ??
             throw new InvalidOperationException("The project doesn't exist");
 
-        var alreadyApplied = await _applications.GetByApplicantAndPosition(applicantId, positionId) is not null;
+        var alreadyApplied = await _applications.GetByApplicantAndPositionAsync(applicantId, positionId) is not null;
 
         if (alreadyApplied)
         {

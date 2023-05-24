@@ -17,7 +17,7 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         _applicationsCollection = mongoDb.GetCollection<Domain.Applications.Application>(applicationsCollectionName);
     }
 
-    public Task<Domain.Applications.Application> GetByApplicantAndPosition(Guid applicantId, Guid positionId) =>
+    public Task<Domain.Applications.Application> GetByApplicantAndPositionAsync(Guid applicantId, Guid positionId) =>
         _applicationsCollection.Find(a => a.ApplicantId == applicantId && a.PositionId == positionId).FirstOrDefaultAsync();
 
     public Task AddAsync(Domain.Applications.Application application) =>
