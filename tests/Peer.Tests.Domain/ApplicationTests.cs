@@ -9,7 +9,7 @@ namespace Peer.Tests.Domain;
 public class ApplicationTests
 {
     [Fact]
-    public void A_submitted_application_can_become_revoked()
+    public void A_submitted_application_can_be_revoked()
     {
         var application = new Peer.Domain.Applications.Application(
             Guid.NewGuid(),
