@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Peer.Domain.Contributors;
 using FluentAssertions;
 
-namespace Peer.Domain.Tests;
+namespace Peer.Tests.Domain;
 
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
 public class UserTests
