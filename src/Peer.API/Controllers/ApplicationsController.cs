@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Peer.API.Utils;
 using Peer.Application.Services;
+using Peer.Domain.Projects;
 
 namespace Peer.API.Controllers;
 [Route("api/[controller]")]
@@ -30,6 +31,17 @@ public class ApplicationsController : ControllerBase
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         await _applications.SubmitAsync(requesterId, projectId, positionId);
+
+        return Ok();
+    }
+
+    [HttpDelete("{applicationId}")]
+    public async Task<ActionResult> RevokeAsync(Guid applicationId)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+
+        await _applications.RevokeAsync(requesterId, applicationId);
 
         return Ok();
     }

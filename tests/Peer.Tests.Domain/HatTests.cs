@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using Peer.Domain.Contributors;
 
-namespace Peer.Domain.Tests;
+namespace Peer.Tests.Domain;
 
 [SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores")]
 public class HatTests

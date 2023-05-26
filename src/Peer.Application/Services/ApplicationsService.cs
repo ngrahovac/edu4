@@ -21,6 +21,21 @@ public class ApplicationsService
         _logger = logger;
     }
 
+    public async Task RevokeAsync(Guid applicantId, Guid applicationId)
+    {
+        var application = await _applications.GetByIdAsync(applicationId) ??
+            throw new InvalidOperationException("The application with the given Id doesn't exist");
+
+        if (application.ApplicantId != applicantId)
+        {
+            throw new InvalidOperationException("Only own submitted application can be revoked");
+        }
+
+        application.Revoke();
+
+        await _applications.UpdateAsync(application);
+    }
+
     public async Task<Domain.Applications.Application> SubmitAsync(Guid applicantId, Guid projectId, Guid positionId)
     {
         // TODO: check for existence of all entities involved in all service requests
