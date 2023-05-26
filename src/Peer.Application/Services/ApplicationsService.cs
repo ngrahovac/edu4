@@ -21,6 +21,25 @@ public class ApplicationsService
         _logger = logger;
     }
 
+    public async Task AcceptAsync(Guid requesterId, Guid applicationId)
+    {
+        var application = await _applications.GetByIdAsync(applicationId) ??
+            throw new InvalidOperationException("The application with the given Id doesn't exist");
+
+        var requester = await _contributors.GetByIdAsync(requesterId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        var project = await _projects.GetByIdAsync(application.ProjectId);
+        if (project.AuthorId != requester.Id)
+        {
+            throw new InvalidOperationException("Only the project author can accept applications for their project");
+        }
+
+        application.Accept();
+
+        await _applications.UpdateAsync(application);
+    }
+
     public async Task RevokeAsync(Guid applicantId, Guid applicationId)
     {
         var application = await _applications.GetByIdAsync(applicationId) ??
