@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Peer.API.Utils;
 using Peer.Application.Services;
 using Peer.Domain.Applications;
-using Peer.Domain.Projects;
 
 namespace Peer.API.Controllers;
 [Route("api/[controller]")]
