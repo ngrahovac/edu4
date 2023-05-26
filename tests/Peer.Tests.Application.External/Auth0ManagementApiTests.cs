@@ -23,7 +23,7 @@ public class Auth0ManagementApiTests
     /// and no user document with the same account id.
     /// </summary>
     /// <returns></returns>
-    [Fact]
+    [Fact(Skip = "Not automated")]
     public async Task User_account_is_assigned_contributor_role_after_completing_signup()
     {
         // ARRANGE
