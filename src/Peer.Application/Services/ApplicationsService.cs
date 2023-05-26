@@ -23,11 +23,11 @@ public class ApplicationsService
 
     public async Task AcceptAsync(Guid requesterId, Guid applicationId)
     {
-        var application = await _applications.GetByIdAsync(applicationId) ??
-            throw new InvalidOperationException("The application with the given Id doesn't exist");
-
         var requester = await _contributors.GetByIdAsync(requesterId) ??
             throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        var application = await _applications.GetByIdAsync(applicationId) ??
+            throw new InvalidOperationException("The application with the given Id doesn't exist");
 
         var project = await _projects.GetByIdAsync(application.ProjectId);
         if (project.AuthorId != requester.Id)
