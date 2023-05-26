@@ -74,6 +74,25 @@ public class ApplicationsService
         await _applications.UpdateAsync(application);
     }
 
+    // TODO: consider whether to keep use cases grouped like this
+    public async Task RevokeOrRejectAsync(Guid requesterId, Guid applicationId)
+    {
+        var requester = await _contributors.GetByIdAsync(requesterId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        var application = await _applications.GetByIdAsync(applicationId) ??
+            throw new InvalidOperationException("The application with the given Id doesn't exist");
+
+        if (requester.Id == application.ApplicantId)
+        {
+            await RevokeAsync(requesterId, applicationId);
+        }
+        else
+        {
+            await RejectAsync(requesterId, applicationId);
+        }
+    }
+
     public async Task<Domain.Applications.Application> SubmitAsync(Guid applicantId, Guid projectId, Guid positionId)
     {
         // TODO: check for existence of all entities involved in all service requests

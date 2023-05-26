@@ -36,12 +36,12 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpDelete("{applicationId}")]
-    public async Task<ActionResult> RevokeAsync(Guid applicationId)
+    public async Task<ActionResult> RevokeOrRejectAsync(Guid applicationId)
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
-        await _applications.RevokeAsync(requesterId, applicationId);
+        await _applications.RevokeOrRejectAsync(requesterId, applicationId);
 
         return Ok();
     }
