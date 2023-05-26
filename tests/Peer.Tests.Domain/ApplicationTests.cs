@@ -16,9 +16,9 @@ public class ApplicationTests
             Guid.NewGuid(),
             Guid.NewGuid());
 
-        var revokeApplication = () => application.Revoke();
+        var revokeSubmittedApplication = () => application.Revoke();
 
-        revokeApplication.Should().NotThrow();
+        revokeSubmittedApplication.Should().NotThrow();
         application.Status.Should().Be(Peer.Domain.Applications.ApplicationStatus.Revoked);
     }
 
@@ -53,9 +53,9 @@ public class ApplicationTests
             Guid.NewGuid(),
             Guid.NewGuid());
 
-        var revokeApplication = () => application.Accept();
+        var acceptSubmittedApplication = () => application.Accept();
 
-        revokeApplication.Should().NotThrow();
+        acceptSubmittedApplication.Should().NotThrow();
         application.Status.Should().Be(Peer.Domain.Applications.ApplicationStatus.Accepted);
     }
 
@@ -69,9 +69,9 @@ public class ApplicationTests
 
         application.Revoke();
 
-        var acceptApplication = () => application.Accept();
+        var acceptRevokedApplication = () => application.Accept();
 
-        acceptApplication.Should().Throw<InvalidOperationException>();
+        acceptRevokedApplication.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -132,5 +132,4 @@ public class ApplicationTests
 
         rejectRejectedApplication.Should().Throw<InvalidOperationException>();
     }
-
 }
