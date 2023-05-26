@@ -73,4 +73,64 @@ public class ApplicationTests
 
         acceptApplication.Should().Throw<InvalidOperationException>();
     }
+
+    [Fact]
+    public void A_submitted_application_can_be_rejected()
+    {
+        var application = new Peer.Domain.Applications.Application(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid());
+
+        var rejectSubmittedApplication = () => application.Reject();
+
+        rejectSubmittedApplication.Should().NotThrow();
+        application.Status.Should().Be(Peer.Domain.Applications.ApplicationStatus.Rejected);
+    }
+
+    [Fact]
+    public void A_revoked_application_cannot_be_rejected()
+    {
+        var application = new Peer.Domain.Applications.Application(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid());
+
+        application.Revoke();
+
+        var rejectRevokedApplication = () => application.Reject();
+
+        rejectRevokedApplication.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void An_accepted_application_cannot_be_rejected()
+    {
+        var application = new Peer.Domain.Applications.Application(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid());
+
+        application.Accept();
+
+        var rejectAcceptedApplication = () => application.Reject();
+
+        rejectAcceptedApplication.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void A_rejected_application_cannot_be_rejected_for_the_second_time()
+    {
+        var application = new Peer.Domain.Applications.Application(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid());
+
+        application.Reject();
+
+        var rejectRejectedApplication = () => application.Accept();
+
+        rejectRejectedApplication.Should().Throw<InvalidOperationException>();
+    }
+
 }
