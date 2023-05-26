@@ -40,6 +40,25 @@ public class ApplicationsService
         await _applications.UpdateAsync(application);
     }
 
+    public async Task RejectAsync(Guid requesterId, Guid applicationId)
+    {
+        var requester = await _contributors.GetByIdAsync(requesterId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        var application = await _applications.GetByIdAsync(applicationId) ??
+            throw new InvalidOperationException("The application with the given Id doesn't exist");
+
+        var project = await _projects.GetByIdAsync(application.ProjectId);
+        if (project.AuthorId != requester.Id)
+        {
+            throw new InvalidOperationException("Only the project author can reject applications for their project");
+        }
+
+        application.Reject();
+
+        await _applications.UpdateAsync(application);
+    }
+
     public async Task RevokeAsync(Guid applicantId, Guid applicationId)
     {
         var application = await _applications.GetByIdAsync(applicationId) ??
