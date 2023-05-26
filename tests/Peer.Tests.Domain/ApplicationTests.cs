@@ -45,5 +45,32 @@ public class ApplicationTests
         submitApplicationForAPositionOnOwnProject.Should().Throw<InvalidOperationException>();
     }
 
-    // TODO: test all domain invariants; use test data factories?
+    [Fact]
+    public void A_submitted_application_can_be_accepted()
+    {
+        var application = new Peer.Domain.Applications.Application(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid());
+
+        var revokeApplication = () => application.Accept();
+
+        revokeApplication.Should().NotThrow();
+        application.Status.Should().Be(Peer.Domain.Applications.ApplicationStatus.Accepted);
+    }
+
+    [Fact]
+    public void A_revoked_application_cannot_be_accepted()
+    {
+        var application = new Peer.Domain.Applications.Application(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid());
+
+        application.Revoke();
+
+        var acceptApplication = () => application.Accept();
+
+        acceptApplication.Should().Throw<InvalidOperationException>();
+    }
 }
