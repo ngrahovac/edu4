@@ -22,4 +22,15 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
 
     public Task AddAsync(Domain.Applications.Application application) =>
         _applicationsCollection.InsertOneAsync(application);
+
+    public Task<Domain.Applications.Application> GetByIdAsync(Guid id) =>
+        _applicationsCollection.Find(a => a.Id == id).SingleOrDefaultAsync();
+
+    public Task UpdateAsync(Domain.Applications.Application application)
+    {
+        var update = Builders<Domain.Applications.Application>.Update
+            .Set(a => a.Status, application.Status);
+
+        return _applicationsCollection.UpdateOneAsync(a => a.Id == application.Id, update);
+    }
 }
