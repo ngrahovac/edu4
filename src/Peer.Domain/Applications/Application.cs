@@ -35,4 +35,14 @@ public class Application : AbstractEntity
 
         Status = ApplicationStatus.Accepted;
     }
+
+    public void Reject()
+    {
+        if (Status is not ApplicationStatus.Submitted)
+        {
+            throw new InvalidOperationException("Only a submitted application can be rejected");
+        }
+
+        Status = ApplicationStatus.Rejected;
+    }
 }
