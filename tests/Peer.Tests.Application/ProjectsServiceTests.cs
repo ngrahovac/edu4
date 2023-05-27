@@ -1792,7 +1792,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         // ACT
-        await sut.ClosePosition(author.Id, project.Id, project.Positions.ElementAt(0).Id);
+        await sut.ClosePositionAsync(author.Id, project.Id, project.Positions.ElementAt(0).Id);
 
         // ASSERT
         var retrievedProject = await projects.GetByIdAsync(project.Id);
@@ -1864,7 +1864,7 @@ public class ProjectsServiceTests
         var requester = await new ContributorFactory().SeedAsync();
 
         // ACT
-        var closingAPositionByACollaboratorThatIsNotTheProjectAuthor = async () => await sut.ClosePosition(
+        var closingAPositionByACollaboratorThatIsNotTheProjectAuthor = async () => await sut.ClosePositionAsync(
             requester.Id,
             project.Id,
             project.Positions.ElementAt(0).Id);
@@ -1897,7 +1897,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         // ACT
-        var nonExistingContributorClosingAPosition = async () => await sut.ClosePosition(
+        var nonExistingContributorClosingAPosition = async () => await sut.ClosePositionAsync(
             Guid.NewGuid(),
             project.Id,
             project.Positions.ElementAt(0).Id);
@@ -1925,7 +1925,7 @@ public class ProjectsServiceTests
         var requester = await new ContributorFactory().SeedAsync();
 
         // ACT
-        var closingAPositionOnANonExistingProject = async () => await sut.ClosePosition(
+        var closingAPositionOnANonExistingProject = async () => await sut.ClosePositionAsync(
             requester.Id,
             Guid.NewGuid(),
             Guid.NewGuid());
@@ -1962,7 +1962,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         // ACT
-        var authorClosingANonExistingPosition = async () => await sut.ClosePosition(
+        var authorClosingANonExistingPosition = async () => await sut.ClosePositionAsync(
             author.Id,
             project.Id,
             Guid.NewGuid());
@@ -1971,5 +1971,39 @@ public class ProjectsServiceTests
         await authorClosingANonExistingPosition.Should().ThrowAsync<InvalidOperationException>();
     }
 
+    [Fact]
+    public async Task Project_author_can_reopen_a_closed_position()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            new NullLogger<ProjectsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+
+        var project = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory()
+                .WithOpen(false)
+                .Build()
+            })
+            .SeedAsync();
+
+        // ACT
+        await sut.ReopenPositionAsync(author.Id, project.Id, project.Positions.ElementAt(0).Id);
+
+        // ASSERT
+        var retrievedProject = await projects.GetByIdAsync(project.Id);
+        retrievedProject.Positions.ElementAt(0).Open.Should().BeTrue();
+    }
 }

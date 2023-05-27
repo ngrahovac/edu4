@@ -24,6 +24,7 @@ public class Position : AbstractEntity
     }
 
     public bool IsRecommendedFor(Contributor user) => user.Hats.Any(h => h.Fits(Requirements));
+
     internal void Close()
     {
         if (!Open)
@@ -32,5 +33,15 @@ public class Position : AbstractEntity
         }
 
         Open = false;
+    }
+
+    internal void Reopen()
+    {
+        if (Open)
+        {
+            throw new InvalidOperationException("Only a closed position can be reopened");
+        }
+
+        Open = true;
     }
 }
