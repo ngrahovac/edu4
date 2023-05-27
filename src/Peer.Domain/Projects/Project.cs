@@ -84,6 +84,14 @@ public class Project : AbstractAggregateRoot
         position.Close();
     }
 
+    public void ReopenPosition(Guid positionId)
+    {
+        var position = GetById(positionId) ??
+            throw new InvalidOperationException("Can't reopen a position that doesn't exist");
+
+        position.Reopen();
+    }
+
     private Position? GetById(Guid positionId) =>
         _positions.FirstOrDefault(p => p.Id == positionId);
 }

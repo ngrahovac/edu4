@@ -132,4 +132,22 @@ public class ProjectsService
 
         await _projects.UpdateAsync(project);
     }
+
+    public async Task ReopenPositionAsync(Guid requesterId, Guid projectId, Guid positionId)
+    {
+        var requester = await _users.GetByIdAsync(requesterId) ??
+            throw new InvalidOperationException("The contributor with the given id doesn't exist");
+
+        var project = await _projects.GetByIdAsync(projectId) ??
+            throw new InvalidOperationException("The project with the given id doesn't exist");
+
+        if (requester!.Id != project.AuthorId)
+        {
+            throw new InvalidOperationException("Only the project author can reopen a project position");
+        }
+
+        project.ReopenPosition(positionId);
+
+        await _projects.UpdateAsync(project);
+    }
 }
