@@ -302,7 +302,7 @@ public class ProjectsServiceTests
     }
 
     [Fact]
-    public async void Discovering_projects_by_keyword_should_includen_projects_with_the_keyword_in_description_only()
+    public async void Discovering_projects_by_keyword_should_include_projects_with_the_keyword_in_description_only()
     {
         // ARRANGE
         var config = new ConfigurationBuilder()
