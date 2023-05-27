@@ -302,7 +302,7 @@ public class ProjectsServiceTests
     }
 
     [Fact]
-    public async void Discovering_projects_by_keyword_should_includen_projects_with_the_keyword_in_description_only()
+    public async void Discovering_projects_by_keyword_should_include_projects_with_the_keyword_in_description_only()
     {
         // ARRANGE
         var config = new ConfigurationBuilder()
@@ -1764,4 +1764,212 @@ public class ProjectsServiceTests
 
         discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
     }
+
+    [Fact]
+    public async Task Project_author_can_close_a_position()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            new NullLogger<ProjectsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+
+        var project = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        // ACT
+        await sut.ClosePosition(author.Id, project.Id, project.Positions.ElementAt(0).Id);
+
+        // ASSERT
+        var retrievedProject = await projects.GetByIdAsync(project.Id);
+        retrievedProject.Positions.ElementAt(0).Open.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Positions_of_a_published_project_are_open_by_default()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            new NullLogger<ProjectsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+
+        var positions = new List<Position>()
+        {
+            new PositionFactory().Build(),
+            new PositionFactory().Build()
+        };
+
+        var publishedProject = await sut.PublishProjectAsync(
+            "test",
+            "test",
+            author.Id,
+            positions.Select(p => new PositionDTO(p.Name, p.Description, HatDTO.FromHat(p.Requirements))).ToList());
+
+        // ASSERT
+        var retrievedProject = await projects.GetByIdAsync(publishedProject.Id);
+        retrievedProject.Positions.Count.Should().Be(positions.Count);
+        retrievedProject.Positions.Select(p => p.Open).Should().AllBeEquivalentTo(true);
+    }
+
+    [Fact]
+    public async Task Collaborator_that_is_not_the_project_author_cannot_close_a_position()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            new NullLogger<ProjectsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+
+        var project = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        var requester = await new ContributorFactory().SeedAsync();
+
+        // ACT
+        var closingAPositionByACollaboratorThatIsNotTheProjectAuthor = async () => await sut.ClosePosition(
+            requester.Id,
+            project.Id,
+            project.Positions.ElementAt(0).Id);
+
+        // ASSERT
+        await closingAPositionByACollaboratorThatIsNotTheProjectAuthor.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task A_non_existing_user_cannot_close_a_project_position()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            new NullLogger<ProjectsService>());
+
+        var project = await new ProjectFactory()
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        // ACT
+        var nonExistingContributorClosingAPosition = async () => await sut.ClosePosition(
+            Guid.NewGuid(),
+            project.Id,
+            project.Positions.ElementAt(0).Id);
+
+        // ASSERT
+        await nonExistingContributorClosingAPosition.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task A_position_cannot_be_closed_on_a_non_existing_project()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            new NullLogger<ProjectsService>());
+
+        var requester = await new ContributorFactory().SeedAsync();
+
+        // ACT
+        var closingAPositionOnANonExistingProject = async () => await sut.ClosePosition(
+            requester.Id,
+            Guid.NewGuid(),
+            Guid.NewGuid());
+
+        // ASSERT
+        await closingAPositionOnANonExistingProject.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    // TODO: consider testing the domain invariant
+    [Fact]
+    public async Task Author_cannot_close_a_position_on_own_project_that_doesnt_exist()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            new NullLogger<ProjectsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+
+        var project = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        // ACT
+        var authorClosingANonExistingPosition = async () => await sut.ClosePosition(
+            author.Id,
+            project.Id,
+            Guid.NewGuid());
+
+        // ASSERT
+        await authorClosingANonExistingPosition.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+
 }

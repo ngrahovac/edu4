@@ -63,12 +63,25 @@ public class Project : AbstractAggregateRoot
         var position = GetById(positionId) ??
             throw new InvalidOperationException("Can't apply for a position that doesn't exist");
 
+        if (!position.Open)
+        {
+            throw new InvalidOperationException("Can't apply for a closed position");
+        }
+
         if (applicantId == AuthorId)
         {
             throw new InvalidOperationException("The author can't apply for a position on own project");
         }
 
         return new Application(applicantId, Id, positionId);
+    }
+
+    public void ClosePosition(Guid positionId)
+    {
+        var position = GetById(positionId) ??
+            throw new InvalidOperationException("Can't close a position that doesn't exist");
+
+        position.Close();
     }
 
     private Position? GetById(Guid positionId) =>

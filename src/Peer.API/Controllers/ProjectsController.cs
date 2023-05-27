@@ -114,4 +114,22 @@ public class ProjectsController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPut("{projectId}/positions/{positionId}")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult> ClosePositionAsync(Guid projectId, Guid positionId, bool open)
+    {
+        if (open)
+        {
+            throw new InvalidOperationException("This endpoint is used for closing the position only");
+        }
+
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _users.GetUserIdFromAccountId(requesterAccountId);
+
+        await _projects.ClosePosition(requesterId, projectId, positionId);
+
+        return Ok();
+    }
+
 }
