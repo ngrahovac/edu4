@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Peer.Domain.Projects;
 using FluentAssertions;
+using Peer.Domain.Contributors;
 
 namespace Peer.Tests.Domain;
 
@@ -18,5 +19,24 @@ public class ProjectTests
                 new List<Position>());
 
         action.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Project_position_cannot_be_closed_twice()
+    {
+        var project = new Project(
+                string.Empty,
+                string.Empty,
+                Guid.NewGuid(),
+                new List<Position>()
+                {
+                    new Position("test", "test", new AcademicHat("Computer Science"))
+                });
+
+        project.ClosePosition(project.Positions.ElementAt(0).Id);
+
+        var closeThePositionAgain = () => project.ClosePosition(project.Positions.ElementAt(0).Id);
+
+        closeThePositionAgain.Should().Throw<InvalidOperationException>();
     }
 }

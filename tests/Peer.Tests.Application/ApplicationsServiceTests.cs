@@ -536,4 +536,39 @@ public class ApplicationsServiceTests
         // ASSERT
         await rejectingAnAcceptedApplication.Should().ThrowAsync<InvalidOperationException>();
     }
+
+    [Fact]
+    public async void A_contributor_cannot_submit_an_application_for_a_closed_position()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var applications = new MongoDbApplicationsRepository(config);
+        var sut = new ApplicationsService(
+            applications,
+            new MongoDbContributorsRepository(config),
+            new MongoDBProjectsRepository(config),
+            new NullLogger<ApplicationsService>());
+
+        var project = await new ProjectFactory()
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory()
+                .WithOpen(false)
+                .Build() })
+            .SeedAsync();
+
+        var contributorToApply = await new ContributorFactory().SeedAsync();
+
+        // ACT
+        var applyingForAClosedPosition = async () => await sut.SubmitAsync(
+            contributorToApply.Id,
+            project.Id,
+            project.Positions.ElementAt(0).Id);
+
+        // ASSERT
+        await applyingForAClosedPosition.Should().ThrowAsync<InvalidOperationException>();
+    }
 }

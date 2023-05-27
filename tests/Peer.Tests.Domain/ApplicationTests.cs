@@ -46,6 +46,30 @@ public class ApplicationTests
     }
 
     [Fact]
+    public void Cant_apply_for_a_closed_position()
+    {
+        var project = new Project(
+            string.Empty,
+            string.Empty,
+            Guid.NewGuid(),
+            new List<Position>
+            {
+                new Position(
+                    string.Empty,
+                    string.Empty,
+                    new StudentHat("Software Engineering"))
+            });
+
+        project.ClosePosition(project.Positions.ElementAt(0).Id);
+
+        var applyForAClosedPosition = () => project.SubmitApplication(
+            Guid.NewGuid(),
+            project.Positions.ElementAt(0).Id);
+
+        applyForAClosedPosition.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
     public void A_submitted_application_can_be_accepted()
     {
         var application = new Peer.Domain.Applications.Application(

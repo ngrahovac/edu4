@@ -8,7 +8,7 @@ public class Position : AbstractEntity
     public string Name { get; private set; }
     public string Description { get; private set; }
     public Hat Requirements { get; }
-
+    public bool Open { get; private set; }
 
     public Position(
         string name,
@@ -20,7 +20,17 @@ public class Position : AbstractEntity
         Name = name;
         Description = description;
         Requirements = requirements;
+        Open = true;
     }
 
     public bool IsRecommendedFor(Contributor user) => user.Hats.Any(h => h.Fits(Requirements));
+    internal void Close()
+    {
+        if (!Open)
+        {
+            throw new InvalidOperationException("Only an open position can be closed");
+        }
+
+        Open = false;
+    }
 }
