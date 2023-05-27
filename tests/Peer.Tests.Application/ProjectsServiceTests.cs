@@ -1934,6 +1934,7 @@ public class ProjectsServiceTests
         await closingAPositionOnANonExistingProject.Should().ThrowAsync<InvalidOperationException>();
     }
 
+    // TODO: consider testing the domain invariant
     [Fact]
     public async Task Author_cannot_close_a_position_on_own_project_that_doesnt_exist()
     {
