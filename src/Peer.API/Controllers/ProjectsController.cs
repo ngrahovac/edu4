@@ -124,7 +124,7 @@ public class ProjectsController : ControllerBase
 
         await (open ?
             _projects.ReopenPositionAsync(requesterId, projectId, positionId) :
-            _projects.ClosePosition(requesterId, projectId, positionId));
+            _projects.ClosePositionAsync(requesterId, projectId, positionId));
 
         return Ok();
     }

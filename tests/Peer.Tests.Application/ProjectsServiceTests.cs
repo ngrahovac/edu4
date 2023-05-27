@@ -1792,7 +1792,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         // ACT
-        await sut.ClosePosition(author.Id, project.Id, project.Positions.ElementAt(0).Id);
+        await sut.ClosePositionAsync(author.Id, project.Id, project.Positions.ElementAt(0).Id);
 
         // ASSERT
         var retrievedProject = await projects.GetByIdAsync(project.Id);
@@ -1864,7 +1864,7 @@ public class ProjectsServiceTests
         var requester = await new ContributorFactory().SeedAsync();
 
         // ACT
-        var closingAPositionByACollaboratorThatIsNotTheProjectAuthor = async () => await sut.ClosePosition(
+        var closingAPositionByACollaboratorThatIsNotTheProjectAuthor = async () => await sut.ClosePositionAsync(
             requester.Id,
             project.Id,
             project.Positions.ElementAt(0).Id);
@@ -1897,7 +1897,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         // ACT
-        var nonExistingContributorClosingAPosition = async () => await sut.ClosePosition(
+        var nonExistingContributorClosingAPosition = async () => await sut.ClosePositionAsync(
             Guid.NewGuid(),
             project.Id,
             project.Positions.ElementAt(0).Id);
@@ -1925,7 +1925,7 @@ public class ProjectsServiceTests
         var requester = await new ContributorFactory().SeedAsync();
 
         // ACT
-        var closingAPositionOnANonExistingProject = async () => await sut.ClosePosition(
+        var closingAPositionOnANonExistingProject = async () => await sut.ClosePositionAsync(
             requester.Id,
             Guid.NewGuid(),
             Guid.NewGuid());
@@ -1962,7 +1962,7 @@ public class ProjectsServiceTests
             .SeedAsync();
 
         // ACT
-        var authorClosingANonExistingPosition = async () => await sut.ClosePosition(
+        var authorClosingANonExistingPosition = async () => await sut.ClosePositionAsync(
             author.Id,
             project.Id,
             Guid.NewGuid());

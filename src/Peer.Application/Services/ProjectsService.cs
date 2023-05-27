@@ -115,7 +115,7 @@ public class ProjectsService
     }
 
 
-    public async Task ClosePosition(Guid requesterId, Guid projectId, Guid positionId)
+    public async Task ClosePositionAsync(Guid requesterId, Guid projectId, Guid positionId)
     {
         var requester = await _users.GetByIdAsync(requesterId) ??
             throw new InvalidOperationException("The contributor with the given id doesn't exist");
