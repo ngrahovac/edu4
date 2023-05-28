@@ -571,4 +571,281 @@ public class ApplicationsServiceTests
         // ASSERT
         await applyingForAClosedPosition.Should().ThrowAsync<InvalidOperationException>();
     }
+
+    [Fact]
+    public async void Retrieving_received_applications_without_specifying_search_refinements_should_return_all_submitted_applications_for_positions_on_authored_projects()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var applications = new MongoDbApplicationsRepository(config);
+
+        var sut = new ApplicationsService(
+            applications,
+            new MongoDbContributorsRepository(config),
+            new MongoDBProjectsRepository(config),
+            new NullLogger<ApplicationsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+        var applicant1 = await new ContributorFactory().SeedAsync();
+        var applicant2 = await new ContributorFactory().SeedAsync();
+        var applicant3 = await new ContributorFactory().SeedAsync();
+        var applicant4 = await new ContributorFactory().SeedAsync();
+        var applicant5 = await new ContributorFactory().SeedAsync();
+        var applicant6 = await new ContributorFactory().SeedAsync();
+
+        var authoredProject1 = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build(),
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        var authoredProject2 = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build(),
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        var submittedApplication1 = await new ApplicationsFactory()
+            .WithApplicantId(applicant1.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .SeedAsync();
+
+        var submittedApplication2 = await new ApplicationsFactory()
+            .WithApplicantId(applicant2.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(1).Id)
+            .SeedAsync();
+
+        var submittedApplication3 = await new ApplicationsFactory()
+            .WithApplicantId(applicant3.Id)
+            .WithProjectId(authoredProject2.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .SeedAsync();
+
+        var revokedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant4.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Revoked)
+            .SeedAsync();
+
+        var rejectedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant5.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Rejected)
+            .SeedAsync();
+
+        var acceptedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant6.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Accepted)
+            .SeedAsync();
+
+        // ACT
+        var receivedApplications = await sut.GetReceivedAsync(
+            author.Id,
+            projectId: null,
+            positionId: null,
+            applicationsSortOption: ApplicationsSortOption.Default);
+
+        // ASSERT
+        receivedApplications.Count.Should().Be(3);
+    }
+
+    [Fact]
+    public async void Retrieving_received_applications_for_selected_project_should_return_all_submitted_applications_for_that_project()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var applications = new MongoDbApplicationsRepository(config);
+
+        var sut = new ApplicationsService(
+            applications,
+            new MongoDbContributorsRepository(config),
+            new MongoDBProjectsRepository(config),
+            new NullLogger<ApplicationsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+        var applicant1 = await new ContributorFactory().SeedAsync();
+        var applicant2 = await new ContributorFactory().SeedAsync();
+        var applicant3 = await new ContributorFactory().SeedAsync();
+        var applicant4 = await new ContributorFactory().SeedAsync();
+        var applicant5 = await new ContributorFactory().SeedAsync();
+        var applicant6 = await new ContributorFactory().SeedAsync();
+
+        var authoredProject1 = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build(),
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        var authoredProject2 = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build(),
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        var submittedApplication1 = await new ApplicationsFactory()
+            .WithApplicantId(applicant1.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .SeedAsync();
+
+        var submittedApplication2 = await new ApplicationsFactory()
+            .WithApplicantId(applicant2.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(1).Id)
+            .SeedAsync();
+
+        var submittedApplication3 = await new ApplicationsFactory()
+            .WithApplicantId(applicant3.Id)
+            .WithProjectId(authoredProject2.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .SeedAsync();
+
+        var revokedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant4.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Revoked)
+            .SeedAsync();
+
+        var rejectedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant5.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Rejected)
+            .SeedAsync();
+
+        var acceptedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant6.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Accepted)
+            .SeedAsync();
+
+        // ACT
+        var receivedApplications = await sut.GetReceivedAsync(
+            author.Id,
+            projectId: authoredProject1.Id,
+            positionId: null,
+            applicationsSortOption: ApplicationsSortOption.Default);
+
+        // ASSERT
+        receivedApplications.Count.Should().Be(2);
+    }
+
+    [Fact]
+    public async void Retrieving_received_applications_for_selected_project_and_position_should_return_all_submitted_applications_for_that_project_position()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        var applications = new MongoDbApplicationsRepository(config);
+
+        var sut = new ApplicationsService(
+            applications,
+            new MongoDbContributorsRepository(config),
+            new MongoDBProjectsRepository(config),
+            new NullLogger<ApplicationsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+        var applicant1 = await new ContributorFactory().SeedAsync();
+        var applicant2 = await new ContributorFactory().SeedAsync();
+        var applicant3 = await new ContributorFactory().SeedAsync();
+        var applicant4 = await new ContributorFactory().SeedAsync();
+        var applicant5 = await new ContributorFactory().SeedAsync();
+        var applicant6 = await new ContributorFactory().SeedAsync();
+
+        var authoredProject1 = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build(),
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        var authoredProject2 = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build(),
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        var submittedApplication1 = await new ApplicationsFactory()
+            .WithApplicantId(applicant1.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .SeedAsync();
+
+        var submittedApplication2 = await new ApplicationsFactory()
+            .WithApplicantId(applicant2.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(1).Id)
+            .SeedAsync();
+
+        var submittedApplication3 = await new ApplicationsFactory()
+            .WithApplicantId(applicant3.Id)
+            .WithProjectId(authoredProject2.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .SeedAsync();
+
+        var revokedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant4.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Revoked)
+            .SeedAsync();
+
+        var rejectedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant5.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Rejected)
+            .SeedAsync();
+
+        var acceptedApplication = await new ApplicationsFactory()
+            .WithApplicantId(applicant6.Id)
+            .WithProjectId(authoredProject1.Id)
+            .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
+            .WithStatus(ApplicationStatus.Accepted)
+            .SeedAsync();
+
+        // ACT
+        var receivedApplications = await sut.GetReceivedAsync(
+            author.Id,
+            projectId: authoredProject1.Id,
+            positionId: authoredProject1.Positions.ElementAt(1).Id,
+            applicationsSortOption: ApplicationsSortOption.Default);
+
+        // ASSERT
+        receivedApplications.Count.Should().Be(1);
+    }
+
 }
