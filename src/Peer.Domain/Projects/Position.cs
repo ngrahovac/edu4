@@ -9,6 +9,7 @@ public class Position : AbstractEntity
     public string Description { get; private set; }
     public Hat Requirements { get; }
     public bool Open { get; private set; }
+    public bool Removed { get; private set; }
 
     public Position(
         string name,
@@ -21,6 +22,7 @@ public class Position : AbstractEntity
         Description = description;
         Requirements = requirements;
         Open = true;
+        Removed = false;
     }
 
     public bool IsRecommendedFor(Contributor user) => user.Hats.Any(h => h.Fits(Requirements));
@@ -43,5 +45,15 @@ public class Position : AbstractEntity
         }
 
         Open = true;
+    }
+
+    internal void Remove()
+    {
+        if (Removed)
+        {
+            throw new InvalidOperationException("A position can't be removed twice");
+        }
+
+        Removed = true;
     }
 }
