@@ -982,15 +982,6 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var authoredProject2 = await new ProjectFactory()
-            .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
-            })
-            .SeedAsync();
-
         var submittedApplication1 = await new ApplicationsFactory()
             .WithApplicantId(applicant1.Id)
             .WithProjectId(authoredProject1.Id)
