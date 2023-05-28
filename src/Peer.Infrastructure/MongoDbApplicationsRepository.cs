@@ -50,9 +50,11 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         var submittedApplicationsFilter = Builders<Domain.Applications.Application>.Filter
             .Where(a => a.Status == ApplicationStatus.Submitted);
 
-        SortDefinition<Domain.Applications.Application> sorting = applicationsSortOption switch
+        var sorting = applicationsSortOption switch
         {
             ApplicationsSortOption.Default => null,
+            ApplicationsSortOption.NewestFirst => Builders<Domain.Applications.Application>.Sort.Descending(a => a.DateSubmitted),
+            ApplicationsSortOption.OldestFirst => Builders<Domain.Applications.Application>.Sort.Ascending(a => a.DateSubmitted),
             _ => throw new NotImplementedException()
         };
 

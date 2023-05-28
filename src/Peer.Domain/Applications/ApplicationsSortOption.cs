@@ -1,5 +1,7 @@
 namespace Peer.Domain.Applications;
 public enum ApplicationsSortOption
 {
-    Default
+    Default,
+    OldestFirst,
+    NewestFirst
 }
