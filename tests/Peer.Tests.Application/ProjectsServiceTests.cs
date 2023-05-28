@@ -2006,4 +2006,41 @@ public class ProjectsServiceTests
         var retrievedProject = await projects.GetByIdAsync(project.Id);
         retrievedProject.Positions.ElementAt(0).Open.Should().BeTrue();
     }
+
+    [Fact]
+    public async Task Project_author_can_remove_a_position()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            new NullLogger<ProjectsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+
+        var project = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        // ACT
+        await sut.RemovePositionAsync(
+            author.Id,
+            project.Id,
+            project.Positions.ElementAt(0).Id);
+
+        // ASSERT
+        var retrievedProject = await projects.GetByIdAsync(project.Id);
+        retrievedProject.Positions.ElementAt(0).Removed.Should().BeTrue();
+    }
 }
