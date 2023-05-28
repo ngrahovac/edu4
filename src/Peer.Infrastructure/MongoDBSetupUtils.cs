@@ -89,6 +89,7 @@ public class MongoDBSetupUtils
             cm.MapProperty(cm => cm.ApplicantId);
             cm.MapProperty(cm => cm.ProjectId);
             cm.MapProperty(cm => cm.PositionId);
+            cm.MapProperty(cm => cm.DateSubmitted);
             cm.MapProperty(cm => cm.Status);
         });
     }
