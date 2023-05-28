@@ -34,14 +34,24 @@ public class Position : AbstractEntity
             throw new InvalidOperationException("Only an open position can be closed");
         }
 
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't close a removed position");
+        }
+
         Open = false;
     }
 
     internal void Reopen()
     {
-        if (Open)
+        if (!Open)
         {
-            throw new InvalidOperationException("Only a closed position can be reopened");
+            throw new InvalidOperationException("Only an open position can be closed");
+        }
+
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't reopen a removed position");
         }
 
         Open = true;
