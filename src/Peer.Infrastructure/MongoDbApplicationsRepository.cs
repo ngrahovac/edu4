@@ -59,6 +59,7 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         // if projectId isn't specified, query incoming applications for all authored projects
         if (projectId is null)
         {
+            // TODO: do a lookup here?
             var authoredProjectIds = await _projectsCollection
                 .Find(p => p.AuthorId == requesterId)
                 .Project(p => p.Id)
