@@ -79,6 +79,38 @@ public class ApplicationsService
             applicationsSortOption);
     }
 
+    public async Task<List<Domain.Applications.Application>> GetSentAsync(
+        Guid requesterId,
+        Guid? projectId = null,
+        Guid? positionId = null,
+        ApplicationsSortOption applicationsSortOption = ApplicationsSortOption.Default)
+    {
+        var requester = await _contributors.GetByIdAsync(requesterId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        if (projectId is null && positionId is not null)
+        {
+            throw new InvalidOperationException("Can't retrieve sent applications by specifying positionId and not the projectId as well");
+        }
+
+        if (projectId is not null)
+        {
+            var project = await _projects.GetByIdAsync((Guid)projectId) ??
+                throw new InvalidOperationException("The project with the given Id doesn't exist");
+
+            if (positionId is not null && project.GetPositionById((Guid)positionId) is null)
+            {
+                throw new InvalidOperationException("Can't retrieve sent applications for a project position that doesn't exist");
+            }
+        }
+
+        return await _applications.GetSentAsync(
+            requesterId,
+            projectId,
+            positionId,
+            applicationsSortOption);
+    }
+
     public async Task RejectAsync(Guid requesterId, Guid applicationId)
     {
         var requester = await _contributors.GetByIdAsync(requesterId) ??

@@ -92,4 +92,35 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
             return await _applicationsCollection.Find(filter).Sort(sorting).ToListAsync();
         }
     }
+
+    public async Task<List<Domain.Applications.Application>> GetSentAsync(
+        Guid requesterId,
+        Guid? projectId,
+        Guid? positionId,
+        ApplicationsSortOption applicationsSortOption)
+    {
+        var projectFilter = projectId is null ?
+            Builders<Domain.Applications.Application>.Filter.Empty :
+            Builders<Domain.Applications.Application>.Filter.Where(a => a.ProjectId == projectId);
+
+        var positionFilter = positionId is null ?
+            Builders<Domain.Applications.Application>.Filter.Empty :
+            Builders<Domain.Applications.Application>.Filter.Where(a => a.PositionId == positionId);
+
+        var submittedApplicationsFilter = Builders<Domain.Applications.Application>.Filter
+            .Where(a => a.Status == ApplicationStatus.Submitted);
+
+        var sorting = applicationsSortOption switch
+        {
+            ApplicationsSortOption.Default => null,
+            ApplicationsSortOption.NewestFirst => Builders<Domain.Applications.Application>.Sort.Descending(a => a.DateSubmitted),
+            ApplicationsSortOption.OldestFirst => Builders<Domain.Applications.Application>.Sort.Ascending(a => a.DateSubmitted),
+            _ => throw new NotImplementedException()
+        };
+
+        var filter = Builders<Domain.Applications.Application>.Filter
+            .And(projectFilter, positionFilter, submittedApplicationsFilter);
+
+        return await _applicationsCollection.Find(filter).Sort(sorting).ToListAsync();
+    }
 }

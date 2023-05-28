@@ -13,4 +13,9 @@ public interface IApplicationsRepository
         Guid? projectId,
         Guid? positionId,
         ApplicationsSortOption applicationsSortOption);
+    Task<List<Domain.Applications.Application>> GetSentAsync(
+        Guid requesterId,
+        Guid? projectId,
+        Guid? positionId,
+        ApplicationsSortOption applicationsSortOption);
 }
