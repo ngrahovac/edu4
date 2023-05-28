@@ -22,6 +22,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -61,6 +63,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -92,6 +96,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -118,6 +124,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
@@ -149,6 +157,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
@@ -187,6 +197,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -221,6 +233,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
@@ -257,6 +271,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
@@ -295,6 +311,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -329,6 +347,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
@@ -366,6 +386,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -402,6 +424,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -436,6 +460,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
@@ -473,6 +499,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -508,6 +536,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
@@ -545,6 +575,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
         var sut = new ApplicationsService(
             applications,
@@ -579,6 +611,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
 
@@ -672,6 +706,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
 
         var sut = new ApplicationsService(
@@ -763,6 +799,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
 
@@ -856,6 +894,8 @@ public class ApplicationsServiceTests
             .AddUserSecrets(GetType().Assembly)
             .Build();
 
+        await new DbUtils(config).CleanDatabaseAsync();
+
         var applications = new MongoDbApplicationsRepository(config);
 
         var sut = new ApplicationsService(
@@ -873,15 +913,6 @@ public class ApplicationsServiceTests
         var applicant6 = await new ContributorFactory().SeedAsync();
 
         var authoredProject1 = await new ProjectFactory()
-            .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
-            })
-            .SeedAsync();
-
-        var authoredProject2 = await new ProjectFactory()
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -956,6 +987,8 @@ public class ApplicationsServiceTests
         var config = new ConfigurationBuilder()
             .AddUserSecrets(GetType().Assembly)
             .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
 
