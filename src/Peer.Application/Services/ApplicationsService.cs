@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Peer.Application.Contracts;
+using Peer.Domain.Applications;
 
 namespace Peer.Application.Services;
 public class ApplicationsService
@@ -38,6 +39,44 @@ public class ApplicationsService
         application.Accept();
 
         await _applications.UpdateAsync(application);
+    }
+
+    public async Task<List<Domain.Applications.Application>> GetReceivedAsync(
+        Guid requesterId,
+        Guid? projectId = null,
+        Guid? positionId = null,
+        ApplicationsSortOption applicationsSortOption = ApplicationsSortOption.Default)
+    {
+        var requester = await _contributors.GetByIdAsync(requesterId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        if (projectId is null && positionId is not null)
+        {
+            throw new InvalidOperationException("Can't retrieve incoming applications by specifying positionId and not the projectId as well");
+        }
+
+        if (projectId is not null)
+        {
+            var project = await _projects.GetByIdAsync((Guid)projectId) ??
+                throw new InvalidOperationException("The project with the given Id doesn't exist");
+
+            if (requesterId != project.AuthorId)
+            {
+                throw new InvalidOperationException("Only the project author can see incoming applications for the specified project");
+            }
+
+            if (positionId is not null && project.GetPositionById((Guid)positionId) is null)
+            {
+                throw new InvalidOperationException("Can't retrieve incoming applications for a project position that doesn't exist");
+            }
+        }
+
+        // requesterId will be needed if neither projectId nor positionId have been specified
+        return await _applications.GetReceivedAsync(
+            requesterId,
+            projectId,
+            positionId,
+            applicationsSortOption);
     }
 
     public async Task RejectAsync(Guid requesterId, Guid applicationId)
