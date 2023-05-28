@@ -14,7 +14,6 @@ public class Project : AbstractAggregateRoot
     public IReadOnlyCollection<Position> Positions
         => _positions.ToList();
 
-
     public Project(
         string title,
         string description,
@@ -68,6 +67,11 @@ public class Project : AbstractAggregateRoot
             throw new InvalidOperationException("Can't apply for a closed position");
         }
 
+        if (position.Removed)
+        {
+            throw new InvalidOperationException("Can't apply for a removed position");
+        }
+
         if (applicantId == AuthorId)
         {
             throw new InvalidOperationException("The author can't apply for a position on own project");
@@ -90,6 +94,14 @@ public class Project : AbstractAggregateRoot
             throw new InvalidOperationException("Can't reopen a position that doesn't exist");
 
         position.Reopen();
+    }
+
+    public void RemovePosition(Guid positionId)
+    {
+        var position = GetById(positionId) ??
+            throw new InvalidOperationException("Can't remove a position that doesn't exist");
+
+        position.Remove();
     }
 
     private Position? GetById(Guid positionId) =>

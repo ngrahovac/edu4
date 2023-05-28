@@ -9,6 +9,7 @@ public class Position : AbstractEntity
     public string Description { get; private set; }
     public Hat Requirements { get; }
     public bool Open { get; private set; }
+    public bool Removed { get; private set; }
 
     public Position(
         string name,
@@ -21,6 +22,7 @@ public class Position : AbstractEntity
         Description = description;
         Requirements = requirements;
         Open = true;
+        Removed = false;
     }
 
     public bool IsRecommendedFor(Contributor user) => user.Hats.Any(h => h.Fits(Requirements));
@@ -30,6 +32,11 @@ public class Position : AbstractEntity
         if (!Open)
         {
             throw new InvalidOperationException("Only an open position can be closed");
+        }
+
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't close a removed position");
         }
 
         Open = false;
@@ -42,6 +49,21 @@ public class Position : AbstractEntity
             throw new InvalidOperationException("Only a closed position can be reopened");
         }
 
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't reopen a removed position");
+        }
+
         Open = true;
+    }
+
+    internal void Remove()
+    {
+        if (Removed)
+        {
+            throw new InvalidOperationException("A position can't be removed twice");
+        }
+
+        Removed = true;
     }
 }
