@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Peer.API.Models.Display;
 using Peer.API.Utils;
 using Peer.Application.Services;
 using Peer.Domain.Applications;
@@ -22,6 +23,42 @@ public class ApplicationsController : ControllerBase
         _applications = applications;
         _contributors = contributors;
         _accountIdExtractionService = accountIdExtractionService;
+    }
+
+    [HttpGet("sent")]
+    public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetSentAsync(
+        Guid? projectId,
+        Guid? positionId,
+        ApplicationsSortOption? sort)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+
+        var applications = await _applications.GetSentAsync(
+            requesterId,
+            projectId,
+            positionId,
+            sort ?? ApplicationsSortOption.Default);
+
+        return applications.Select(a => new ApplicationDisplayModel(a)).ToList();
+    }
+
+    [HttpGet("received")]
+    public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetReceivedAsync(
+        Guid? projectId,
+        Guid? positionId,
+        ApplicationsSortOption? sort)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+
+        var applications = await _applications.GetReceivedAsync(
+            requesterId,
+            projectId,
+            positionId,
+            sort ?? ApplicationsSortOption.Default);
+
+        return applications.Select(a => new ApplicationDisplayModel(a)).ToList();
     }
 
     [HttpPost]
