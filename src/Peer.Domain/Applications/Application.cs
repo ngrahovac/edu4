@@ -7,6 +7,7 @@ public class Application : AbstractEntity
     public Guid ProjectId { get; }
     public Guid PositionId { get; }
     public ApplicationStatus Status { get; private set; }
+    public DateTime DateSubmitted { get; private set; }
 
     public Application(Guid applicantId, Guid projectId, Guid positionId)
     {
@@ -14,6 +15,7 @@ public class Application : AbstractEntity
         ProjectId = projectId;
         PositionId = positionId;
         Status = ApplicationStatus.Submitted;
+        DateSubmitted = DateTime.Now;
     }
 
     public void Revoke()

@@ -1,3 +1,5 @@
+using Peer.Domain.Applications;
+
 namespace Peer.Application.Contracts;
 
 public interface IApplicationsRepository
@@ -6,4 +8,14 @@ public interface IApplicationsRepository
     Task AddAsync(Domain.Applications.Application application);
     public Task<Domain.Applications.Application> GetByApplicantAndPositionAsync(Guid applicantId, Guid positionId);
     Task UpdateAsync(Domain.Applications.Application application);
+    Task<List<Domain.Applications.Application>> GetReceivedAsync(
+        Guid requesterId,
+        Guid? projectId,
+        Guid? positionId,
+        ApplicationsSortOption applicationsSortOption);
+    Task<List<Domain.Applications.Application>> GetSentAsync(
+        Guid requesterId,
+        Guid? projectId,
+        Guid? positionId,
+        ApplicationsSortOption applicationsSortOption);
 }
