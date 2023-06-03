@@ -2043,4 +2043,6 @@ public class ProjectsServiceTests
         var retrievedProject = await projects.GetByIdAsync(project.Id);
         retrievedProject.Positions.ElementAt(0).Removed.Should().BeTrue();
     }
+
+    // TODO: test invariants related to removed projects
 }
