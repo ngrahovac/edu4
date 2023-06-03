@@ -25,4 +25,16 @@ public class Auth0AccountManagementService : IAccountManagementService
                 $"Exception while making Auth0 Management API call: could not mark user with id {accountId} signed up.");
         }
     }
+
+    public async Task RemoveAccountAsync(string accountId)
+    {
+        var response = await _auth0ManagementApiClient.DeleteAsync(
+            $"users/{accountId}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new InvalidOperationException(
+                $"Exception while making Auth0 Management API call: could not remove user with {accountId}");
+        }
+    }
 }

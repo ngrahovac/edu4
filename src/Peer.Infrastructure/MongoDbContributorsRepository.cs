@@ -8,6 +8,8 @@ namespace Peer.Infrastructure;
 public class MongoDbContributorsRepository : IContributorsRepository
 {
     private readonly IMongoCollection<Contributor> _contributorsCollection;
+    private readonly FilterDefinition<Contributor> _nonRemovedContributorFilter =
+        Builders<Contributor>.Filter.Where(c => !c.Removed);
 
     public MongoDbContributorsRepository(IConfiguration configuration)
     {
@@ -19,21 +21,27 @@ public class MongoDbContributorsRepository : IContributorsRepository
         _contributorsCollection = mongoDb.GetCollection<Contributor>(usersCollectionName);
     }
 
+    private Task<Contributor> FindOneAsync(FilterDefinition<Contributor> filter) =>
+        _contributorsCollection
+        .Find(Builders<Contributor>.Filter.And(filter, _nonRemovedContributorFilter))
+        .SingleOrDefaultAsync();
+
     public Task AddAsync(Contributor user)
         => _contributorsCollection.InsertOneAsync(user);
 
-    public async Task<Contributor?> GetByIdAsync(Guid id)
-        => await _contributorsCollection.Find(u => u.Id == id).FirstOrDefaultAsync();
+    public Task<Contributor> GetByIdAsync(Guid id)
+        => FindOneAsync(Builders<Contributor>.Filter.Where(c => c.Id == id));
 
-    public async Task<Contributor?> GetByAccountIdAsync(string accountId)
-        => await _contributorsCollection.Find(u => u.AccountId == accountId).FirstOrDefaultAsync();
+    public Task<Contributor> GetByAccountIdAsync(string accountId)
+        => FindOneAsync(Builders<Contributor>.Filter.Where(c => c.AccountId == accountId));
 
     public async Task UpdateAsync(Contributor contributor)
     {
         var updateFilter = Builders<Contributor>.Update
             .Set(p => p.FullName, contributor.FullName)
             .Set(p => p.ContactEmail, contributor.ContactEmail)
-            .Set(p => p.Hats, contributor.Hats);
+            .Set(p => p.Hats, contributor.Hats)
+            .Set(c => c.Removed, contributor.Removed);
 
         await _contributorsCollection.UpdateOneAsync(c => c.Id == contributor.Id, updateFilter);
     }

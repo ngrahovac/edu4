@@ -13,6 +13,8 @@ public class Contributor : AbstractAggregateRoot
 
     public IReadOnlyList<Hat> Hats => _hats.ToList();
 
+    public bool Removed { get; private set; }
+
 
     public Contributor(
         string accountId,
@@ -33,6 +35,8 @@ public class Contributor : AbstractAggregateRoot
 
             _hats.Add(hat);
         }
+
+        Removed = false;
     }
 
 
@@ -50,5 +54,15 @@ public class Contributor : AbstractAggregateRoot
         {
             _hats.Add(h);
         }
+    }
+
+    public void Remove()
+    {
+        if (Removed)
+        {
+            throw new InvalidOperationException("The contributor has aleady been removed");
+        }
+
+        Removed = true;
     }
 }

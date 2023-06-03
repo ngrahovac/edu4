@@ -116,6 +116,10 @@ public class ContributorsService
             throw new InvalidOperationException("The requester doesn't have permission to remove the contributor");
         }
 
-        await _contributors.RemoveAsync(contributor);
+        contributor.Remove();
+
+        await _contributors.UpdateAsync(contributor);
+
+        await _accountManagement.RemoveAccountAsync(contributor.AccountId);
     }
 }
