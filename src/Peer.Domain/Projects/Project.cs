@@ -65,6 +65,11 @@ public class Project : AbstractAggregateRoot
         var position = GetById(positionId) ??
             throw new InvalidOperationException("Can't apply for a position that doesn't exist");
 
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't apply for a position on a removed project");
+        }
+
         if (!position.Open)
         {
             throw new InvalidOperationException("Can't apply for a closed position");
