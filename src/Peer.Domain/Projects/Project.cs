@@ -119,6 +119,7 @@ public class Project : AbstractAggregateRoot
 
         Removed = true;
     }
+
     private Position? GetById(Guid positionId) =>
         _positions.FirstOrDefault(p => p.Id == positionId);
 }
