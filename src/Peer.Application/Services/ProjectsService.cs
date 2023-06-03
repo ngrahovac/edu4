@@ -111,7 +111,9 @@ public class ProjectsService
             throw new InvalidOperationException("The requester doesn't have permission to update the project");
         }
 
-        await _projects.DeleteAsync(projectId);
+        project.Remove();
+
+        await _projects.UpdateAsync(project);
     }
 
     public async Task ClosePositionAsync(Guid requesterId, Guid projectId, Guid positionId)

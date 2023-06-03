@@ -199,7 +199,8 @@ public class MongoDBProjectsRepository : IProjectsRepository
         var updateFilter = Builders<Project>.Update
             .Set(p => p.Title, project.Title)
             .Set(p => p.Description, project.Description)
-            .Set(p => p.Positions, project.Positions);
+            .Set(p => p.Positions, project.Positions)
+            .Set(p => p.Removed, project.Removed);
 
         await _projectsCollection.UpdateOneAsync(p => p.Id == project.Id, updateFilter);
     }
