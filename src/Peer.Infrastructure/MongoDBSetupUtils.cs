@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 using Peer.Domain.Common;
 using Peer.Domain.Contributors;
 using Peer.Domain.Projects;
+using Peer.Domain.Collaborations;
 
 namespace Peer.Infrastructure;
 public class MongoDBSetupUtils
@@ -93,6 +94,15 @@ public class MongoDBSetupUtils
             cm.MapProperty(cm => cm.PositionId);
             cm.MapProperty(cm => cm.DateSubmitted);
             cm.MapProperty(cm => cm.Status);
+        });
+
+        BsonClassMap.RegisterClassMap<Collaboration>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(c => c.CollaboratorId);
+            cm.MapProperty(c => c.ProjectId);
+            cm.MapProperty(c => c.PositionId);
+            cm.MapProperty(c => c.Status);
         });
     }
 }
