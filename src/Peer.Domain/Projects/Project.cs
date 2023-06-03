@@ -9,6 +9,7 @@ public class Project : AbstractAggregateRoot
     public string Title { get; private set; }
     public string Description { get; private set; }
     public Guid AuthorId { get; }
+    public bool Removed { get; private set; }
 
     private readonly List<Position> _positions;
     public IReadOnlyCollection<Position> Positions
@@ -31,6 +32,8 @@ public class Project : AbstractAggregateRoot
         }
 
         _positions = positions.ToList();
+
+        Removed = false;
     }
 
     public bool IsRecommendedFor(Contributor user) =>
@@ -107,6 +110,15 @@ public class Project : AbstractAggregateRoot
     public Position? GetPositionById(Guid positionId)
         => GetById(positionId);
 
+    public void Remove()
+    {
+        if (Removed)
+        {
+            throw new InvalidOperationException("The project has already been removed");
+        }
+
+        Removed = true;
+    }
     private Position? GetById(Guid positionId) =>
         _positions.FirstOrDefault(p => p.Id == positionId);
 }
