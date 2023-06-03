@@ -63,7 +63,7 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         {
             // TODO: do a lookup here?
             var authoredProjectIds = await _projectsCollection
-                .Find(p => p.AuthorId == requesterId)
+                .Find(p => p.AuthorId == requesterId && !p.Removed)
                 .Project(p => p.Id)
                 .ToListAsync();
 
