@@ -51,4 +51,33 @@ public class CollaborationsService
 
         await _collaborations.AddAsync(collaboration);
     }
+
+    public async Task TerminateAsync(
+        Guid requesterId,
+        Guid collaborationId)
+    {
+        var requester = await _contributors.GetByIdAsync(requesterId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        var collaboration = await _collaborations.GetByIdAsync(collaborationId) ??
+            throw new InvalidOperationException("An active collaboration with the given Id doesn't exist");
+
+        if (collaboration.CollaboratorId == requester.Id)
+        {
+            collaboration.TerminateByCollaborator();
+        }
+        else
+        {
+            var project = await _projects.GetByIdAsync(collaboration.ProjectId);
+
+            if (project.AuthorId != requesterId)
+            {
+                throw new InvalidOperationException("The requester doesn't have permission to terminate the collaboration");
+            }
+
+            collaboration.TerminateByAuthor();
+        }
+
+        await _collaborations.UpdateAsync(collaboration);
+    }
 }
