@@ -126,5 +126,5 @@ public class Project : AbstractAggregateRoot
     }
 
     private Position? GetById(Guid positionId) =>
-        _positions.FirstOrDefault(p => p.Id == positionId);
+        _positions.FirstOrDefault(p => p.Id == positionId && !p.Removed);
 }
