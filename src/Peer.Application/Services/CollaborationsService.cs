@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Peer.Application.Contracts;
 using Peer.Domain.Collaborations;
 
@@ -79,5 +74,26 @@ public class CollaborationsService
         }
 
         await _collaborations.UpdateAsync(collaboration);
+    }
+
+
+    public async Task<List<Collaboration>> GetAllForCollaboratorAsync(Guid collaboratorId)
+    {
+        var collaborator = await _contributors.GetByIdAsync(collaboratorId) ??
+            throw new InvalidOperationException("The contributor with the given Id doesn't exist");
+
+        var collaborations = await _collaborations.GetAllByCollaboratorIdAsync(collaborator.Id);
+
+        return collaborations;
+    }
+
+    public async Task<List<Collaboration>> GetAllForProjectAsync(Guid projectId)
+    {
+        var project = await _projects.GetByIdAsync(projectId) ??
+            throw new InvalidOperationException("Can't find collaborations for a project that doesn't exist");
+
+        var collaborations = await _collaborations.GetAllForProjectAsync(project.Id);
+
+        return collaborations;
     }
 }
