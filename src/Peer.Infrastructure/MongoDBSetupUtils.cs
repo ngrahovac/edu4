@@ -65,6 +65,8 @@ public class MongoDBSetupUtils
             cm.MapProperty(p => p.Positions);
             cm.MapField("_positions").SetElementName("_positions");
 
+            cm.MapProperty(p => p.Removed);
+
             cm.MapCreator(p => new Project(
                 p.Title,
                 p.Description,

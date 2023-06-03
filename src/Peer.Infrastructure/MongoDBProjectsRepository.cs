@@ -15,6 +15,9 @@ public class MongoDBProjectsRepository : IProjectsRepository
     private readonly FilterDefinition<Position> _emptyPositionFilter =
         Builders<Position>.Filter.Empty;
 
+    private readonly FilterDefinition<Project> _nonRemovedProjectsFilter =
+        Builders<Project>.Filter.Where(p => !p.Removed);
+
     public MongoDBProjectsRepository(IConfiguration configuration)
     {
         var clusterConnectionString = configuration["MongoDb:ClusterConnectionString"];
@@ -25,9 +28,19 @@ public class MongoDBProjectsRepository : IProjectsRepository
         _projectsCollection = mongoDb.GetCollection<Project>(projectsCollectionName);
     }
 
+    private Task<Project> FindOneAsync(FilterDefinition<Project> filter) =>
+        _projectsCollection
+        .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
+        .SingleAsync();
+
+    private Task<List<Project>> FindManyAsync(FilterDefinition<Project> filter, SortDefinition<Project>? sort = null) =>
+        _projectsCollection
+        .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
+        .Sort(sort)
+        .ToListAsync();
 
     public Task<Project> GetByIdAsync(Guid id)
-        => _projectsCollection.Find(p => p.Id == id).FirstOrDefaultAsync();
+        => FindOneAsync(Builders<Project>.Filter.Where(p => p.Id == id));
 
     public async Task<IReadOnlyList<Project>> GetRecommendedForUserWearing(Hat hat)
     {
@@ -60,7 +73,7 @@ public class MongoDBProjectsRepository : IProjectsRepository
 
         var projectFilter = Builders<Project>.Filter.ElemMatch<Position>("_positions", requirementsFilter);
 
-        var projects = await _projectsCollection.Find(projectFilter).ToListAsync();
+        var projects = await FindManyAsync(projectFilter);
 
         return projects;
     }
@@ -75,7 +88,7 @@ public class MongoDBProjectsRepository : IProjectsRepository
 
         var projectFilter = Builders<Project>.Filter.ElemMatch<Position>("_positions", requirementsFilter);
 
-        var projects = await _projectsCollection.Find(projectFilter).ToListAsync();
+        var projects = await FindManyAsync(projectFilter);
 
         return projects;
     }
@@ -123,9 +136,7 @@ public class MongoDBProjectsRepository : IProjectsRepository
             _ => throw new NotImplementedException()
         };
 
-        var projects = sorting is not null ?
-            await _projectsCollection.Find(filter).Sort(sorting).ToListAsync() :
-            await _projectsCollection.Find(filter).ToListAsync();
+        var projects = await FindManyAsync(filter, sorting);
 
         return projects;
     }
