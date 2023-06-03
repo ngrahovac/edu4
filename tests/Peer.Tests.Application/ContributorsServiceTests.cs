@@ -290,6 +290,8 @@ public class ContributorsServiceTests
             .Build();
 
         var accountManagement = new Mock<IAccountManagementService>(MockBehavior.Strict);
+        accountManagement.Setup(m => m.RemoveAccountAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+
         var contributors = new MongoDbContributorsRepository(config);
 
         var sut = new ContributorsService(
