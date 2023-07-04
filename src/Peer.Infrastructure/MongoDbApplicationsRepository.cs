@@ -126,7 +126,15 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
 
     public Task<List<Domain.Applications.Application>> GetByApplicantAsync(Guid applicantId)
     {
-        throw new NotImplementedException();
+        var applicantFilter = Builders<Domain.Applications.Application>.Filter.Where(a => a.ApplicantId == applicantId);
+
+        var submittedApplicationsFilter = Builders<Domain.Applications.Application>.Filter
+            .Where(a => a.Status == ApplicationStatus.Submitted);
+
+        var filter = Builders<Domain.Applications.Application>.Filter
+            .And(applicantFilter, submittedApplicationsFilter);
+
+        return _applicationsCollection.Find(filter).ToListAsync();
     }
 
 }
