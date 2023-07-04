@@ -4,11 +4,11 @@ using Peer.Application.Contracts;
 using Peer.Domain.Common;
 
 namespace Peer.Infrastructure;
-public class DomainEventsRepository : IDomainEventsRepository
+public class MongoDbDomainEventsRepository : IDomainEventsRepository
 {
     private readonly IMongoCollection<AbstractDomainEvent> _domainEventsCollection;
 
-    public DomainEventsRepository(IConfiguration configuration)
+    public MongoDbDomainEventsRepository(IConfiguration configuration)
     {
         var clusterConnectionString = configuration["MongoDb:ClusterConnectionString"];
         var dbName = configuration["MongoDb:DbName"];
