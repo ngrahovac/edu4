@@ -137,4 +137,5 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         return _applicationsCollection.Find(filter).ToListAsync();
     }
 
+    public Task<List<Domain.Applications.Application>> GetByProjectAsync(Guid projectId) => throw new NotImplementedException();
 }

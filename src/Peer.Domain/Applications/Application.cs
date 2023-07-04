@@ -47,4 +47,14 @@ public class Application : AbstractEntity
 
         Status = ApplicationStatus.Rejected;
     }
+
+    public void Remove()
+    {
+        if (Status is not ApplicationStatus.Removed)
+        {
+            throw new InvalidOperationException("The application has already been removed");
+        }
+
+        Status = ApplicationStatus.Removed;
+    }
 }
