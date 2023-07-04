@@ -18,4 +18,19 @@ public class MongoDbDomainEventsRepository : IDomainEventsRepository
         _domainEventsCollection = mongoDb.GetCollection<AbstractDomainEvent>(domainEventsCollectionName);
     }
     public Task AddAsync(AbstractDomainEvent domainEvent) => _domainEventsCollection.InsertOneAsync(domainEvent);
+    public Task<List<AbstractDomainEvent>> GetUnprocessedBatchAsync(int batchSize)
+    {
+        var unprocessedFilter = Builders<AbstractDomainEvent>.Filter
+            .Where(de => !de.Processed);
+
+        return _domainEventsCollection.Find(unprocessedFilter).Limit(batchSize).ToListAsync();
+    }
+
+    public Task UpdateAsync(AbstractDomainEvent domainEvent)
+    {
+        var update = Builders<AbstractDomainEvent>.Update
+            .Set(de => de.Processed, domainEvent.Processed);
+
+        return _domainEventsCollection.UpdateOneAsync(de => de.Id == domainEvent.Id, update);
+    }
 }
