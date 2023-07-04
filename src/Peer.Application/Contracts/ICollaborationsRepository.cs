@@ -4,7 +4,7 @@ namespace Peer.Application.Contracts;
 public interface ICollaborationsRepository
 {
     Task AddAsync(Collaboration collaboration);
-    Task<List<Collaboration>> GetAllByCollaboratorIdAsync(Guid collaboratorId);
+    Task<List<Collaboration>> GetAllByCollaboratorAsync(Guid collaboratorId);
     Task<Collaboration> GetByIdAsync(Guid collaborationId);
     Task UpdateAsync(Collaboration collaboration);
 

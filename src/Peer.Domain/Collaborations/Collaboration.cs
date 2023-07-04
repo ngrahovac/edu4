@@ -39,4 +39,14 @@ public class Collaboration : AbstractEntity
 
         Status = CollaborationStatus.TerminatedByProjectAuthor;
     }
+
+    public void Remove()
+    {
+        if (Status is CollaborationStatus.Removed)
+        {
+            throw new InvalidOperationException("The collaboration has already been removed");
+        }
+
+        Status = CollaborationStatus.Removed;
+    }
 }

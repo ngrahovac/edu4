@@ -44,7 +44,7 @@ public class MongoDbCollaborationsRepository : ICollaborationsRepository
         await _collaborationsCollection.UpdateOneAsync(c => c.Id == collaboration.Id, update);
     }
 
-    public Task<List<Collaboration>> GetAllByCollaboratorIdAsync(Guid collaboratorId) =>
+    public Task<List<Collaboration>> GetAllByCollaboratorAsync(Guid collaboratorId) =>
         FindManyAsync(Builders<Collaboration>.Filter.Where(c => c.CollaboratorId == collaboratorId));
     public Task<List<Collaboration>> GetAllForProjectAsync(Guid projectId) =>
         FindManyAsync(Builders<Collaboration>.Filter.Where(c => c.ProjectId == projectId));

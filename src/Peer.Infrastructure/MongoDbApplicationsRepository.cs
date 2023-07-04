@@ -123,4 +123,10 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
 
         return await _applicationsCollection.Find(filter).Sort(sorting).ToListAsync();
     }
+
+    public Task<List<Domain.Applications.Application>> GetByApplicantAsync(Guid applicantId)
+    {
+        throw new NotImplementedException();
+    }
+
 }
