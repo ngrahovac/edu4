@@ -9,6 +9,7 @@ public class ContributorRemovedHandler
     private readonly IProjectsRepository _projects;
     private readonly IApplicationsRepository _applications;
     private readonly ICollaborationsRepository _collaborations;
+    private readonly IContributorsRepository _contributors;
     private readonly IDomainEventsRepository _domainEvents;
 
     public ContributorRemovedHandler(
@@ -16,16 +17,22 @@ public class ContributorRemovedHandler
         IProjectsRepository projects,
         IApplicationsRepository applications,
         ICollaborationsRepository collaborations,
+        IContributorsRepository contributors,
         IDomainEventsRepository domainEvents)
     {
         _accountManagementService = accountManagementService;
         _projects = projects;
         _applications = applications;
         _collaborations = collaborations;
+        _contributors = contributors;
         _domainEvents = domainEvents;
     }
 
-    public Task RemoveAccountAsync(string accountId) => _accountManagementService.RemoveAccountAsync(accountId);
+    public async Task RemoveAccountAsync(Guid contributorId)
+    {
+        var contributor = await _contributors.GetByIdAsync(contributorId);
+        await _accountManagementService.RemoveAccountAsync(contributor.AccountId);
+    }
 
     public async Task RemoveProjectsAuthoredByAuthorAsync(Guid authorId)
     {
