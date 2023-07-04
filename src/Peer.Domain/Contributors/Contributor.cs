@@ -64,5 +64,6 @@ public class Contributor : AbstractAggregateRoot
         }
 
         Removed = true;
+        RaiseDomainEvent(new ContributorRemoved(this));
     }
 }

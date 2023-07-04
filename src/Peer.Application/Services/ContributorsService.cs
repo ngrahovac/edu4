@@ -9,15 +9,18 @@ public class ContributorsService
 {
     private readonly IContributorsRepository _contributors;
     private readonly IAccountManagementService _accountManagement;
+    private readonly IDomainEventsRepository _domainEventsRepository;
     private readonly ILogger<ContributorsService> _logger;
 
     public ContributorsService(
         IContributorsRepository users,
         IAccountManagementService accountManagement,
+        IDomainEventsRepository domainEventsRepository,
         ILogger<ContributorsService> logger)
     {
         _contributors = users;
         _accountManagement = accountManagement;
+        _domainEventsRepository = domainEventsRepository;
         _logger = logger;
     }
 
@@ -118,7 +121,9 @@ public class ContributorsService
 
         contributor.Remove();
 
+        // TODO: wrap in a transaction
         await _contributors.UpdateAsync(contributor);
+        contributor.DomainEvents.ToList().ForEach(async e => await _domainEventsRepository.AddAsync(e));
 
         await _accountManagement.RemoveAccountAsync(contributor.AccountId);
     }
