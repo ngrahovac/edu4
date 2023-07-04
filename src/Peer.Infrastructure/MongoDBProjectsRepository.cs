@@ -205,6 +205,11 @@ public class MongoDBProjectsRepository : IProjectsRepository
         await _projectsCollection.UpdateOneAsync(p => p.Id == project.Id, updateFilter);
     }
 
-    public Task<List<Project>> GetByAuthorAsync(Guid authorId) => throw new NotImplementedException();
+    public Task<List<Project>> GetByAuthorAsync(Guid authorId)
+    {
+        var authorFilter = Builders<Project>.Filter
+            .Where(p => p.AuthorId == authorId);
 
+        return FindManyAsync(authorFilter);
+    }
 }
