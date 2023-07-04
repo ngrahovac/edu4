@@ -137,5 +137,16 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         return _applicationsCollection.Find(filter).ToListAsync();
     }
 
-    public Task<List<Domain.Applications.Application>> GetByProjectAsync(Guid projectId) => throw new NotImplementedException();
+    public Task<List<Domain.Applications.Application>> GetByProjectAsync(Guid projectId)
+    {
+        var projectFilter = Builders<Domain.Applications.Application>.Filter.Where(a =>a.ProjectId == projectId);
+
+        var submittedApplicationsFilter = Builders<Domain.Applications.Application>.Filter
+            .Where(a => a.Status == ApplicationStatus.Submitted);
+
+        var filter = Builders<Domain.Applications.Application>.Filter
+            .And(projectFilter, submittedApplicationsFilter);
+
+        return _applicationsCollection.Find(filter).ToListAsync();
+    }
 }
