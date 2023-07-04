@@ -82,7 +82,7 @@ public class CollaborationsService
         var collaborator = await _contributors.GetByIdAsync(collaboratorId) ??
             throw new InvalidOperationException("The contributor with the given Id doesn't exist");
 
-        var collaborations = await _collaborations.GetAllByCollaboratorIdAsync(collaborator.Id);
+        var collaborations = await _collaborations.GetAllByCollaboratorAsync(collaborator.Id);
 
         return collaborations;
     }
