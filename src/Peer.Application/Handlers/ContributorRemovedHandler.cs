@@ -25,10 +25,7 @@ public class ContributorRemovedHandler
         _domainEvents = domainEvents;
     }
 
-    public Task RemoveAccountAsync(string accountId)
-    {
-        return _accountManagementService.RemoveAccountAsync(accountId);
-    }
+    public Task RemoveAccountAsync(string accountId) => _accountManagementService.RemoveAccountAsync(accountId);
 
     public async Task RemoveProjectsAuthoredByAuthorAsync(Guid authorId)
     {
