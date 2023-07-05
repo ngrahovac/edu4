@@ -9,15 +9,18 @@ public class ProjectsService
 {
     private readonly IProjectsRepository _projects;
     private readonly IContributorsRepository _users;
+    private readonly IDomainEventsRepository _domainEvents;
     private readonly ILogger<ProjectsService> _logger;
 
     public ProjectsService(
         IProjectsRepository projects,
         IContributorsRepository users,
+        IDomainEventsRepository domainEvents,
         ILogger<ProjectsService> logger)
     {
         _projects = projects;
         _users = users;
+        _domainEvents = domainEvents;
         _logger = logger;
     }
 
@@ -165,8 +168,10 @@ public class ProjectsService
             throw new InvalidOperationException("Only the project author can remove a project position");
         }
 
+        // TODO: wrap in a transaction
         project.RemovePosition(positionId);
 
         await _projects.UpdateAsync(project);
+        project.DomainEvents.ToList().ForEach(async e => await _domainEvents.AddAsync(e));
     }
 }
