@@ -38,6 +38,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         var positions = new List<PositionDTO>()
@@ -102,6 +103,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -144,6 +146,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -189,6 +192,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -234,6 +238,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -287,6 +292,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -340,6 +346,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -390,6 +397,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -440,6 +448,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -526,6 +535,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -597,6 +607,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -652,6 +663,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -708,6 +720,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -758,6 +771,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -820,6 +834,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -939,6 +954,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1009,6 +1025,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1181,6 +1198,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1313,6 +1331,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1390,6 +1409,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1462,6 +1482,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1537,6 +1558,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1612,6 +1634,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1739,6 +1762,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             users,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         // ACT
@@ -1779,6 +1803,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -1813,6 +1838,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -1849,6 +1875,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -1887,6 +1914,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         var project = await new ProjectFactory()
@@ -1920,6 +1948,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         var requester = await new ContributorFactory().SeedAsync();
@@ -1949,6 +1978,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -1985,6 +2015,7 @@ public class ProjectsServiceTests
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -2017,10 +2048,12 @@ public class ProjectsServiceTests
         await new DbUtils(config).CleanDatabaseAsync();
 
         var projects = new MongoDBProjectsRepository(config);
+        var domainEvents = new MongoDbDomainEventsRepository(config);
 
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
+            domainEvents,
             new NullLogger<ProjectsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -2042,7 +2075,9 @@ public class ProjectsServiceTests
         // ASSERT
         var retrievedProject = await projects.GetByIdAsync(project.Id);
         retrievedProject.Positions.ElementAt(0).Removed.Should().BeTrue();
-    }
 
-    // TODO: test invariants related to removed projects
+        var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
+        retrievedDomainEvents.Count.Should().Be(1);
+        retrievedDomainEvents[0].Should().BeOfType<PositionRemoved>();
+    }
 }

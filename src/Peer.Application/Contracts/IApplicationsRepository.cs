@@ -20,4 +20,6 @@ public interface IApplicationsRepository
         ApplicationsSortOption applicationsSortOption);
     Task<List<Domain.Applications.Application>> GetByApplicantAsync(Guid applicantId);
     Task<List<Domain.Applications.Application>> GetByProjectAsync(Guid projectId);
+
+    Task<List<Domain.Applications.Application>> GetByPositionAsync(Guid projectId, Guid positionId);
 }

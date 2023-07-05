@@ -110,6 +110,7 @@ public class Project : AbstractAggregateRoot
             throw new InvalidOperationException("Can't remove a position that doesn't exist");
 
         position.Remove();
+        RaiseDomainEvent(new PositionRemoved(this, position));
     }
 
     public Position? GetPositionById(Guid positionId)

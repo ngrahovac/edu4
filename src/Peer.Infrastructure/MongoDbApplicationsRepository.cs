@@ -149,4 +149,17 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
 
         return _applicationsCollection.Find(filter).ToListAsync();
     }
+
+    public Task<List<Domain.Applications.Application>> GetByPositionAsync(Guid projectId, Guid positionId)
+    {
+        var projectFilter = Builders<Domain.Applications.Application>.Filter.Where(a => a.ProjectId == projectId);
+
+        var positionFilter = Builders<Domain.Applications.Application>.Filter.Where(a => a.PositionId == positionId);
+
+        var nonRemovedApplicationsFilter = Builders<Domain.Applications.Application>.Filter.Where(a => a.Status != ApplicationStatus.Removed);
+        var filter = Builders<Domain.Applications.Application>.Filter
+            .And(projectFilter, nonRemovedApplicationsFilter);
+
+        return _applicationsCollection.Find(filter).ToListAsync();
+    }
 }

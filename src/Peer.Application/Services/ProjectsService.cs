@@ -9,15 +9,18 @@ public class ProjectsService
 {
     private readonly IProjectsRepository _projects;
     private readonly IContributorsRepository _users;
+    private readonly IDomainEventsRepository _domainEvents;
     private readonly ILogger<ProjectsService> _logger;
 
     public ProjectsService(
         IProjectsRepository projects,
         IContributorsRepository users,
+        IDomainEventsRepository domainEvents,
         ILogger<ProjectsService> logger)
     {
         _projects = projects;
         _users = users;
+        _domainEvents = domainEvents;
         _logger = logger;
     }
 
@@ -167,6 +170,8 @@ public class ProjectsService
 
         project.RemovePosition(positionId);
 
+        // TODO: wrap in a transaction
         await _projects.UpdateAsync(project);
+        await Task.WhenAll(project.DomainEvents.Select(de => _domainEvents.AddAsync(de)));
     }
 }
