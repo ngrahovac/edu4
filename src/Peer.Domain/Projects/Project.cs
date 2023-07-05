@@ -94,6 +94,7 @@ public class Project : AbstractAggregateRoot
             throw new InvalidOperationException("Can't close a position that doesn't exist");
 
         position.Close();
+        RaiseDomainEvent(new PositionClosed(this, position));
     }
 
     public void ReopenPosition(Guid positionId)

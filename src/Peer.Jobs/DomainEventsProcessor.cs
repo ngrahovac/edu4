@@ -12,19 +12,22 @@ public class DomainEventsProcessor : BackgroundService
     private readonly ContributorRemovedHandler _contributorRemovedHandler;
     private readonly ProjectRemovedHandler _projectRemovedHandler;
     private readonly PositionRemovedHandler _positionRemovedHandler;
+    private readonly PositionClosedHandler _positionClosedHandler;
 
     public DomainEventsProcessor(
         ILogger<DomainEventsProcessor> logger,
         IDomainEventsRepository domainEvents,
         ContributorRemovedHandler contributorRemovedHandler,
         ProjectRemovedHandler projectRemovedHandler,
-        PositionRemovedHandler positionRemovedHandler)
+        PositionRemovedHandler positionRemovedHandler,
+        PositionClosedHandler positionClosedHandler)
     {
         _logger = logger;
         _domainEvents = domainEvents;
         _contributorRemovedHandler = contributorRemovedHandler;
         _projectRemovedHandler = projectRemovedHandler;
         _positionRemovedHandler = positionRemovedHandler;
+        _positionClosedHandler = positionClosedHandler;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -52,6 +55,10 @@ public class DomainEventsProcessor : BackgroundService
                 else if (de is PositionRemoved ppr)
                 {
                     await _positionRemovedHandler.RemoveAllApplicationsSubmittedForThePositionAsync(ppr.ProjectId, ppr.PositionId);
+                }
+                else if (de is PositionClosed ppc)
+                {
+                    await _positionClosedHandler.RejectAllApplicationsSubmittedForThePositionAsync(ppc.ProjectId, ppc.PositionId);
                 }
                 else
                 {

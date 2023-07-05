@@ -1799,11 +1799,12 @@ public class ProjectsServiceTests
         await new DbUtils(config).CleanDatabaseAsync();
 
         var projects = new MongoDBProjectsRepository(config);
+        var domainEvents = new MongoDbDomainEventsRepository(config);
 
         var sut = new ProjectsService(
             projects,
             new MongoDbContributorsRepository(config),
-            new MongoDbDomainEventsRepository(config),
+            domainEvents,
             new NullLogger<ProjectsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -1822,6 +1823,10 @@ public class ProjectsServiceTests
         // ASSERT
         var retrievedProject = await projects.GetByIdAsync(project.Id);
         retrievedProject.Positions.ElementAt(0).Open.Should().BeFalse();
+
+        var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
+        retrievedDomainEvents.Count.Should().Be(1);
+        retrievedDomainEvents[0].Should().BeOfType<PositionClosed>();
     }
 
     [Fact]
