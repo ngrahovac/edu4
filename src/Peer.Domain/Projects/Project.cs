@@ -124,6 +124,7 @@ public class Project : AbstractAggregateRoot
         }
 
         Removed = true;
+        RaiseDomainEvent(new ProjectRemoved(this));
     }
 
     private Position? GetById(Guid positionId) =>

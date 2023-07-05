@@ -116,7 +116,9 @@ public class ProjectsService
 
         project.Remove();
 
+        // TODO: wrap in a transaction
         await _projects.UpdateAsync(project);
+        await Task.WhenAll(project.DomainEvents.Select(de => _domainEvents.AddAsync(de)));
     }
 
     public async Task ClosePositionAsync(Guid requesterId, Guid projectId, Guid positionId)

@@ -31,7 +31,7 @@ public class MongoDBProjectsRepository : IProjectsRepository
     private Task<Project> FindOneAsync(FilterDefinition<Project> filter) =>
         _projectsCollection
         .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
-        .SingleAsync();
+        .SingleOrDefaultAsync();
 
     private Task<List<Project>> FindManyAsync(FilterDefinition<Project> filter, SortDefinition<Project>? sort = null) =>
         _projectsCollection
