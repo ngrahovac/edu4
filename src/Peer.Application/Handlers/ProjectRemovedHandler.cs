@@ -19,7 +19,7 @@ public class ProjectRemovedHandler
         if (applicationsToRemove.Any())
         {
             applicationsToRemove.ForEach(a => a.Remove());
-            applicationsToRemove.ForEach(async a => await _applications.UpdateAsync(a));
+            await Task.WhenAll(applicationsToRemove.Select(a => _applications.UpdateAsync(a)));
         }
     }
 
@@ -30,7 +30,7 @@ public class ProjectRemovedHandler
         if (collaborationsToRemove.Any())
         {
             collaborationsToRemove.ForEach(c => c.Remove());
-            collaborationsToRemove.ForEach(async c => await _collaborations.UpdateAsync(c));
+            await Task.WhenAll(collaborationsToRemove.Select(c => _collaborations.UpdateAsync(c)));
         }
     }
 }

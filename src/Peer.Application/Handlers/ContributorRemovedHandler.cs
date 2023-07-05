@@ -42,8 +42,8 @@ public class ContributorRemovedHandler
         {
             // TODO: wrap in a transaction
             projectsToRemove.ForEach(p => p.Remove());
-            projectsToRemove.ForEach(async p => await _projects.UpdateAsync(p));
-            projectsToRemove.ForEach(async p => await _domainEvents.AddAsync(new ProjectRemoved(p)));
+            await Task.WhenAll(projectsToRemove.Select(p => _projects.UpdateAsync(p)));
+            await Task.WhenAll(projectsToRemove.Select(p => _domainEvents.AddAsync(new ProjectRemoved(p))));
         }
     }
 
@@ -54,7 +54,7 @@ public class ContributorRemovedHandler
         if (applicationsToRemove.Any())
         {
             applicationsToRemove.ForEach(a => a.Remove());
-            applicationsToRemove.ForEach(async a => await _applications.UpdateAsync(a));
+            await Task.WhenAll(applicationsToRemove.Select(a => _applications.UpdateAsync(a)));
         }
     }
 
@@ -65,7 +65,7 @@ public class ContributorRemovedHandler
         if (collaborationsToRemove.Any())
         {
             collaborationsToRemove.ForEach(c => c.Remove());
-            collaborationsToRemove.ForEach(async c => await _collaborations.UpdateAsync(c));
+            await Task.WhenAll(collaborationsToRemove.Select(c => _collaborations.UpdateAsync(c)));
         }
     }
 }
