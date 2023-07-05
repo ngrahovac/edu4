@@ -18,5 +18,7 @@ public class DbUtils
         await mongoDb.DropCollectionAsync(_configuration["MongoDb:UsersCollectionName"]);
         await mongoDb.DropCollectionAsync(_configuration["MongoDb:ProjectsCollectionName"]);
         await mongoDb.DropCollectionAsync(_configuration["MongoDb:ApplicationsCollectionName"]);
+        await mongoDb.DropCollectionAsync(_configuration["MongoDb:CollaborationsCollectionName"]);
+        await mongoDb.DropCollectionAsync(_configuration["MongoDb:DomainEventsCollectionName"]);
     }
 }
