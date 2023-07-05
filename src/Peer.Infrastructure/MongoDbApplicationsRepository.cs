@@ -123,4 +123,30 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
 
         return await _applicationsCollection.Find(filter).Sort(sorting).ToListAsync();
     }
+
+    public Task<List<Domain.Applications.Application>> GetByApplicantAsync(Guid applicantId)
+    {
+        var applicantFilter = Builders<Domain.Applications.Application>.Filter.Where(a => a.ApplicantId == applicantId);
+
+        var submittedApplicationsFilter = Builders<Domain.Applications.Application>.Filter
+            .Where(a => a.Status == ApplicationStatus.Submitted);
+
+        var filter = Builders<Domain.Applications.Application>.Filter
+            .And(applicantFilter, submittedApplicationsFilter);
+
+        return _applicationsCollection.Find(filter).ToListAsync();
+    }
+
+    public Task<List<Domain.Applications.Application>> GetByProjectAsync(Guid projectId)
+    {
+        var projectFilter = Builders<Domain.Applications.Application>.Filter.Where(a =>a.ProjectId == projectId);
+
+        var submittedApplicationsFilter = Builders<Domain.Applications.Application>.Filter
+            .Where(a => a.Status == ApplicationStatus.Submitted);
+
+        var filter = Builders<Domain.Applications.Application>.Filter
+            .And(projectFilter, submittedApplicationsFilter);
+
+        return _applicationsCollection.Find(filter).ToListAsync();
+    }
 }

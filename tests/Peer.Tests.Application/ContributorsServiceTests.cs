@@ -34,6 +34,7 @@ public class ContributorsServiceTests
         var sut = new ContributorsService(
             users,
             accountManagementMock.Object,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
         var accountId = "google-oauth2|0";
@@ -95,7 +96,11 @@ public class ContributorsServiceTests
         accountManagementMock.Setup(s => s.MarkUserSignedUpAsync(It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        var sut = new ContributorsService(users, accountManagementMock.Object, new NullLogger<ContributorsService>());
+        var sut = new ContributorsService(
+            users,
+            accountManagementMock.Object,
+            new MongoDbDomainEventsRepository(config),
+            new NullLogger<ContributorsService>());
 
         var accountId = "google-oauth2|0";
         var fullName = "John Doe";
@@ -144,6 +149,7 @@ public class ContributorsServiceTests
         var sut = new ContributorsService(
             contributors,
             accountManagement.Object,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
         var contributorId = Guid.NewGuid().ToString();
@@ -184,6 +190,7 @@ public class ContributorsServiceTests
         var sut = new ContributorsService(
             contributors,
             accountManagement.Object,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
         var contributorId = Guid.NewGuid().ToString();
@@ -224,6 +231,7 @@ public class ContributorsServiceTests
         var sut = new ContributorsService(
             contributors,
             accountManagement.Object,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
         var contributorId = Guid.NewGuid().ToString();
@@ -264,6 +272,7 @@ public class ContributorsServiceTests
         var sut = new ContributorsService(
             contributors,
             accountManagement.Object,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
         var requester = await new ContributorFactory().SeedAsync();
@@ -297,6 +306,7 @@ public class ContributorsServiceTests
         var sut = new ContributorsService(
             contributors,
             accountManagement.Object,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
         var contributor = await new ContributorFactory()
@@ -324,6 +334,7 @@ public class ContributorsServiceTests
         var sut = new ContributorsService(
             contributors,
             accountManagement.Object,
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
         var requester = await new ContributorFactory().SeedAsync();

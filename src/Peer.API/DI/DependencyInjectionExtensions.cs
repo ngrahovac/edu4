@@ -39,6 +39,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IProjectsRepository, MongoDBProjectsRepository>();
         services.AddScoped<IApplicationsRepository, MongoDbApplicationsRepository>();
         services.AddScoped<ICollaborationsRepository, MongoDbCollaborationsRepository>();
+        services.AddScoped<IDomainEventsRepository, MongoDbDomainEventsRepository>();
 
         return services;
     }

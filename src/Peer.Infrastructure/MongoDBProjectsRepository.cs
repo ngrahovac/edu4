@@ -205,8 +205,11 @@ public class MongoDBProjectsRepository : IProjectsRepository
         await _projectsCollection.UpdateOneAsync(p => p.Id == project.Id, updateFilter);
     }
 
-    public async Task DeleteAsync(Guid projectId)
+    public Task<List<Project>> GetByAuthorAsync(Guid authorId)
     {
-        await _projectsCollection.DeleteOneAsync(p => p.Id == projectId);
+        var authorFilter = Builders<Project>.Filter
+            .Where(p => p.AuthorId == authorId);
+
+        return FindManyAsync(authorFilter);
     }
 }
