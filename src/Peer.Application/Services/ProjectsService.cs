@@ -168,10 +168,10 @@ public class ProjectsService
             throw new InvalidOperationException("Only the project author can remove a project position");
         }
 
-        // TODO: wrap in a transaction
         project.RemovePosition(positionId);
 
+        // TODO: wrap in a transaction
         await _projects.UpdateAsync(project);
-        project.DomainEvents.ToList().ForEach(async e => await _domainEvents.AddAsync(e));
+        await Task.WhenAll(project.DomainEvents.Select(de => _domainEvents.AddAsync(de)));
     }
 }
