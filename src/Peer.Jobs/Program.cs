@@ -11,6 +11,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<IDomainEventsRepository, MongoDbDomainEventsRepository>();
         services.AddScoped<ContributorRemovedHandler>();
         services.AddScoped<ProjectRemovedHandler>();
+        services.AddScoped<PositionRemovedHandler>();
     })
     .Build();
 
