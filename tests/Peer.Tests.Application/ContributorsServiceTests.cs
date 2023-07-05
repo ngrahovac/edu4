@@ -302,11 +302,12 @@ public class ContributorsServiceTests
         accountManagement.Setup(m => m.RemoveAccountAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
 
         var contributors = new MongoDbContributorsRepository(config);
+        var domainEvents = new MongoDbDomainEventsRepository(config);
 
         var sut = new ContributorsService(
             contributors,
             accountManagement.Object,
-            new MongoDbDomainEventsRepository(config),
+            domainEvents,
             new NullLogger<ContributorsService>());
 
         var contributor = await new ContributorFactory()
@@ -318,6 +319,10 @@ public class ContributorsServiceTests
         // ASSERT
         var retrievedContributor = await contributors.GetByIdAsync(contributor.Id);
         retrievedContributor.Should().BeNull();
+
+        var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
+        retrievedDomainEvents.Count.Should().Be(1);
+        retrievedDomainEvents[0].Should().BeOfType<ContributorRemoved>();
     }
 
     [Fact]
