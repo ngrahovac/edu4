@@ -2080,4 +2080,46 @@ public class ProjectsServiceTests
         retrievedDomainEvents.Count.Should().Be(1);
         retrievedDomainEvents[0].Should().BeOfType<PositionRemoved>();
     }
+
+    [Fact]
+    public async Task Project_author_can_remove_a_project()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
+            .Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var projects = new MongoDBProjectsRepository(config);
+        var domainEvents = new MongoDbDomainEventsRepository(config);
+
+        var sut = new ProjectsService(
+            projects,
+            new MongoDbContributorsRepository(config),
+            domainEvents,
+            new NullLogger<ProjectsService>());
+
+        var author = await new ContributorFactory().SeedAsync();
+
+        var project = await new ProjectFactory()
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>()
+            {
+                new PositionFactory().Build()
+            })
+            .SeedAsync();
+
+        // ACT
+        await sut.RemoveAsync(
+            project.Id,
+            author.Id);
+
+        // ASSERT
+        var retrievedProject = await projects.GetByIdAsync(project.Id);
+        retrievedProject.Should().BeNull();
+
+        var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
+        retrievedDomainEvents.Count.Should().Be(1);
+        retrievedDomainEvents[0].Should().BeOfType<ProjectRemoved>();
+    }
 }
