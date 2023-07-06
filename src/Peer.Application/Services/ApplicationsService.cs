@@ -8,17 +8,20 @@ public class ApplicationsService
     private readonly IApplicationsRepository _applications;
     private readonly IContributorsRepository _contributors;
     private readonly IProjectsRepository _projects;
+    private readonly IDomainEventsRepository _domainEvents;
     private readonly ILogger<ApplicationsService> _logger;
 
     public ApplicationsService(
         IApplicationsRepository applications,
         IContributorsRepository contributors,
         IProjectsRepository projects,
+        IDomainEventsRepository domainEvents,
         ILogger<ApplicationsService> logger)
     {
         _applications = applications;
         _contributors = contributors;
         _projects = projects;
+        _domainEvents = domainEvents;
         _logger = logger;
     }
 
@@ -38,7 +41,9 @@ public class ApplicationsService
 
         application.Accept();
 
+        // TODO: wrap in a transaction
         await _applications.UpdateAsync(application);
+        await Task.WhenAll(application.DomainEvents.Select(de => _domainEvents.AddAsync(de)));
     }
 
     public async Task<List<Domain.Applications.Application>> GetReceivedAsync(
