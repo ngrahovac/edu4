@@ -13,6 +13,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<ProjectRemovedHandler>();
         services.AddScoped<PositionRemovedHandler>();
         services.AddScoped<PositionClosedHandler>();
+        services.AddScoped<ApplicationAcceptedHandler>();
     })
     .Build();
 

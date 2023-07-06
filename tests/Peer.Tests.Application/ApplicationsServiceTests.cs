@@ -25,10 +25,12 @@ public class ApplicationsServiceTests
         await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
+
         var sut = new ApplicationsService(
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectFactory()
@@ -70,6 +72,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -103,6 +106,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var contributor = await new ContributorFactory().SeedAsync();
@@ -132,6 +136,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var contributor = await new ContributorFactory().SeedAsync();
@@ -165,6 +170,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectFactory()
@@ -204,6 +210,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectFactory()
@@ -241,6 +248,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectFactory()
@@ -279,6 +287,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectFactory()
@@ -314,10 +323,13 @@ public class ApplicationsServiceTests
         await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
+        var domainEvents = new MongoDbDomainEventsRepository(config);
+
         var sut = new ApplicationsService(
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            domainEvents,
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -338,6 +350,10 @@ public class ApplicationsServiceTests
         // ASSERT
         var retrievedApplication = await applications.GetByIdAsync(application.Id);
         retrievedApplication.Status.Should().Be(ApplicationStatus.Accepted);
+
+        var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
+        retrievedDomainEvents.Count.Should().Be(1);
+        retrievedDomainEvents[0].Should().BeOfType<ApplicationAccepted>();
     }
 
     [Fact]
@@ -351,10 +367,13 @@ public class ApplicationsServiceTests
         await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
+        var domainEvents = new MongoDbDomainEventsRepository(config);
+
         var sut = new ApplicationsService(
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            domainEvents,
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -376,6 +395,9 @@ public class ApplicationsServiceTests
 
         // ASSERT
         await acceptingApplicationForAProjectAuthoredByAnother.Should().ThrowAsync<InvalidOperationException>();
+
+        var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
+        retrievedDomainEvents.Count.Should().Be(0);
     }
 
     [Fact]
@@ -389,10 +411,13 @@ public class ApplicationsServiceTests
         await new DbUtils(config).CleanDatabaseAsync();
 
         var applications = new MongoDbApplicationsRepository(config);
+        var domainEvents = new MongoDbDomainEventsRepository(config);
+
         var sut = new ApplicationsService(
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            domainEvents,
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -414,6 +439,9 @@ public class ApplicationsServiceTests
 
         // ASSERT
         await acceptingTheSameApplicationForTheSecondTime.Should().ThrowAsync<InvalidOperationException>();
+
+        var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
+        retrievedDomainEvents.Count.Should().Be(1);
     }
 
     [Fact]
@@ -431,6 +459,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -468,6 +497,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -506,6 +536,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -544,6 +575,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -582,6 +614,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectFactory()
@@ -620,6 +653,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -714,6 +748,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -808,6 +843,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -902,6 +938,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -996,6 +1033,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var author = await new ContributorFactory().SeedAsync();
@@ -1090,6 +1128,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var applicant = await new ContributorFactory().SeedAsync();
@@ -1176,6 +1215,7 @@ public class ApplicationsServiceTests
             applications,
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
         var applicant = await new ContributorFactory().SeedAsync();

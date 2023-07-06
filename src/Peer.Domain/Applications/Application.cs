@@ -1,7 +1,7 @@
 using Peer.Domain.Common;
 
 namespace Peer.Domain.Applications;
-public class Application : AbstractEntity
+public class Application : AbstractAggregateRoot
 {
     public Guid ApplicantId { get; }
     public Guid ProjectId { get; }
@@ -36,6 +36,7 @@ public class Application : AbstractEntity
         }
 
         Status = ApplicationStatus.Accepted;
+        RaiseDomainEvent(new ApplicationAccepted(this));
     }
 
     public void Reject()

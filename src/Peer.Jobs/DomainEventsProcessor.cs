@@ -1,5 +1,6 @@
 using Peer.Application.Contracts;
 using Peer.Application.Handlers;
+using Peer.Domain.Applications;
 using Peer.Domain.Contributors;
 using Peer.Domain.Projects;
 
@@ -13,6 +14,7 @@ public class DomainEventsProcessor : BackgroundService
     private readonly ProjectRemovedHandler _projectRemovedHandler;
     private readonly PositionRemovedHandler _positionRemovedHandler;
     private readonly PositionClosedHandler _positionClosedHandler;
+    private readonly ApplicationAcceptedHandler _applicationAcceptedHandler;
 
     public DomainEventsProcessor(
         ILogger<DomainEventsProcessor> logger,
@@ -20,7 +22,8 @@ public class DomainEventsProcessor : BackgroundService
         ContributorRemovedHandler contributorRemovedHandler,
         ProjectRemovedHandler projectRemovedHandler,
         PositionRemovedHandler positionRemovedHandler,
-        PositionClosedHandler positionClosedHandler)
+        PositionClosedHandler positionClosedHandler,
+        ApplicationAcceptedHandler applicationAcceptedHandler)
     {
         _logger = logger;
         _domainEvents = domainEvents;
@@ -28,6 +31,7 @@ public class DomainEventsProcessor : BackgroundService
         _projectRemovedHandler = projectRemovedHandler;
         _positionRemovedHandler = positionRemovedHandler;
         _positionClosedHandler = positionClosedHandler;
+        _applicationAcceptedHandler = applicationAcceptedHandler;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -59,6 +63,10 @@ public class DomainEventsProcessor : BackgroundService
                 else if (de is PositionClosed ppc)
                 {
                     await _positionClosedHandler.RejectAllApplicationsSubmittedForThePositionAsync(ppc.ProjectId, ppc.PositionId);
+                }
+                else if (de is ApplicationAccepted aa)
+                {
+                    await _applicationAcceptedHandler.MakeApplicantACollaboratorOnTheProjectAsync(aa.ApplicationId);
                 }
                 else
                 {
