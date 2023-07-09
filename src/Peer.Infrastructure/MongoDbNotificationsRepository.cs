@@ -17,5 +17,5 @@ public class MongoDbNotificationsRepository : INotificationsRepository
         var mongoDb = new MongoClient(clusterConnectionString).GetDatabase(dbName);
         _notificationsCollection = mongoDb.GetCollection<AbstractNotification>(notificationsCollectionName);
     }
-    public Task AddAsync(NewApplicationReceived notification) => _notificationsCollection.InsertOneAsync(notification);
+    public Task AddAsync(AbstractNotification notification) => _notificationsCollection.InsertOneAsync(notification);
 }
