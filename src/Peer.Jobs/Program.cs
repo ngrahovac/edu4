@@ -16,7 +16,12 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<ApplicationAcceptedHandler>();
         services.AddScoped<ApplicationSubmittedHandler>();
 
-        // TODO: register repositories etc
+        services.AddScoped<IContributorsRepository, MongoDbContributorsRepository>();
+        services.AddScoped<IProjectsRepository, MongoDBProjectsRepository>();
+        services.AddScoped<IApplicationsRepository, MongoDbApplicationsRepository>();
+        services.AddScoped<ICollaborationsRepository, MongoDbCollaborationsRepository>();
+        services.AddScoped<IDomainEventsRepository, MongoDbDomainEventsRepository>();
+        services.AddScoped<INotificationsRepository, MongoDbNotificationsRepository>();
     })
     .Build();
 
