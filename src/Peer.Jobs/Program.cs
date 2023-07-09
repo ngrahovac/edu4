@@ -14,6 +14,9 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<PositionRemovedHandler>();
         services.AddScoped<PositionClosedHandler>();
         services.AddScoped<ApplicationAcceptedHandler>();
+        services.AddScoped<ApplicationSubmittedHandler>();
+
+        // TODO: register repositories etc
     })
     .Build();
 
