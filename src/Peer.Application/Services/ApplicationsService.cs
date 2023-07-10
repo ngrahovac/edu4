@@ -190,6 +190,9 @@ public class ApplicationsService
 
         await _applications.AddAsync(application);
 
+        var applicationSubmitted = new ApplicationSubmitted(application);
+        await _domainEvents.AddAsync(applicationSubmitted);
+
         _logger.LogInformation(
             "Applicant {ApplicantId} submitted an application for {PositionId}",
             applicant.Id,

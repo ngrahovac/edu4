@@ -14,6 +14,14 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<PositionRemovedHandler>();
         services.AddScoped<PositionClosedHandler>();
         services.AddScoped<ApplicationAcceptedHandler>();
+        services.AddScoped<ApplicationSubmittedHandler>();
+
+        services.AddScoped<IContributorsRepository, MongoDbContributorsRepository>();
+        services.AddScoped<IProjectsRepository, MongoDBProjectsRepository>();
+        services.AddScoped<IApplicationsRepository, MongoDbApplicationsRepository>();
+        services.AddScoped<ICollaborationsRepository, MongoDbCollaborationsRepository>();
+        services.AddScoped<IDomainEventsRepository, MongoDbDomainEventsRepository>();
+        services.AddScoped<INotificationsRepository, MongoDbNotificationsRepository>();
     })
     .Build();
 

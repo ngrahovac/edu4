@@ -15,6 +15,7 @@ public class DomainEventsProcessor : BackgroundService
     private readonly PositionRemovedHandler _positionRemovedHandler;
     private readonly PositionClosedHandler _positionClosedHandler;
     private readonly ApplicationAcceptedHandler _applicationAcceptedHandler;
+    private readonly ApplicationSubmittedHandler _applicationSubmittedHandler;
 
     public DomainEventsProcessor(
         ILogger<DomainEventsProcessor> logger,
@@ -23,7 +24,8 @@ public class DomainEventsProcessor : BackgroundService
         ProjectRemovedHandler projectRemovedHandler,
         PositionRemovedHandler positionRemovedHandler,
         PositionClosedHandler positionClosedHandler,
-        ApplicationAcceptedHandler applicationAcceptedHandler)
+        ApplicationAcceptedHandler applicationAcceptedHandler,
+        ApplicationSubmittedHandler applicationSubmittedHandler)
     {
         _logger = logger;
         _domainEvents = domainEvents;
@@ -32,6 +34,7 @@ public class DomainEventsProcessor : BackgroundService
         _positionRemovedHandler = positionRemovedHandler;
         _positionClosedHandler = positionClosedHandler;
         _applicationAcceptedHandler = applicationAcceptedHandler;
+        _applicationSubmittedHandler = applicationSubmittedHandler;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -66,7 +69,13 @@ public class DomainEventsProcessor : BackgroundService
                 }
                 else if (de is ApplicationAccepted aa)
                 {
-                    await _applicationAcceptedHandler.MakeApplicantACollaboratorOnTheProjectAsync(aa.ApplicationId);
+                    await Task.WhenAll(
+                    _applicationAcceptedHandler.MakeApplicantACollaboratorOnTheProjectAsync(aa.ApplicationId),
+                    _applicationAcceptedHandler.NotifyApplicantAboutTheirApplicationBeingAcceptedAsync(aa.ApplicationId));
+                }
+                else if (de is ApplicationSubmitted apps)
+                {
+                    await _applicationSubmittedHandler.NotifyProjectAuthorAboutNewIncomingApplicationAsync(apps.ApplicationId);
                 }
                 else
                 {

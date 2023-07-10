@@ -124,7 +124,5 @@ public class ContributorsService
         // TODO: wrap in a transaction
         await _contributors.UpdateAsync(contributor);
         await Task.WhenAll(contributor.DomainEvents.ToList().Select(e => _domainEventsRepository.AddAsync(e)));
-
-        await _accountManagement.RemoveAccountAsync(contributor.AccountId);
     }
 }
