@@ -37,6 +37,7 @@ public class Project : AbstractAggregateRoot
     }
 
     public bool IsRecommendedFor(Contributor user) =>
+        !Removed &&
         user.Id != AuthorId &&
         Positions.Any(p => user.Hats.Any(h => h.Fits(p.Requirements)));
 
@@ -45,6 +46,11 @@ public class Project : AbstractAggregateRoot
 
     public void AddPosition(string name, string description, Hat requirements)
     {
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't add a position on a removed project");
+        }
+
         if (Positions.Any(p => p.Name.Equals(name, StringComparison.Ordinal) && p.Requirements.Equals(requirements)))
         {
             throw new InvalidOperationException("A project cannot have two positions with the same name and requirements");
@@ -56,13 +62,18 @@ public class Project : AbstractAggregateRoot
 
     public void UpdateDetails(string title, string description)
     {
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't update the details of a removed project");
+        }
+
         Title = title;
         Description = description;
     }
 
     public Application SubmitApplication(Guid applicantId, Guid positionId)
     {
-        var position = GetById(positionId) ??
+        var position = GetNonRemovedPositionById(positionId) ??
             throw new InvalidOperationException("Can't apply for a position that doesn't exist");
 
         if (Removed)
@@ -90,7 +101,12 @@ public class Project : AbstractAggregateRoot
 
     public void ClosePosition(Guid positionId)
     {
-        var position = GetById(positionId) ??
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't close a position on a removed project");
+        }
+
+        var position = GetNonRemovedPositionById(positionId) ??
             throw new InvalidOperationException("Can't close a position that doesn't exist");
 
         position.Close();
@@ -99,7 +115,12 @@ public class Project : AbstractAggregateRoot
 
     public void ReopenPosition(Guid positionId)
     {
-        var position = GetById(positionId) ??
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't reopen a position on a removed project");
+        }
+
+        var position = GetNonRemovedPositionById(positionId) ??
             throw new InvalidOperationException("Can't reopen a position that doesn't exist");
 
         position.Reopen();
@@ -107,7 +128,12 @@ public class Project : AbstractAggregateRoot
 
     public void RemovePosition(Guid positionId)
     {
-        var position = GetById(positionId) ??
+        if (Removed)
+        {
+            throw new InvalidOperationException("Can't remove a position on a removed project");
+        }
+
+        var position = GetNonRemovedPositionById(positionId) ??
             throw new InvalidOperationException("Can't remove a position that doesn't exist");
 
         position.Remove();
@@ -115,7 +141,7 @@ public class Project : AbstractAggregateRoot
     }
 
     public Position? GetPositionById(Guid positionId)
-        => GetById(positionId);
+        => GetNonRemovedPositionById(positionId);
 
     public void Remove()
     {
@@ -128,6 +154,6 @@ public class Project : AbstractAggregateRoot
         RaiseDomainEvent(new ProjectRemoved(this));
     }
 
-    private Position? GetById(Guid positionId) =>
+    private Position? GetNonRemovedPositionById(Guid positionId) =>
         _positions.FirstOrDefault(p => p.Id == positionId && !p.Removed);
 }
