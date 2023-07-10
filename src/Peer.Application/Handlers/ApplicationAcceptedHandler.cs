@@ -33,9 +33,13 @@ public class ApplicationAcceptedHandler
             acceptedApplication.PositionId);
 
         await _collaborations.AddAsync(collaboration);
+    }
 
-
+    public async Task NotifyApplicantAboutTheirApplicationBeingAcceptedAsync(Guid applicationId)
+    {
+        var acceptedApplication = await _applications.GetByIdAsync(applicationId);
         var applicant = await _contributors.GetByIdAsync(acceptedApplication.ApplicantId);
+
         var notification = new OwnApplicationAccepted(applicant, acceptedApplication);
 
         await _notifications.AddAsync(notification);

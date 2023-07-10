@@ -69,7 +69,9 @@ public class DomainEventsProcessor : BackgroundService
                 }
                 else if (de is ApplicationAccepted aa)
                 {
-                    await _applicationAcceptedHandler.MakeApplicantACollaboratorOnTheProjectAsync(aa.ApplicationId);
+                    await Task.WhenAll(
+                    _applicationAcceptedHandler.MakeApplicantACollaboratorOnTheProjectAsync(aa.ApplicationId),
+                    _applicationAcceptedHandler.NotifyApplicantAboutTheirApplicationBeingAcceptedAsync(aa.ApplicationId));
                 }
                 else if (de is ApplicationSubmitted apps)
                 {
