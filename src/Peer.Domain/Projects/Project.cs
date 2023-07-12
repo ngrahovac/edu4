@@ -21,11 +21,6 @@ public class Project : AbstractAggregateRoot
         Guid authorId,
         ICollection<Position> positions)
     {
-        DatePosted = DateTime.UtcNow;
-        Title = title;
-        Description = description;
-        AuthorId = authorId;
-
         if (positions.Count == 0)
         {
             throw new InvalidOperationException("Cannot publish a project without any positions");
@@ -33,6 +28,10 @@ public class Project : AbstractAggregateRoot
 
         _positions = positions.ToList();
 
+        DatePosted = DateTime.UtcNow;
+        Title = title;
+        Description = description;
+        AuthorId = authorId;
         Removed = false;
     }
 
