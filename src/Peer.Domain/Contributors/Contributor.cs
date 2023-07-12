@@ -62,6 +62,11 @@ public class Contributor : AbstractAggregateRoot
 
     public void UpdateHats(IReadOnlyCollection<Hat> updatedHats)
     {
+        if (Removed)
+        {
+            throw new InvalidOperationException("Cannot update hats of a removed contributor");
+        }
+
         _hats.Clear();
 
         foreach (var h in updatedHats)

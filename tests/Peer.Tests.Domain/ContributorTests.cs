@@ -45,19 +45,43 @@ public class ContributorTests
     [Fact]
     public void Cannot_update_contact_email_of_a_removed_contributor()
     {
-        var oldEmail = "old email";
-        var contributor = new ContributorsFactory().WithEmail(oldEmail)
+        var hat1 = HatsFactory.OfType(HatType.Student).Build();
+        var hat2 = HatsFactory.OfType(HatType.Academic).Build();
+        var oldHats = new List<Hat>() { hat1, hat2 };
+
+        var contributor = new ContributorsFactory().WithHats(oldHats)
             .WithRemoved(true)
             .Build();
 
-        var updatingEmailOfARemovedContributor = () => contributor.UpdateContactEmail("new email");
+        var updatingHatsOfARemovedContributor = () => contributor.UpdateHats(new List<Hat>()
+        {
+            hat1,
+            hat2,
+            HatsFactory.OfType(HatType.Student)
+            .WithAcademicDegree(AcademicDegree.Doctorate)
+            .Build()
+        });
 
-        updatingEmailOfARemovedContributor.Should().Throw<InvalidOperationException>();
-        contributor.ContactEmail.Should().Be(oldEmail);
+        updatingHatsOfARemovedContributor.Should().Throw<InvalidOperationException>();
+        contributor.Hats.Should().BeEquivalentTo(oldHats);
     }
 
     [Fact]
     public void Cannot_update_name_of_a_removed_contributor()
+    {
+        var oldName = "Jane Doe";
+        var contributor = new ContributorsFactory().WithFullName(oldName)
+            .WithRemoved(true)
+            .Build();
+
+        var updatingNameOfARemovedContributor = () => contributor.UpdateFullName("New Name");
+
+        updatingNameOfARemovedContributor.Should().Throw<InvalidOperationException>();
+        contributor.FullName.Should().Be(oldName);
+    }
+
+    [Fact]
+    public void Cannot_update_hats_of_a_removed_contributor()
     {
         var oldName = "Jane Doe";
         var contributor = new ContributorsFactory().WithFullName(oldName)
