@@ -20,6 +20,34 @@ public class ProjectTests
     }
 
     [Fact]
+    public void A_removed_project_cannot_be_recommended()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build())
+            .Build()
+        })
+            .WithRemoved(true)
+            .Build();
+
+        var contributor = new ContributorsFactory().WithHats(new List<Hat>()
+        {
+            HatsFactory.OfType(HatType.Student)
+            .WithStudyField("Computer Science")
+            .WithAcademicDegree(AcademicDegree.Bachelors)
+            .Build()
+        }).Build();
+
+        var recommended = project.IsRecommendedFor(contributor);
+
+        recommended.Should().BeFalse();
+    }
+
+    [Fact]
     public void Project_position_cannot_be_closed_twice()
     {
         var project = new ProjectsFactory().WithPositions(new List<Position>()

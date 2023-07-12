@@ -1,3 +1,4 @@
+using System.Reflection;
 using Peer.Domain.Projects;
 
 namespace Peer.Tests.Utils.Factories;
@@ -8,7 +9,7 @@ public class ProjectsFactory
     private string _description = "Test project description";
     private Guid _authorId = Guid.NewGuid();
     private List<Position> _positions = new();
-
+    private bool _removed = false;
 
     public ProjectsFactory WithTitle(string title)
     {
@@ -34,12 +35,35 @@ public class ProjectsFactory
         return this;
     }
 
+    public ProjectsFactory WithRemoved(bool removed)
+    {
+        _removed = removed;
+        return this;
+    }
+
     public Project Build()
     {
-        return new Project(
+        var project = new Project(
             _title,
             _description,
             _authorId,
             _positions);
+
+        if (_removed)
+        {
+            MakeRemovedViaReflection(project);
+        }
+
+        return project;
+    }
+
+    private void MakeRemovedViaReflection(Project project)
+    {
+        var removedProp = typeof(Project).GetProperty(
+            nameof(Project.Removed),
+            BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public) ??
+            throw new InvalidOperationException("Error making the project removed via reflection");
+
+        removedProp.SetValue(project, true);
     }
 }
