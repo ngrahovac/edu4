@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
-using Peer.Domain.Contributors;
 using Peer.Domain.Projects;
+using Peer.Tests.Utils.Factories;
 
 namespace Peer.Tests.Domain;
 
@@ -11,80 +11,54 @@ public class ApplicationTests
     [Fact]
     public void A_submitted_application_can_be_revoked()
     {
-        var application = new Peer.Domain.Applications.Application(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Submitted)
+            .Build();
 
-        var revokeSubmittedApplication = () => application.Revoke();
+        var revokingASubmittedApplication = () => application.Revoke();
 
-        revokeSubmittedApplication.Should().NotThrow();
+        revokingASubmittedApplication.Should().NotThrow();
         application.Status.Should().Be(Peer.Domain.Applications.ApplicationStatus.Revoked);
     }
 
     [Fact]
-    public void Author_cannot_submit_an_application_for_a_position_on_own_project()
+    public void Author_cannot_apply_for_a_position_on_own_project()
     {
-        var authorId = Guid.NewGuid();
-        var project = new Project(
-            string.Empty,
-            string.Empty,
-            authorId,
-            new List<Position>
-            {
-                new Position(
-                    string.Empty,
-                    string.Empty,
-                    new StudentHat("Software Engineering"))
-            });
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().Build()
+        }).WithAuthorId(Guid.NewGuid())
+        .Build();
 
-        var submitApplicationForAPositionOnOwnProject = () => project.SubmitApplication(
-            authorId,
+        var applyingForOwnProject = () => project.SubmitApplication(
+            project.AuthorId,
             project.Positions.ElementAt(0).Id);
 
-        submitApplicationForAPositionOnOwnProject.Should().Throw<InvalidOperationException>();
+        applyingForOwnProject.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
     public void Cant_apply_for_a_closed_position()
     {
-        var project = new Project(
-            string.Empty,
-            string.Empty,
-            Guid.NewGuid(),
-            new List<Position>
-            {
-                new Position(
-                    string.Empty,
-                    string.Empty,
-                    new StudentHat("Software Engineering"))
-            });
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithOpen(false)
+            .Build()
+        }).Build();
 
-        project.ClosePosition(project.Positions.ElementAt(0).Id);
-
-        var applyForAClosedPosition = () => project.SubmitApplication(
+        var applyingForAClosedPosition = () => project.SubmitApplication(
             Guid.NewGuid(),
             project.Positions.ElementAt(0).Id);
 
-        applyForAClosedPosition.Should().Throw<InvalidOperationException>();
+        applyingForAClosedPosition.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
     public void Cant_apply_for_a_removed_position()
     {
-        var project = new Project(
-            string.Empty,
-            string.Empty,
-            Guid.NewGuid(),
-            new List<Position>
-            {
-                new Position(
-                    string.Empty,
-                    string.Empty,
-                    new StudentHat("Software Engineering"))
-            });
-
-        project.RemovePosition(project.Positions.ElementAt(0).Id);
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRemoved(true).Build()
+        }).Build();
 
         var applyingForARemovedPosition = () => project.SubmitApplication(
             Guid.NewGuid(),
@@ -96,88 +70,123 @@ public class ApplicationTests
     [Fact]
     public void A_submitted_application_can_be_accepted()
     {
-        var application = new Peer.Domain.Applications.Application(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Submitted)
+            .Build();
 
-        var acceptSubmittedApplication = () => application.Accept();
+        var acceptingASubmittedApplication = () => application.Accept();
 
-        acceptSubmittedApplication.Should().NotThrow();
+        acceptingASubmittedApplication.Should().NotThrow();
         application.Status.Should().Be(Peer.Domain.Applications.ApplicationStatus.Accepted);
     }
 
     [Fact]
     public void A_revoked_application_cannot_be_accepted()
     {
-        var application = new Peer.Domain.Applications.Application(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Revoked)
+            .Build();
 
-        application.Revoke();
+        var acceptingARevokedApplication = () => application.Accept();
 
-        var acceptRevokedApplication = () => application.Accept();
+        acceptingARevokedApplication.Should().Throw<InvalidOperationException>();
+    }
 
-        acceptRevokedApplication.Should().Throw<InvalidOperationException>();
+    [Fact]
+    public void A_rejected_application_cannot_be_accepted()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Rejected)
+            .Build();
+
+        var acceptingARejectedApplication = () => application.Accept();
+
+        acceptingARejectedApplication.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void A_removed_application_cannot_be_accepted()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Removed)
+            .Build();
+
+        var acceptingARemovedApplication = () => application.Accept();
+
+        acceptingARemovedApplication.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void An_application_cannot_be_accepted_twice()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Accepted)
+            .Build();
+
+        var acceptingAnApplicationTwice = () => application.Accept();
+
+        acceptingAnApplicationTwice.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
     public void A_submitted_application_can_be_rejected()
     {
-        var application = new Peer.Domain.Applications.Application(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Submitted)
+            .Build();
 
-        var rejectSubmittedApplication = () => application.Reject();
+        var rejectingASubmittedApplication = () => application.Reject();
 
-        rejectSubmittedApplication.Should().NotThrow();
+        rejectingASubmittedApplication.Should().NotThrow();
         application.Status.Should().Be(Peer.Domain.Applications.ApplicationStatus.Rejected);
     }
 
     [Fact]
     public void A_revoked_application_cannot_be_rejected()
     {
-        var application = new Peer.Domain.Applications.Application(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Revoked)
+            .Build();
 
-        application.Revoke();
+        var rejectingARevokedApplication = () => application.Reject();
 
-        var rejectRevokedApplication = () => application.Reject();
-
-        rejectRevokedApplication.Should().Throw<InvalidOperationException>();
+        rejectingARevokedApplication.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
     public void An_accepted_application_cannot_be_rejected()
     {
-        var application = new Peer.Domain.Applications.Application(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Accepted)
+            .Build();
 
-        application.Accept();
+        var rejectingAnAcceptedApplication = () => application.Reject();
 
-        var rejectAcceptedApplication = () => application.Reject();
-
-        rejectAcceptedApplication.Should().Throw<InvalidOperationException>();
+        rejectingAnAcceptedApplication.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
-    public void A_rejected_application_cannot_be_rejected_for_the_second_time()
+    public void An_application_cannot_be_rejected_twice()
     {
-        var application = new Peer.Domain.Applications.Application(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Rejected)
+            .Build();
 
-        application.Reject();
+        var rejectingAnApplicationTwice = () => application.Reject();
 
-        var rejectRejectedApplication = () => application.Accept();
+        rejectingAnApplicationTwice.Should().Throw<InvalidOperationException>();
+    }
 
-        rejectRejectedApplication.Should().Throw<InvalidOperationException>();
+    [Fact]
+    public void A_removed_application_cannot_be_rejected()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Removed)
+            .Build();
+
+        var acceptingARemovedApplication = () => application.Accept();
+
+        acceptingARemovedApplication.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void An_application_cannot_be_removed_twice()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Removed)
+            .Build();
+
+        var removingAnApplicationTwice = () => application.Remove();
+
+        removingAnApplicationTwice.Should().Throw<InvalidOperationException>();
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using Peer.Domain.Contributors;
+using Peer.Tests.Utils.Factories;
 
 namespace Peer.Tests.Domain;
 
@@ -12,19 +13,39 @@ public class HatTests
     {
         public IEnumerator<object[]> GetEnumerator()
         {
-            var sh1 = new StudentHat("Computer Science");
-            var sh2 = new StudentHat("Computer Science");
-            var sh3 = new StudentHat("Computer Science", AcademicDegree.Masters);
-            var sh4 = new StudentHat("Electronics");
+            var sh1 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .Build();
+
+            var sh2 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .Build();
+
+            var sh3 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Masters)
+                .Build();
+
+            var sh4 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Electronics")
+                .Build();
 
             yield return new object[] { sh1, sh1, true };
             yield return new object[] { sh1, sh2, true };
             yield return new object[] { sh1, sh3, false };
             yield return new object[] { sh1, sh4, false };
 
-            var ah1 = new AcademicHat("Computer Science");
-            var ah2 = new AcademicHat("Computer Science");
-            var ah3 = new AcademicHat("Electronics");
+            var ah1 = HatsFactory.OfType(HatType.Academic)
+                .WithResearchField("Computer Science")
+                .Build();
+
+            var ah2 = HatsFactory.OfType(HatType.Academic)
+                .WithResearchField("Computer Science")
+                .Build();
+
+            var ah3 = HatsFactory.OfType(HatType.Academic)
+                .WithResearchField("Electronics")
+                .Build();
 
             yield return new object[] { ah1, ah1, true };
             yield return new object[] { ah1, ah2, true };
@@ -37,7 +58,7 @@ public class HatTests
 
     [Theory]
     [ClassData(typeof(HatEqualityTestData))]
-    public void Only_hats_of_the_exact_same_type_and_matching_property_values_are_equal(Hat hat1, Hat hat2, bool equal)
+    public void Only_the_hats_of_the_same_type_and_matching_property_values_are_equal(Hat hat1, Hat hat2, bool equal)
     {
         hat1.Equals(hat2).Should().Be(equal);
     }
@@ -49,13 +70,39 @@ public class HatTests
         {
             var studentHat = new StudentHat("Software Engineering", AcademicDegree.Masters);
 
-            var positionRequirements1 = new StudentHat("Software Engineering", AcademicDegree.Bachelors);
-            var positionRequirements2 = new StudentHat("Software Engineering", AcademicDegree.Masters);
-            var positionRequirements3 = new StudentHat("Software Engineering", AcademicDegree.Doctorate);
-            var positionRequirements4 = new StudentHat("Computer Science", AcademicDegree.Bachelors);
-            var positionRequirements5 = new StudentHat("Computer Science", AcademicDegree.Masters);
-            var positionRequirements6 = new StudentHat("Computer Science", AcademicDegree.Doctorate);
-            var positionRequirements7 = new AcademicHat("Computer Science");
+            var positionRequirements1 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Software Engineering")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build();
+
+            var positionRequirements2 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Software Engineering")
+                .WithAcademicDegree(AcademicDegree.Masters)
+                .Build();
+
+            var positionRequirements3 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Software Engineering")
+                .WithAcademicDegree(AcademicDegree.Doctorate)
+                .Build();
+
+            var positionRequirements4 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build();
+
+            var positionRequirements5 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Masters)
+                .Build();
+
+            var positionRequirements6 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Doctorate)
+                .Build();
+
+            var positionRequirements7 = HatsFactory.OfType(HatType.Academic)
+                .WithResearchField("Computer Science")
+                .Build();
 
             yield return new object[] { studentHat, positionRequirements1, true };
             yield return new object[] { studentHat, positionRequirements2, true };
@@ -82,11 +129,20 @@ public class HatTests
     {
         public IEnumerator<object[]> GetEnumerator()
         {
-            var academicHat = new AcademicHat("Software Engineering");
+            var academicHat = HatsFactory.OfType(HatType.Academic)
+                .WithResearchField("Software Engineering")
+                .Build();
 
-            var positionRequirements1 = new AcademicHat("Software Engineering");
-            var positionRequirements2 = new AcademicHat("Neural Networks");
-            var positionRequirements3 = new StudentHat("Software Engineering", AcademicDegree.Bachelors);
+            var positionRequirements1 = HatsFactory.OfType(HatType.Academic)
+                .WithResearchField("Software Engineering")
+                .Build();
+
+            var positionRequirements2 = HatsFactory.OfType(HatType.Academic)
+                .WithResearchField("Neural Networks")
+                .Build();
+
+            var positionRequirements3 = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Software Engineering");
 
             yield return new object[] { academicHat, positionRequirements1, true };
             yield return new object[] { academicHat, positionRequirements2, false };
@@ -99,11 +155,8 @@ public class HatTests
     [Theory]
     [ClassData(typeof(AcademicHatPositionFitTestData))]
     public void Academic_hat_fits_only_the_academic_position_requirements_with_the_same_research_field(
-        AcademicHat studentHat, Hat positionRequirements, bool fits)
+        AcademicHat academicHat, Hat positionRequirements, bool fits)
     {
-        studentHat.Fits(positionRequirements).Should().Be(fits);
+        academicHat.Fits(positionRequirements).Should().Be(fits);
     }
-
-
-
 }

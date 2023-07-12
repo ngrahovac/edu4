@@ -1,6 +1,5 @@
 using Peer.Application.Contracts;
 using Peer.Domain.Collaborations;
-using Peer.Domain.Contributors;
 using Peer.Domain.Notifications;
 
 namespace Peer.Application.Handlers;

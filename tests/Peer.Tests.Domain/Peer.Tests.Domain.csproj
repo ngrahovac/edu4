@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Peer.Domain\Peer.Domain.csproj" />
+    <ProjectReference Include="..\Peer.Tests.Utils.Factories\Peer.Tests.Utils.Factories.csproj" />
   </ItemGroup>
 
 </Project>

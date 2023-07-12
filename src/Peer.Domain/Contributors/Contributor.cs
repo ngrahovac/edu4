@@ -40,14 +40,33 @@ public class Contributor : AbstractAggregateRoot
     }
 
 
-    public void UpdateContactEmail(string contactEmail) =>
-        ContactEmail = contactEmail;
+    public void UpdateContactEmail(string contactEmail)
+    {
+        if (Removed)
+        {
+            throw new InvalidOperationException("Cannot update email of a removed contributor");
+        }
 
-    public void UpdateFullName(string newFullName) =>
+        ContactEmail = contactEmail;
+    }
+
+    public void UpdateFullName(string newFullName)
+    {
+        if (Removed)
+        {
+            throw new InvalidOperationException("Cannot update name of a removed contributor");
+        }
+
         FullName = newFullName;
+    }
 
     public void UpdateHats(IReadOnlyCollection<Hat> updatedHats)
     {
+        if (Removed)
+        {
+            throw new InvalidOperationException("Cannot update hats of a removed contributor");
+        }
+
         _hats.Clear();
 
         foreach (var h in updatedHats)

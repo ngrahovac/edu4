@@ -1,24 +1,13 @@
 using System.Reflection;
-using Microsoft.Extensions.Configuration;
 using Peer.Domain.Applications;
-using Peer.Infrastructure;
 
-namespace Peer.Tests.Application.TestData;
-internal class ApplicationsFactory
+namespace Peer.Tests.Utils.Factories;
+public class ApplicationsFactory
 {
     private Guid _applicantId = Guid.NewGuid();
     private Guid _projectId = Guid.NewGuid();
     private Guid _positionId = Guid.NewGuid();
     private ApplicationStatus _status = ApplicationStatus.Submitted;
-    private readonly MongoDbApplicationsRepository _applications;
-
-    public ApplicationsFactory()
-    {
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
-
-        _applications = new MongoDbApplicationsRepository(config);
-    }
 
     public ApplicationsFactory WithApplicantId(Guid applicantId)
     {
@@ -44,24 +33,22 @@ internal class ApplicationsFactory
         return this;
     }
 
-    public async Task<Domain.Applications.Application> SeedAsync()
+    public Application Build()
     {
-        var application = new Domain.Applications.Application(
+        var application = new Application(
             _applicantId,
             _projectId,
             _positionId);
 
         SetStatusViaReflection(application);
 
-        await _applications.AddAsync(application);
-
         return application;
     }
 
-    private void SetStatusViaReflection(Domain.Applications.Application application)
+    private void SetStatusViaReflection(Application application)
     {
-        var applicationStatusProp = typeof(Domain.Applications.Application).GetProperty(
-            nameof(Domain.Applications.Application.Status),
+        var applicationStatusProp = typeof(Application).GetProperty(
+            nameof(Application.Status),
             BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public) ??
             throw new InvalidOperationException("Error setting application status via reflection");
 
