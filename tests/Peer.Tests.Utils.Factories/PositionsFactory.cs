@@ -4,32 +4,32 @@ using Peer.Domain.Projects;
 
 namespace Peer.Tests.Utils.Factories;
 
-public class PositionFactory
+public class PositionsFactory
 {
     private string _name = "Test position name";
     private string _description = "Test position description";
     private Hat _requirements = new StudentHat("Software Engineering");
     private bool _open = true;
 
-    public PositionFactory WithName(string name)
+    public PositionsFactory WithName(string name)
     {
         _name = name;
         return this;
     }
 
-    public PositionFactory WithDescription(string description)
+    public PositionsFactory WithDescription(string description)
     {
         _description = description;
         return this;
     }
 
-    public PositionFactory WithRequirements(Hat requirements)
+    public PositionsFactory WithRequirements(Hat requirements)
     {
         _requirements = requirements;
         return this;
     }
 
-    public PositionFactory WithOpen(bool open)
+    public PositionsFactory WithOpen(bool open)
     {
         _open = open;
         return this;

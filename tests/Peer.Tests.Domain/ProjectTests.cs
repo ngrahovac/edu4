@@ -24,8 +24,8 @@ public class ProjectTests
     {
         var project = new ProjectsFactory().WithPositions(new List<Position>()
         {
-            new PositionFactory().WithRequirements(
-                HatFactory.OfType(HatType.Student).Build())
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student).Build())
             .Build()
         }).Build();
 
@@ -41,8 +41,8 @@ public class ProjectTests
     {
         var project = new ProjectsFactory().WithPositions(new List<Position>()
         {
-            new PositionFactory().WithRequirements(
-                HatFactory.OfType(HatType.Student).Build())
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student).Build())
             .Build()
         }).Build();
 
@@ -58,8 +58,8 @@ public class ProjectTests
     {
         var project = new ProjectsFactory().WithPositions(new List<Position>()
         {
-            new PositionFactory().WithRequirements(
-                HatFactory.OfType(HatType.Student).Build())
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student).Build())
             .Build()
         }).Build();
 
@@ -75,8 +75,8 @@ public class ProjectTests
     {
         var project = new ProjectsFactory().WithPositions(new List<Position>()
         {
-            new PositionFactory().WithRequirements(
-                HatFactory.OfType(HatType.Student).Build())
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student).Build())
             .Build()
         }).Build();
 
