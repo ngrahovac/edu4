@@ -91,6 +91,39 @@ public class ApplicationTests
     }
 
     [Fact]
+    public void A_rejected_application_cannot_be_accepted()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Rejected)
+            .Build();
+
+        var acceptingARejectedApplication = () => application.Accept();
+
+        acceptingARejectedApplication.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void A_removed_application_cannot_be_accepted()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Removed)
+            .Build();
+
+        var acceptingARemovedApplication = () => application.Accept();
+
+        acceptingARemovedApplication.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void An_application_cannot_be_accepted_twice()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Accepted)
+            .Build();
+
+        var acceptingAnApplicationTwice = () => application.Accept();
+
+        acceptingAnApplicationTwice.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
     public void A_submitted_application_can_be_rejected()
     {
         var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Submitted)
@@ -133,5 +166,16 @@ public class ApplicationTests
         var rejectingAnApplicationTwice = () => application.Reject();
 
         rejectingAnApplicationTwice.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void A_removed_application_cannot_be_rejected()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Removed)
+            .Build();
+
+        var acceptingARemovedApplication = () => application.Accept();
+
+        acceptingARemovedApplication.Should().Throw<InvalidOperationException>();
     }
 }
