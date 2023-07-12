@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Peer.Domain.Projects;
 using FluentAssertions;
 using Peer.Domain.Contributors;
+using Peer.Tests.Utils.Factories;
 
 namespace Peer.Tests.Domain;
 
@@ -12,11 +13,8 @@ public class ProjectTests
     public void Cannot_create_a_project_without_any_positions()
     {
         var action = ()
-            => _ = new Project(
-                string.Empty,
-                string.Empty,
-                Guid.NewGuid(),
-                new List<Position>());
+            => new ProjectsFactory().WithPositions(new List<Position>())
+            .Build();
 
         action.Should().Throw<InvalidOperationException>();
     }
@@ -24,14 +22,12 @@ public class ProjectTests
     [Fact]
     public void Project_position_cannot_be_closed_twice()
     {
-        var project = new Project(
-                string.Empty,
-                string.Empty,
-                Guid.NewGuid(),
-                new List<Position>()
-                {
-                    new Position("test", "test", new AcademicHat("Computer Science"))
-                });
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionFactory().WithRequirements(
+                HatFactory.OfType(HatType.Student).Build())
+            .Build()
+        }).Build();
 
         project.ClosePosition(project.Positions.ElementAt(0).Id);
 
@@ -43,14 +39,12 @@ public class ProjectTests
     [Fact]
     public void Project_position_cannot_be_removed_twice()
     {
-        var project = new Project(
-                string.Empty,
-                string.Empty,
-                Guid.NewGuid(),
-                new List<Position>()
-                {
-                    new Position("test", "test", new AcademicHat("Computer Science"))
-                });
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionFactory().WithRequirements(
+                HatFactory.OfType(HatType.Student).Build())
+            .Build()
+        }).Build();
 
         project.RemovePosition(project.Positions.ElementAt(0).Id);
 
@@ -62,14 +56,12 @@ public class ProjectTests
     [Fact]
     public void Cannot_close_a_removed_position()
     {
-        var project = new Project(
-                string.Empty,
-                string.Empty,
-                Guid.NewGuid(),
-                new List<Position>()
-                {
-                    new Position("test", "test", new AcademicHat("Computer Science"))
-                });
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionFactory().WithRequirements(
+                HatFactory.OfType(HatType.Student).Build())
+            .Build()
+        }).Build();
 
         project.RemovePosition(project.Positions.ElementAt(0).Id);
 
@@ -81,14 +73,12 @@ public class ProjectTests
     [Fact]
     public void Cannot_reopen_a_removed_position()
     {
-        var project = new Project(
-                string.Empty,
-                string.Empty,
-                Guid.NewGuid(),
-                new List<Position>()
-                {
-                    new Position("test", "test", new AcademicHat("Computer Science"))
-                });
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionFactory().WithRequirements(
+                HatFactory.OfType(HatType.Student).Build())
+            .Build()
+        }).Build();
 
         project.RemovePosition(project.Positions.ElementAt(0).Id);
 
