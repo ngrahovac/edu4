@@ -10,6 +10,7 @@ public class PositionsFactory
     private string _description = "Test position description";
     private Hat _requirements = new StudentHat("Software Engineering");
     private bool _removed = false;
+    private bool _open = true;
 
     public PositionsFactory WithName(string name)
     {
@@ -31,7 +32,7 @@ public class PositionsFactory
 
     public PositionsFactory WithOpen(bool open)
     {
-        _removed = open;
+        _open = open;
         return this;
     }
 
@@ -58,7 +59,7 @@ public class PositionsFactory
             BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public) ??
             throw new InvalidOperationException("Error setting position being open via reflection");
 
-        openProp.SetValue(position, _removed);
+        openProp.SetValue(position, _open);
     }
 
     private void SetRemovedViaReflection(Position position)
