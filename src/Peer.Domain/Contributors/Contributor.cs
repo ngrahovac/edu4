@@ -40,8 +40,15 @@ public class Contributor : AbstractAggregateRoot
     }
 
 
-    public void UpdateContactEmail(string contactEmail) =>
+    public void UpdateContactEmail(string contactEmail)
+    {
+        if (Removed)
+        {
+            throw new InvalidOperationException("Cannot update email of a removed contributor");
+        }
+
         ContactEmail = contactEmail;
+    }
 
     public void UpdateFullName(string newFullName) =>
         FullName = newFullName;

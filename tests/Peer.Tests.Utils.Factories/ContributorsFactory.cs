@@ -1,3 +1,4 @@
+using System.Reflection;
 using Peer.Domain.Contributors;
 
 namespace Peer.Tests.Utils.Factories;
@@ -7,6 +8,7 @@ public class ContributorsFactory
     private string _fullName = "John Doe";
     private string _email = "mail@example.com";
     private List<Hat> _hats = new();
+    private bool _removed = false;
 
     public ContributorsFactory WithAccountId(string accountId)
     {
@@ -32,12 +34,35 @@ public class ContributorsFactory
         return this;
     }
 
+    public ContributorsFactory WithRemoved(bool removed)
+    {
+        _removed = removed;
+        return this;
+    }
+
     public Contributor Build()
     {
-        return new Contributor(
+        var contributor = new Contributor(
             _accountId,
             _fullName,
             _email,
             _hats);
+
+        if (_removed)
+        {
+            MakeRemovedViaReflection(contributor);
+        }
+
+        return contributor;
+    }
+
+    private void MakeRemovedViaReflection(Contributor contributor)
+    {
+        var removedProp = typeof(Contributor).GetProperty(
+            nameof(contributor.Removed),
+            BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public) ??
+            throw new InvalidOperationException("Error making the project removed via reflection");
+
+        removedProp.SetValue(contributor, true);
     }
 }

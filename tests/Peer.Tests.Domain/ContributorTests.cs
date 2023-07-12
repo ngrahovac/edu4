@@ -41,4 +41,18 @@ public class ContributorTests
 
         creatingAContributorWithDuplicateHats.Should().Throw<InvalidOperationException>();
     }
+
+    [Fact]
+    public void Cannot_update_contact_email_of_a_removed_contributor()
+    {
+        var oldEmail = "old email";
+        var contributor = new ContributorsFactory().WithEmail(oldEmail)
+            .WithRemoved(true)
+            .Build();
+
+        var updatingEmailOfARemovedContributor = () => contributor.UpdateContactEmail("new email");
+
+        updatingEmailOfARemovedContributor.Should().Throw<InvalidOperationException>();
+        contributor.ContactEmail.Should().Be(oldEmail);
+    }
 }
