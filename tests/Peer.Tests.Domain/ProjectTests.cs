@@ -30,9 +30,8 @@ public class ProjectTests
                 .WithAcademicDegree(AcademicDegree.Bachelors)
                 .Build())
             .Build()
-        })
-            .WithRemoved(true)
-            .Build();
+        }).WithRemoved(true)
+        .Build();
 
         var contributor = new ContributorsFactory().WithHats(new List<Hat>()
         {
@@ -45,6 +44,142 @@ public class ProjectTests
         var recommended = project.IsRecommendedFor(contributor);
 
         recommended.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Cannot_add_a_position_to_a_removed_project()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build())
+            .Build()
+        }).WithRemoved(true)
+        .Build();
+
+        var newPositionRequirements = HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Masters)
+                .Build();
+
+        var addingAPositionToARemovedProject = () => project.AddPosition(
+            "test name",
+            "test description",
+            newPositionRequirements);
+
+        addingAPositionToARemovedProject.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Cannot_update_the_details_of_a_removed_project()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build())
+            .Build()
+        }).WithRemoved(true)
+        .Build();
+
+        var updatingDetailsOfARemovedProject = () => project.UpdateDetails("new title", "new description");
+
+        updatingDetailsOfARemovedProject.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Cannot_submit_an_application_for_a_removed_project()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build())
+            .Build()
+        }).WithRemoved(true)
+        .Build();
+
+        var applicantId = Guid.NewGuid();
+
+        var submittingAnApplicationForARemovedProject = () => project.SubmitApplication(
+            applicantId, project.Positions.ElementAt(0).Id);
+
+        submittingAnApplicationForARemovedProject.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Cannot_close_a_position_on_a_removed_project()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build())
+            .Build()
+        }).WithRemoved(true)
+        .Build();
+
+        var closingAPositionOnARemovedProject = () => project.ClosePosition(
+            project.Positions
+            .ElementAt(0)
+            .Id);
+
+        closingAPositionOnARemovedProject.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Cannot_reopen_a_position_on_a_removed_project()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build())
+            .Build()
+        }).Build();
+
+        project.ClosePosition(project.Positions.ElementAt(0).Id);
+        project.Remove();
+
+        var reopeningAPositionOnARemovedProject = () => project.ReopenPosition(
+            project.Positions
+            .ElementAt(0)
+            .Id);
+
+        reopeningAPositionOnARemovedProject.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Cannot_remove_a_position_on_a_removed_project()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build())
+            .Build()
+        }).WithRemoved(true)
+        .Build();
+
+        var removingAPositionOnARemovedProject = () => project.RemovePosition(
+            project.Positions
+            .ElementAt(0)
+            .Id);
+
+        removingAPositionOnARemovedProject.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -113,5 +248,25 @@ public class ProjectTests
         var reopeningARemovedPosition = () => project.ReopenPosition(project.Positions.ElementAt(0).Id);
 
         reopeningARemovedPosition.Should().Throw<InvalidOperationException>();
+    }
+
+
+    [Fact]
+    public void Cannot_remove_a_project_twice()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student)
+                .WithStudyField("Computer Science")
+                .WithAcademicDegree(AcademicDegree.Bachelors)
+                .Build())
+            .Build()
+        }).WithRemoved(true)
+        .Build();
+
+        var removingARemovedProject = () => project.Remove();
+
+        removingARemovedProject.Should().Throw<InvalidOperationException>();
     }
 }
