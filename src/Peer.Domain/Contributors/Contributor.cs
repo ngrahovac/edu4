@@ -50,8 +50,15 @@ public class Contributor : AbstractAggregateRoot
         ContactEmail = contactEmail;
     }
 
-    public void UpdateFullName(string newFullName) =>
+    public void UpdateFullName(string newFullName)
+    {
+        if (Removed)
+        {
+            throw new InvalidOperationException("Cannot update name of a removed contributor");
+        }
+
         FullName = newFullName;
+    }
 
     public void UpdateHats(IReadOnlyCollection<Hat> updatedHats)
     {

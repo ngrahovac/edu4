@@ -55,4 +55,18 @@ public class ContributorTests
         updatingEmailOfARemovedContributor.Should().Throw<InvalidOperationException>();
         contributor.ContactEmail.Should().Be(oldEmail);
     }
+
+    [Fact]
+    public void Cannot_update_name_of_a_removed_contributor()
+    {
+        var oldName = "Jane Doe";
+        var contributor = new ContributorsFactory().WithFullName(oldName)
+            .WithRemoved(true)
+            .Build();
+
+        var updatingNameOfARemovedContributor = () => contributor.UpdateFullName("New Name");
+
+        updatingNameOfARemovedContributor.Should().Throw<InvalidOperationException>();
+        contributor.FullName.Should().Be(oldName);
+    }
 }
