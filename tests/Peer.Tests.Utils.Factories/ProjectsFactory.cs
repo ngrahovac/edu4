@@ -9,7 +9,7 @@ public class ProjectsFactory
     private string _description = "Test project description";
     private Guid _authorId = Guid.NewGuid();
     private List<Position> _positions = new();
-    private bool _removed = false;
+    private bool _removed;
 
     public ProjectsFactory WithTitle(string title)
     {

@@ -9,7 +9,7 @@ public class PositionsFactory
     private string _name = "Test position name";
     private string _description = "Test position description";
     private Hat _requirements = new StudentHat("Software Engineering");
-    private bool _open = true;
+    private bool _removed = true;
 
     public PositionsFactory WithName(string name)
     {
@@ -31,7 +31,13 @@ public class PositionsFactory
 
     public PositionsFactory WithOpen(bool open)
     {
-        _open = open;
+        _removed = open;
+        return this;
+    }
+
+    public PositionsFactory WithRemoved(bool removed)
+    {
+        _removed = removed;
         return this;
     }
 
@@ -40,6 +46,7 @@ public class PositionsFactory
         var position = new Position(_name, _description, _requirements);
 
         SetOpenViaReflection(position);
+        SetRemovedViaReflection(position);
 
         return position;
     }
@@ -51,6 +58,16 @@ public class PositionsFactory
             BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public) ??
             throw new InvalidOperationException("Error setting position being open via reflection");
 
-        openProp.SetValue(position, _open);
+        openProp.SetValue(position, _removed);
+    }
+
+    private void SetRemovedViaReflection(Position position)
+    {
+        var openProp = typeof(Position).GetProperty(
+            nameof(Position.Removed),
+            BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public) ??
+            throw new InvalidOperationException("Error setting position being removed via reflection");
+
+        openProp.SetValue(position, _removed);
     }
 }

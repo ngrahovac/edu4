@@ -7,7 +7,7 @@ using Peer.Domain.Contributors;
 using Peer.Infrastructure;
 using Peer.Application.Services;
 using Peer.Domain.Projects;
-using Peer.Test.Utils.Seeders;
+using Peer.Tests.Utils.Seeders;
 using Peer.Tests.Utils.Factories;
 
 namespace Peer.Tests.Application;
@@ -28,7 +28,7 @@ public class ProjectsServiceTests
         var author = await new ContributorsSeeder(config).WithHats(
             new List<Hat>()
             {
-                HatFactory.OfType(HatType.Student)
+                HatsFactory.OfType(HatType.Student)
                 .WithStudyField("Computer Science")
                 .Build()
             })
@@ -92,7 +92,7 @@ public class ProjectsServiceTests
         var existingProject = await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(existingPositionName)
+                new PositionsFactory().WithName(existingPositionName)
                 .WithRequirements(existingPositionRequirements)
                 .Build()
             })
@@ -135,7 +135,7 @@ public class ProjectsServiceTests
         var existingProject = await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(existingPositionName)
+                new PositionsFactory().WithName(existingPositionName)
                 .WithRequirements(existingPositionRequirements)
                 .Build()
             })
@@ -181,7 +181,7 @@ public class ProjectsServiceTests
         var existingProject = await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(existingPositionName)
+                new PositionsFactory().WithName(existingPositionName)
                 .WithRequirements(existingPositionRequirements)
                 .Build()
             })
@@ -227,7 +227,7 @@ public class ProjectsServiceTests
         var existingProject = await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(existingPositionName)
+                new PositionsFactory().WithName(existingPositionName)
                 .WithRequirements(existingPositionRequirements)
                 .Build()
             })
@@ -270,8 +270,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -280,8 +280,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -324,8 +324,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -334,8 +334,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -377,7 +377,7 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(keyword)
+                new PositionsFactory().WithName(keyword)
                 .Build()
             })
             .SeedAsync();
@@ -385,8 +385,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -428,7 +428,7 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithDescription(keyword)
+                new PositionsFactory().WithDescription(keyword)
                 .Build()
             })
             .SeedAsync();
@@ -436,8 +436,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -480,8 +480,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -491,8 +491,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -501,9 +501,9 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(keyword)
+                new PositionsFactory().WithName(keyword)
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -512,9 +512,9 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithDescription(keyword)
+                new PositionsFactory().WithDescription(keyword)
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -523,8 +523,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -573,8 +573,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -584,8 +584,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -594,9 +594,9 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName("baz")
+                new PositionsFactory().WithName("baz")
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -631,8 +631,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -641,8 +641,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -651,8 +651,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .Build())
                 .Build()
             })
@@ -688,8 +688,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -698,8 +698,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -708,8 +708,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .Build())
                 .Build()
             })
@@ -748,8 +748,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -759,8 +759,8 @@ public class ProjectsServiceTests
              .WithPositions(
              new List<Position>()
              {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
              })
@@ -811,8 +811,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -822,8 +822,8 @@ public class ProjectsServiceTests
              .WithPositions(
              new List<Position>()
              {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
              })
@@ -873,8 +873,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Bachelors)
                     .Build())
@@ -885,8 +885,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -897,17 +897,17 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName("Recommended position 1")
+                new PositionsFactory().WithName("Recommended position 1")
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithName("Recommended position 2")
+                new PositionsFactory().WithName("Recommended position 2")
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -918,8 +918,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Doctorate)
                     .Build())
@@ -930,8 +930,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Software Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -942,8 +942,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .Build())
                 .Build()
             })
@@ -985,8 +985,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -996,14 +996,14 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Electronics Engineering")
                     .Build())
                 .Build()
@@ -1013,8 +1013,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -1057,8 +1057,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Bachelors)
                     .Build())
@@ -1069,8 +1069,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -1081,17 +1081,17 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName("Recommended position 1")
+                new PositionsFactory().WithName("Recommended position 1")
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithName("Recommended position 2")
+                new PositionsFactory().WithName("Recommended position 2")
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -1102,8 +1102,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Doctorate)
                     .Build())
@@ -1114,8 +1114,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Software Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -1126,8 +1126,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .Build())
                 .Build()
             })
@@ -1137,8 +1137,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Bachelors)
                     .Build())
@@ -1150,8 +1150,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -1162,17 +1162,17 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(keyword)
+                new PositionsFactory().WithName(keyword)
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithName("Recommended position 2")
+                new PositionsFactory().WithName("Recommended position 2")
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -1183,9 +1183,9 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithDescription(keyword)
+                new PositionsFactory().WithDescription(keyword)
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Electronics Engineering")
                     .WithAcademicDegree(AcademicDegree.Doctorate)
                     .Build())
@@ -1237,8 +1237,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1248,14 +1248,14 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Electronics Engineering")
                     .Build())
                 .Build()
@@ -1265,8 +1265,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -1276,8 +1276,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1288,14 +1288,14 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Electronics Engineering")
                     .Build())
                 .Build()
@@ -1305,9 +1305,9 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
              new List<Position>()
              {
-                new PositionFactory().WithName(keyword)
+                new PositionsFactory().WithName(keyword)
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1317,9 +1317,9 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
              new List<Position>()
              {
-                new PositionFactory().WithDescription(keyword)
+                new PositionsFactory().WithDescription(keyword)
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1369,8 +1369,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1380,14 +1380,14 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Electronics Engineering")
                     .Build())
                 .Build()
@@ -1397,8 +1397,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -1442,8 +1442,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1453,14 +1453,14 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Electronics Engineering")
                     .Build())
                 .Build()
@@ -1470,8 +1470,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -1515,8 +1515,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Computer Science")
                     .WithAcademicDegree(AcademicDegree.Bachelors)
                     .Build())
@@ -1527,14 +1527,14 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Computer Science")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -1545,8 +1545,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithAcademicDegree(AcademicDegree.Doctorate)
                     .Build())
                 .Build()
@@ -1591,8 +1591,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Computer Science")
                     .WithAcademicDegree(AcademicDegree.Bachelors)
                     .Build())
@@ -1603,14 +1603,14 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithStudyField("Computer Science")
                     .WithAcademicDegree(AcademicDegree.Masters)
                     .Build())
@@ -1621,8 +1621,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .WithAcademicDegree(AcademicDegree.Doctorate)
                     .Build())
                 .Build()
@@ -1668,8 +1668,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1679,14 +1679,14 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Electronics Engineering")
                     .Build())
                 .Build()
@@ -1696,8 +1696,8 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Student)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Student)
                     .Build())
                 .Build()
             })
@@ -1707,8 +1707,8 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1719,14 +1719,14 @@ public class ProjectsServiceTests
             .WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build(),
 
-                new PositionFactory().WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                new PositionsFactory().WithRequirements(
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Electronics Engineering")
                     .Build())
                 .Build()
@@ -1736,9 +1736,9 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithName(keyword)
+                new PositionsFactory().WithName(keyword)
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1748,9 +1748,9 @@ public class ProjectsServiceTests
         await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
-                new PositionFactory().WithDescription(keyword)
+                new PositionsFactory().WithDescription(keyword)
                 .WithRequirements(
-                    HatFactory.OfType(HatType.Academic)
+                    HatsFactory.OfType(HatType.Academic)
                     .WithResearchField("Computer Science")
                     .Build())
                 .Build()
@@ -1814,7 +1814,7 @@ public class ProjectsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build()
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -1851,8 +1851,8 @@ public class ProjectsServiceTests
 
         var positions = new List<Position>()
         {
-            new PositionFactory().Build(),
-            new PositionFactory().Build()
+            new PositionsFactory().Build(),
+            new PositionsFactory().Build()
         };
 
         var publishedProject = await sut.PublishProjectAsync(
@@ -1890,7 +1890,7 @@ public class ProjectsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build()
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -1926,7 +1926,7 @@ public class ProjectsServiceTests
         var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build()
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -1993,7 +1993,7 @@ public class ProjectsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build()
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -2030,7 +2030,7 @@ public class ProjectsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory()
+                new PositionsFactory()
                 .WithOpen(false)
                 .Build()
             })
@@ -2068,7 +2068,7 @@ public class ProjectsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build()
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -2111,7 +2111,7 @@ public class ProjectsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build()
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 

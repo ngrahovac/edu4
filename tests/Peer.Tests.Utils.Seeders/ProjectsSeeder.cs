@@ -4,7 +4,7 @@ using Peer.Domain.Projects;
 using Peer.Infrastructure;
 using Peer.Tests.Utils.Factories;
 
-namespace Peer.Test.Utils.Seeders;
+namespace Peer.Tests.Utils.Seeders;
 
 public class ProjectsSeeder
 {

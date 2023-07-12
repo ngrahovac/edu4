@@ -8,7 +8,7 @@ using Peer.Application.Models;
 using Peer.Application.Services;
 using Peer.Domain.Contributors;
 using Peer.Infrastructure;
-using Peer.Test.Utils.Seeders;
+using Peer.Tests.Utils.Seeders;
 
 namespace Peer.Tests.Application;
 

@@ -6,7 +6,7 @@ using Peer.Application.Services;
 using Peer.Domain.Applications;
 using Peer.Domain.Projects;
 using Peer.Infrastructure;
-using Peer.Test.Utils.Seeders;
+using Peer.Tests.Utils.Seeders;
 using Peer.Tests.Utils.Factories;
 
 namespace Peer.Tests.Application;
@@ -35,7 +35,7 @@ public class ApplicationsServiceTests
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>() { new PositionFactory().Build() })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         var contributorToApply = await new ContributorsSeeder(config).SeedAsync();
@@ -79,7 +79,7 @@ public class ApplicationsServiceTests
         var author = await new ContributorsSeeder(config).SeedAsync();
         var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>() { new PositionFactory().Build() })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         // ACT
@@ -143,7 +143,7 @@ public class ApplicationsServiceTests
         var contributor = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>() { new PositionFactory().Build() })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         // ACT
@@ -175,7 +175,7 @@ public class ApplicationsServiceTests
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>() { new PositionFactory().Build() })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         var contributor = await new ContributorsSeeder(config).SeedAsync();
@@ -215,7 +215,7 @@ public class ApplicationsServiceTests
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>() { new PositionFactory().Build() })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         var applicant = await new ContributorsSeeder(config).SeedAsync();
@@ -253,7 +253,7 @@ public class ApplicationsServiceTests
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>() { new PositionFactory().Build() })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         var applicant = await new ContributorsSeeder(config).SeedAsync();
@@ -292,7 +292,7 @@ public class ApplicationsServiceTests
             new NullLogger<ApplicationsService>());
 
         var project = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>() { new PositionFactory().Build() })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         var applicant = await new ContributorsSeeder(config).SeedAsync();
@@ -337,7 +337,7 @@ public class ApplicationsServiceTests
 
         var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionFactory().Build() })
+           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
@@ -381,7 +381,7 @@ public class ApplicationsServiceTests
 
         var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionFactory().Build() })
+           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
            .SeedAsync();
 
         var requester = await new ContributorsSeeder(config).SeedAsync();
@@ -425,7 +425,7 @@ public class ApplicationsServiceTests
 
         var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionFactory().Build() })
+           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
@@ -467,7 +467,7 @@ public class ApplicationsServiceTests
 
         var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionFactory().Build() })
+           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
@@ -505,7 +505,7 @@ public class ApplicationsServiceTests
 
         var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionFactory().Build() })
+           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
            .SeedAsync();
 
         var requester = await new ContributorsSeeder(config).SeedAsync();
@@ -544,7 +544,7 @@ public class ApplicationsServiceTests
 
         var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionFactory().Build() })
+           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
@@ -583,7 +583,7 @@ public class ApplicationsServiceTests
 
         var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionFactory().Build() })
+           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
@@ -621,7 +621,7 @@ public class ApplicationsServiceTests
         var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory()
+                new PositionsFactory()
                 .WithOpen(false)
                 .Build() })
             .SeedAsync();
@@ -669,8 +669,8 @@ public class ApplicationsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -678,8 +678,8 @@ public class ApplicationsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -764,8 +764,8 @@ public class ApplicationsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -773,8 +773,8 @@ public class ApplicationsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -859,8 +859,8 @@ public class ApplicationsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -868,8 +868,8 @@ public class ApplicationsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -954,8 +954,8 @@ public class ApplicationsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -1049,8 +1049,8 @@ public class ApplicationsServiceTests
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -1137,16 +1137,16 @@ public class ApplicationsServiceTests
         var project1 = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
         var project2 = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
@@ -1224,16 +1224,16 @@ public class ApplicationsServiceTests
         var project1 = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
         var project2 = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
-                new PositionFactory().Build(),
-                new PositionFactory().Build()
+                new PositionsFactory().Build(),
+                new PositionsFactory().Build()
             })
             .SeedAsync();
 
