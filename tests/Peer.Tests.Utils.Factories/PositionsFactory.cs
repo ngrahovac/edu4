@@ -9,7 +9,7 @@ public class PositionsFactory
     private string _name = "Test position name";
     private string _description = "Test position description";
     private Hat _requirements = new StudentHat("Software Engineering");
-    private bool _removed = true;
+    private bool _removed = false;
 
     public PositionsFactory WithName(string name)
     {
