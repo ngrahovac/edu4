@@ -149,6 +149,9 @@ public class Project : AbstractAggregateRoot
             throw new InvalidOperationException("The project has already been removed");
         }
 
+        var nonRemovedPositions = Positions.Where(p => !p.Removed);
+        nonRemovedPositions.ToList().ForEach(p => p.Remove());
+
         Removed = true;
         RaiseDomainEvent(new ProjectRemoved(this));
     }

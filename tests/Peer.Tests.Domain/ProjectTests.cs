@@ -249,7 +249,6 @@ public class ProjectTests
         reopeningARemovedPosition.Should().Throw<InvalidOperationException>();
     }
 
-
     [Fact]
     public void Cannot_remove_a_project_twice()
     {
@@ -267,5 +266,39 @@ public class ProjectTests
         var removingARemovedProject = () => project.Remove();
 
         removingARemovedProject.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Removing_a_project_should_remove_all_its_positions_too()
+    {
+        var project = new ProjectsFactory().WithPositions(new List<Position>()
+        {
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student).Build())
+            .WithOpen(true)
+            .WithRemoved(true)
+            .Build(),
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student).Build())
+            .WithOpen(true)
+            .WithRemoved(false)
+            .Build(),
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student).Build())
+            .WithOpen(false)
+            .WithRemoved(true)
+            .Build(),
+            new PositionsFactory().WithRequirements(
+                HatsFactory.OfType(HatType.Student).Build())
+            .WithOpen(false)
+            .WithRemoved(false)
+            .Build()
+        }).Build();
+
+        project.Remove();
+
+        var positionRemovalStatuses = project.Positions.Select(p => p.Removed).Distinct();
+        positionRemovalStatuses.Count().Should().Be(1);
+        positionRemovalStatuses.ElementAt(0).Should().BeTrue();
     }
 }
