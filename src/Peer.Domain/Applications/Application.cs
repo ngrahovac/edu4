@@ -51,7 +51,7 @@ public class Application : AbstractAggregateRoot
 
     public void Remove()
     {
-        if (Status is not ApplicationStatus.Removed)
+        if (Status is ApplicationStatus.Removed)
         {
             throw new InvalidOperationException("The application has already been removed");
         }

@@ -178,4 +178,15 @@ public class ApplicationTests
 
         acceptingARemovedApplication.Should().Throw<InvalidOperationException>();
     }
+
+    [Fact]
+    public void An_application_cannot_be_removed_twice()
+    {
+        var application = new ApplicationsFactory().WithStatus(Peer.Domain.Applications.ApplicationStatus.Removed)
+            .Build();
+
+        var removingAnApplicationTwice = () => application.Remove();
+
+        removingAnApplicationTwice.Should().Throw<InvalidOperationException>();
+    }
 }
