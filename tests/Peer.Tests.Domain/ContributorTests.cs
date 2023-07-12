@@ -93,4 +93,15 @@ public class ContributorTests
         updatingNameOfARemovedContributor.Should().Throw<InvalidOperationException>();
         contributor.FullName.Should().Be(oldName);
     }
+
+    [Fact]
+    public void Cannot_remove_a_contributor_twice()
+    {
+        var contributor = new ContributorsFactory().WithRemoved(true)
+            .Build();
+
+        var removingAContributorTwice = () => contributor.Remove();
+
+        removingAContributorTwice.Should().Throw<InvalidOperationException>();
+    }
 }
