@@ -149,7 +149,6 @@ public class ProjectTests
             .Build()
         }).Build();
 
-        project.ClosePosition(project.Positions.ElementAt(0).Id);
         project.Remove();
 
         var reopeningAPositionOnARemovedProject = () => project.ReopenPosition(
