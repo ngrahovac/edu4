@@ -12,11 +12,11 @@ public class ProjectTests
     [Fact]
     public void Cannot_create_a_project_without_any_positions()
     {
-        var action = ()
+        var creatingAProjectWithoutAnyPositions = ()
             => new ProjectsFactory().WithPositions(new List<Position>())
             .Build();
 
-        action.Should().Throw<InvalidOperationException>();
+        creatingAProjectWithoutAnyPositions.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -31,9 +31,9 @@ public class ProjectTests
 
         project.ClosePosition(project.Positions.ElementAt(0).Id);
 
-        var closeThePositionAgain = () => project.ClosePosition(project.Positions.ElementAt(0).Id);
+        var closingAClosedPosition = () => project.ClosePosition(project.Positions.ElementAt(0).Id);
 
-        closeThePositionAgain.Should().Throw<InvalidOperationException>();
+        closingAClosedPosition.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -48,9 +48,9 @@ public class ProjectTests
 
         project.RemovePosition(project.Positions.ElementAt(0).Id);
 
-        var removeThePositionAgain = () => project.RemovePosition(project.Positions.ElementAt(0).Id);
+        var removingARemovedPosition = () => project.RemovePosition(project.Positions.ElementAt(0).Id);
 
-        removeThePositionAgain.Should().Throw<InvalidOperationException>();
+        removingARemovedPosition.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -65,9 +65,9 @@ public class ProjectTests
 
         project.RemovePosition(project.Positions.ElementAt(0).Id);
 
-        var closeARemovedPosition = () => project.ClosePosition(project.Positions.ElementAt(0).Id);
+        var closingARemovedPosition = () => project.ClosePosition(project.Positions.ElementAt(0).Id);
 
-        closeARemovedPosition.Should().Throw<InvalidOperationException>();
+        closingARemovedPosition.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -82,8 +82,8 @@ public class ProjectTests
 
         project.RemovePosition(project.Positions.ElementAt(0).Id);
 
-        var reopenARemovedPosition = () => project.ReopenPosition(project.Positions.ElementAt(0).Id);
+        var reopeningARemovedPosition = () => project.ReopenPosition(project.Positions.ElementAt(0).Id);
 
-        reopenARemovedPosition.Should().Throw<InvalidOperationException>();
+        reopeningARemovedPosition.Should().Throw<InvalidOperationException>();
     }
 }
