@@ -1,7 +1,8 @@
 using Peer.Domain.Contributors;
 
-namespace Peer.Tests.Application.TestData;
-internal abstract class HatFactory
+namespace Peer.Tests.Utils.Factories;
+
+public abstract class HatFactory
 {
     public static HatFactory OfType(HatType type)
     {

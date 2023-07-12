@@ -4,10 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Peer.Application.Models;
 using Peer.Domain.Contributors;
-using Peer.Tests.Application.TestData;
 using Peer.Infrastructure;
 using Peer.Application.Services;
 using Peer.Domain.Projects;
+using Peer.Test.Utils.Seeders;
+using Peer.Tests.Utils.Factories;
 
 namespace Peer.Tests.Application;
 
@@ -24,7 +25,7 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var author = await new ContributorFactory().WithHats(
+        var author = await new ContributorsSeeder(config).WithHats(
             new List<Hat>()
             {
                 HatFactory.OfType(HatType.Student)
@@ -88,7 +89,7 @@ public class ProjectsServiceTests
         var existingPositionName = "test";
         var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
 
-        var existingProject = await new ProjectFactory().WithPositions(
+        var existingProject = await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName(existingPositionName)
@@ -131,7 +132,7 @@ public class ProjectsServiceTests
         var existingPositionName = "test";
         var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
 
-        var existingProject = await new ProjectFactory().WithPositions(
+        var existingProject = await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName(existingPositionName)
@@ -177,7 +178,7 @@ public class ProjectsServiceTests
         var existingPositionName = "test";
         var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
 
-        var existingProject = await new ProjectFactory().WithPositions(
+        var existingProject = await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName(existingPositionName)
@@ -223,7 +224,7 @@ public class ProjectsServiceTests
         var existingPositionName = "test";
         var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
 
-        var existingProject = await new ProjectFactory().WithPositions(
+        var existingProject = await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName(existingPositionName)
@@ -265,7 +266,7 @@ public class ProjectsServiceTests
 
         var keyword = "test";
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -276,7 +277,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -319,7 +320,7 @@ public class ProjectsServiceTests
 
         var keyword = "test";
 
-        await new ProjectFactory().WithDescription(keyword)
+        await new ProjectsSeeder(config).WithDescription(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -330,7 +331,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -373,7 +374,7 @@ public class ProjectsServiceTests
 
         var keyword = "test";
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName(keyword)
@@ -381,7 +382,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -424,7 +425,7 @@ public class ProjectsServiceTests
 
         var keyword = "test";
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithDescription(keyword)
@@ -432,7 +433,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -475,7 +476,7 @@ public class ProjectsServiceTests
 
         var keyword = "test";
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -486,7 +487,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithDescription(keyword)
+        await new ProjectsSeeder(config).WithDescription(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -497,7 +498,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName(keyword)
@@ -508,7 +509,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithDescription(keyword)
@@ -519,7 +520,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -568,7 +569,7 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        await new ProjectFactory().WithTitle("foo")
+        await new ProjectsSeeder(config).WithTitle("foo")
             .WithPositions(
             new List<Position>()
             {
@@ -579,7 +580,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithDescription("bar")
+        await new ProjectsSeeder(config).WithDescription("bar")
             .WithPositions(
             new List<Position>()
             {
@@ -590,7 +591,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName("baz")
@@ -627,7 +628,7 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -637,7 +638,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -647,7 +648,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -684,7 +685,7 @@ public class ProjectsServiceTests
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -694,7 +695,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -704,7 +705,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -743,7 +744,7 @@ public class ProjectsServiceTests
 
         var keyword = "test";
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -754,7 +755,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
              .WithPositions(
              new List<Position>()
              {
@@ -806,7 +807,7 @@ public class ProjectsServiceTests
 
         var keyword = "test";
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -817,7 +818,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
              .WithPositions(
              new List<Position>()
              {
@@ -869,7 +870,7 @@ public class ProjectsServiceTests
 
         var studentHat = new StudentHat("Electronics Engineering", AcademicDegree.Masters);
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -881,7 +882,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -893,7 +894,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName("Recommended position 1")
@@ -914,7 +915,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -926,7 +927,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -938,7 +939,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -981,7 +982,7 @@ public class ProjectsServiceTests
 
         var academicHat = new AcademicHat("Computer Science");
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -992,7 +993,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1009,7 +1010,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1053,7 +1054,7 @@ public class ProjectsServiceTests
         var studentHat = new StudentHat("Electronics Engineering", AcademicDegree.Masters);
         var keyword = "keyword";
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1065,7 +1066,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1077,7 +1078,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName("Recommended position 1")
@@ -1098,7 +1099,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1110,7 +1111,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1122,7 +1123,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1132,7 +1133,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -1145,7 +1146,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithDescription(keyword)
+        await new ProjectsSeeder(config).WithDescription(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -1158,7 +1159,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName(keyword)
@@ -1179,7 +1180,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithDescription(keyword)
@@ -1233,7 +1234,7 @@ public class ProjectsServiceTests
         var academicHat = new AcademicHat("Computer Science");
         var keyword = "keyword";
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1244,7 +1245,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1261,7 +1262,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1271,7 +1272,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -1283,7 +1284,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithDescription(keyword)
+        await new ProjectsSeeder(config).WithDescription(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -1301,7 +1302,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
              new List<Position>()
              {
                 new PositionFactory().WithName(keyword)
@@ -1313,7 +1314,7 @@ public class ProjectsServiceTests
              })
              .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
              new List<Position>()
              {
                 new PositionFactory().WithDescription(keyword)
@@ -1365,7 +1366,7 @@ public class ProjectsServiceTests
 
         var academicHat = new AcademicHat("Computer Science");
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1376,7 +1377,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1393,7 +1394,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1438,7 +1439,7 @@ public class ProjectsServiceTests
 
         var academicHat = new AcademicHat("Computer Science");
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1449,7 +1450,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1466,7 +1467,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1511,7 +1512,7 @@ public class ProjectsServiceTests
 
         var studentHat = new StudentHat("Computer Science", AcademicDegree.Masters);
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1523,7 +1524,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1541,7 +1542,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1587,7 +1588,7 @@ public class ProjectsServiceTests
 
         var studentHat = new StudentHat("Computer Science", AcademicDegree.Masters);
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1599,7 +1600,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1617,7 +1618,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1664,7 +1665,7 @@ public class ProjectsServiceTests
         var academicHat = new AcademicHat("Computer Science");
         var keyword = "keyword";
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1675,7 +1676,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1692,7 +1693,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithRequirements(
@@ -1702,7 +1703,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithTitle(keyword)
+        await new ProjectsSeeder(config).WithTitle(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -1714,7 +1715,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithDescription(keyword)
+        await new ProjectsSeeder(config).WithDescription(keyword)
             .WithPositions(
             new List<Position>()
             {
@@ -1732,7 +1733,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithName(keyword)
@@ -1744,7 +1745,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        await new ProjectFactory().WithPositions(
+        await new ProjectsSeeder(config).WithPositions(
             new List<Position>()
             {
                 new PositionFactory().WithDescription(keyword)
@@ -1807,9 +1808,9 @@ public class ProjectsServiceTests
             domainEvents,
             new NullLogger<ProjectsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -1846,7 +1847,7 @@ public class ProjectsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
         var positions = new List<Position>()
         {
@@ -1883,9 +1884,9 @@ public class ProjectsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -1893,7 +1894,7 @@ public class ProjectsServiceTests
             })
             .SeedAsync();
 
-        var requester = await new ContributorFactory().SeedAsync();
+        var requester = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
         var closingAPositionByACollaboratorThatIsNotTheProjectAuthor = async () => await sut.ClosePositionAsync(
@@ -1922,7 +1923,7 @@ public class ProjectsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
                 new PositionFactory().Build()
@@ -1956,7 +1957,7 @@ public class ProjectsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
-        var requester = await new ContributorFactory().SeedAsync();
+        var requester = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
         var closingAPositionOnANonExistingProject = async () => await sut.ClosePositionAsync(
@@ -1986,9 +1987,9 @@ public class ProjectsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -2023,9 +2024,9 @@ public class ProjectsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ProjectsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -2061,9 +2062,9 @@ public class ProjectsServiceTests
             domainEvents,
             new NullLogger<ProjectsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -2104,9 +2105,9 @@ public class ProjectsServiceTests
             domainEvents,
             new NullLogger<ProjectsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {

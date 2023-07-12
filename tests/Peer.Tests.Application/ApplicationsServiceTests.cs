@@ -6,7 +6,8 @@ using Peer.Application.Services;
 using Peer.Domain.Applications;
 using Peer.Domain.Projects;
 using Peer.Infrastructure;
-using Peer.Tests.Application.TestData;
+using Peer.Test.Utils.Seeders;
+using Peer.Tests.Utils.Factories;
 
 namespace Peer.Tests.Application;
 
@@ -33,11 +34,11 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionFactory().Build() })
             .SeedAsync();
 
-        var contributorToApply = await new ContributorFactory().SeedAsync();
+        var contributorToApply = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
         var application = await sut.SubmitAsync(
@@ -75,8 +76,8 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
-        var project = await new ProjectFactory()
+        var author = await new ContributorsSeeder(config).SeedAsync();
+        var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>() { new PositionFactory().Build() })
             .SeedAsync();
@@ -109,7 +110,7 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var contributor = await new ContributorFactory().SeedAsync();
+        var contributor = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
         var applyingForAPositionOnANonExistantProject = async () => await sut.SubmitAsync(
@@ -139,9 +140,9 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var contributor = await new ContributorFactory().SeedAsync();
+        var contributor = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionFactory().Build() })
             .SeedAsync();
 
@@ -173,11 +174,11 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionFactory().Build() })
             .SeedAsync();
 
-        var contributor = await new ContributorFactory().SeedAsync();
+        var contributor = await new ContributorsSeeder(config).SeedAsync();
 
         var application = await sut.SubmitAsync(
            contributor.Id,
@@ -213,11 +214,11 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionFactory().Build() })
             .SeedAsync();
 
-        var applicant = await new ContributorFactory().SeedAsync();
+        var applicant = await new ContributorsSeeder(config).SeedAsync();
 
         var submittedApplication = await sut.SubmitAsync(
            applicant.Id,
@@ -251,18 +252,18 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionFactory().Build() })
             .SeedAsync();
 
-        var applicant = await new ContributorFactory().SeedAsync();
+        var applicant = await new ContributorsSeeder(config).SeedAsync();
 
         var submittedApplication = await sut.SubmitAsync(
            applicant.Id,
            project.Id,
            project.Positions.ElementAt(0).Id);
 
-        var requester = await new ContributorFactory().SeedAsync();
+        var requester = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
         var revokingAnothersApplication = async () => await sut.RevokeAsync(requester.Id, submittedApplication.Id);
@@ -290,11 +291,11 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionFactory().Build() })
             .SeedAsync();
 
-        var applicant = await new ContributorFactory().SeedAsync();
+        var applicant = await new ContributorsSeeder(config).SeedAsync();
 
         var submittedApplication = await sut.SubmitAsync(
            applicant.Id,
@@ -332,14 +333,14 @@ public class ApplicationsServiceTests
             domainEvents,
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
            .WithPositions(new List<Position>() { new PositionFactory().Build() })
            .SeedAsync();
 
-        var application = await new ApplicationsFactory()
+        var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
             .WithPositionId(project.Positions.ElementAt(0).Id)
             .SeedAsync();
@@ -376,16 +377,16 @@ public class ApplicationsServiceTests
             domainEvents,
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
            .WithPositions(new List<Position>() { new PositionFactory().Build() })
            .SeedAsync();
 
-        var requester = await new ContributorFactory().SeedAsync();
+        var requester = await new ContributorsSeeder(config).SeedAsync();
 
-        var application = await new ApplicationsFactory()
+        var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
             .WithPositionId(project.Positions.ElementAt(0).Id)
             .SeedAsync();
@@ -420,14 +421,14 @@ public class ApplicationsServiceTests
             domainEvents,
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
            .WithPositions(new List<Position>() { new PositionFactory().Build() })
            .SeedAsync();
 
-        var application = await new ApplicationsFactory()
+        var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
             .WithPositionId(project.Positions.ElementAt(0).Id)
             .SeedAsync();
@@ -462,14 +463,14 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
            .WithPositions(new List<Position>() { new PositionFactory().Build() })
            .SeedAsync();
 
-        var application = await new ApplicationsFactory()
+        var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
             .WithPositionId(project.Positions.ElementAt(0).Id)
             .SeedAsync();
@@ -500,16 +501,16 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
            .WithPositions(new List<Position>() { new PositionFactory().Build() })
            .SeedAsync();
 
-        var requester = await new ContributorFactory().SeedAsync();
+        var requester = await new ContributorsSeeder(config).SeedAsync();
 
-        var application = await new ApplicationsFactory()
+        var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
             .WithPositionId(project.Positions.ElementAt(0).Id)
             .SeedAsync();
@@ -539,14 +540,14 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
            .WithPositions(new List<Position>() { new PositionFactory().Build() })
            .SeedAsync();
 
-        var application = await new ApplicationsFactory()
+        var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
             .WithPositionId(project.Positions.ElementAt(0).Id)
             .SeedAsync();
@@ -578,14 +579,14 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
            .WithAuthorId(author.Id)
            .WithPositions(new List<Position>() { new PositionFactory().Build() })
            .SeedAsync();
 
-        var application = await new ApplicationsFactory()
+        var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
             .WithPositionId(project.Positions.ElementAt(0).Id)
             .SeedAsync();
@@ -617,7 +618,7 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var project = await new ProjectFactory()
+        var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
                 new PositionFactory()
@@ -625,7 +626,7 @@ public class ApplicationsServiceTests
                 .Build() })
             .SeedAsync();
 
-        var contributorToApply = await new ContributorFactory().SeedAsync();
+        var contributorToApply = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
         var applyingForAClosedPosition = async () => await sut.SubmitAsync(
@@ -656,15 +657,15 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
-        var applicant1 = await new ContributorFactory().SeedAsync();
-        var applicant2 = await new ContributorFactory().SeedAsync();
-        var applicant3 = await new ContributorFactory().SeedAsync();
-        var applicant4 = await new ContributorFactory().SeedAsync();
-        var applicant5 = await new ContributorFactory().SeedAsync();
-        var applicant6 = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
+        var applicant1 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant2 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant3 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant4 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant5 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant6 = await new ContributorsSeeder(config).SeedAsync();
 
-        var authoredProject1 = await new ProjectFactory()
+        var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -673,7 +674,7 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var authoredProject2 = await new ProjectFactory()
+        var authoredProject2 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -682,39 +683,39 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var submittedApplication1 = await new ApplicationsFactory()
+        var submittedApplication1 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant1.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication2 = await new ApplicationsFactory()
+        var submittedApplication2 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant2.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(1).Id)
             .SeedAsync();
 
-        var submittedApplication3 = await new ApplicationsFactory()
+        var submittedApplication3 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant3.Id)
             .WithProjectId(authoredProject2.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var revokedApplication = await new ApplicationsFactory()
+        var revokedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant4.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Revoked)
             .SeedAsync();
 
-        var rejectedApplication = await new ApplicationsFactory()
+        var rejectedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant5.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Rejected)
             .SeedAsync();
 
-        var acceptedApplication = await new ApplicationsFactory()
+        var acceptedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant6.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
@@ -751,15 +752,15 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
-        var applicant1 = await new ContributorFactory().SeedAsync();
-        var applicant2 = await new ContributorFactory().SeedAsync();
-        var applicant3 = await new ContributorFactory().SeedAsync();
-        var applicant4 = await new ContributorFactory().SeedAsync();
-        var applicant5 = await new ContributorFactory().SeedAsync();
-        var applicant6 = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
+        var applicant1 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant2 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant3 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant4 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant5 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant6 = await new ContributorsSeeder(config).SeedAsync();
 
-        var authoredProject1 = await new ProjectFactory()
+        var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -768,7 +769,7 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var authoredProject2 = await new ProjectFactory()
+        var authoredProject2 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -777,39 +778,39 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var submittedApplication1 = await new ApplicationsFactory()
+        var submittedApplication1 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant1.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication2 = await new ApplicationsFactory()
+        var submittedApplication2 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant2.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(1).Id)
             .SeedAsync();
 
-        var submittedApplication3 = await new ApplicationsFactory()
+        var submittedApplication3 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant3.Id)
             .WithProjectId(authoredProject2.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var revokedApplication = await new ApplicationsFactory()
+        var revokedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant4.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Revoked)
             .SeedAsync();
 
-        var rejectedApplication = await new ApplicationsFactory()
+        var rejectedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant5.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Rejected)
             .SeedAsync();
 
-        var acceptedApplication = await new ApplicationsFactory()
+        var acceptedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant6.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
@@ -846,15 +847,15 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
-        var applicant1 = await new ContributorFactory().SeedAsync();
-        var applicant2 = await new ContributorFactory().SeedAsync();
-        var applicant3 = await new ContributorFactory().SeedAsync();
-        var applicant4 = await new ContributorFactory().SeedAsync();
-        var applicant5 = await new ContributorFactory().SeedAsync();
-        var applicant6 = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
+        var applicant1 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant2 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant3 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant4 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant5 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant6 = await new ContributorsSeeder(config).SeedAsync();
 
-        var authoredProject1 = await new ProjectFactory()
+        var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -863,7 +864,7 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var authoredProject2 = await new ProjectFactory()
+        var authoredProject2 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -872,39 +873,39 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var submittedApplication1 = await new ApplicationsFactory()
+        var submittedApplication1 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant1.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication2 = await new ApplicationsFactory()
+        var submittedApplication2 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant2.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(1).Id)
             .SeedAsync();
 
-        var submittedApplication3 = await new ApplicationsFactory()
+        var submittedApplication3 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant3.Id)
             .WithProjectId(authoredProject2.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var revokedApplication = await new ApplicationsFactory()
+        var revokedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant4.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Revoked)
             .SeedAsync();
 
-        var rejectedApplication = await new ApplicationsFactory()
+        var rejectedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant5.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Rejected)
             .SeedAsync();
 
-        var acceptedApplication = await new ApplicationsFactory()
+        var acceptedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant6.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
@@ -941,15 +942,15 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
-        var applicant1 = await new ContributorFactory().SeedAsync();
-        var applicant2 = await new ContributorFactory().SeedAsync();
-        var applicant3 = await new ContributorFactory().SeedAsync();
-        var applicant4 = await new ContributorFactory().SeedAsync();
-        var applicant5 = await new ContributorFactory().SeedAsync();
-        var applicant6 = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
+        var applicant1 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant2 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant3 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant4 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant5 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant6 = await new ContributorsSeeder(config).SeedAsync();
 
-        var authoredProject1 = await new ProjectFactory()
+        var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -958,39 +959,39 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var submittedApplication1 = await new ApplicationsFactory()
+        var submittedApplication1 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant1.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication2 = await new ApplicationsFactory()
+        var submittedApplication2 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant2.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication3 = await new ApplicationsFactory()
+        var submittedApplication3 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant3.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(1).Id)
             .SeedAsync();
 
-        var revokedApplication = await new ApplicationsFactory()
+        var revokedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant4.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Revoked)
             .SeedAsync();
 
-        var rejectedApplication = await new ApplicationsFactory()
+        var rejectedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant5.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Rejected)
             .SeedAsync();
 
-        var acceptedApplication = await new ApplicationsFactory()
+        var acceptedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant6.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
@@ -1036,15 +1037,15 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var author = await new ContributorFactory().SeedAsync();
-        var applicant1 = await new ContributorFactory().SeedAsync();
-        var applicant2 = await new ContributorFactory().SeedAsync();
-        var applicant3 = await new ContributorFactory().SeedAsync();
-        var applicant4 = await new ContributorFactory().SeedAsync();
-        var applicant5 = await new ContributorFactory().SeedAsync();
-        var applicant6 = await new ContributorFactory().SeedAsync();
+        var author = await new ContributorsSeeder(config).SeedAsync();
+        var applicant1 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant2 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant3 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant4 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant5 = await new ContributorsSeeder(config).SeedAsync();
+        var applicant6 = await new ContributorsSeeder(config).SeedAsync();
 
-        var authoredProject1 = await new ProjectFactory()
+        var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
             .WithPositions(new List<Position>()
             {
@@ -1053,39 +1054,39 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var submittedApplication1 = await new ApplicationsFactory()
+        var submittedApplication1 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant1.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication2 = await new ApplicationsFactory()
+        var submittedApplication2 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant2.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication3 = await new ApplicationsFactory()
+        var submittedApplication3 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant3.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(1).Id)
             .SeedAsync();
 
-        var revokedApplication = await new ApplicationsFactory()
+        var revokedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant4.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Revoked)
             .SeedAsync();
 
-        var rejectedApplication = await new ApplicationsFactory()
+        var rejectedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant5.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Rejected)
             .SeedAsync();
 
-        var acceptedApplication = await new ApplicationsFactory()
+        var acceptedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant6.Id)
             .WithProjectId(authoredProject1.Id)
             .WithPositionId(authoredProject1.Positions.ElementAt(0).Id)
@@ -1131,9 +1132,9 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var applicant = await new ContributorFactory().SeedAsync();
+        var applicant = await new ContributorsSeeder(config).SeedAsync();
 
-        var project1 = await new ProjectFactory()
+        var project1 = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
                 new PositionFactory().Build(),
@@ -1141,7 +1142,7 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var project2 = await new ProjectFactory()
+        var project2 = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
                 new PositionFactory().Build(),
@@ -1149,39 +1150,39 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var submittedApplication1 = await new ApplicationsFactory()
+        var submittedApplication1 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication2 = await new ApplicationsFactory()
+        var submittedApplication2 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(1).Id)
             .SeedAsync();
 
-        var submittedApplication3 = await new ApplicationsFactory()
+        var submittedApplication3 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project2.Id)
             .WithPositionId(project2.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var revokedApplication = await new ApplicationsFactory()
+        var revokedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Revoked)
             .SeedAsync();
 
-        var rejectedApplication = await new ApplicationsFactory()
+        var rejectedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Rejected)
             .SeedAsync();
 
-        var acceptedApplication = await new ApplicationsFactory()
+        var acceptedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(0).Id)
@@ -1218,9 +1219,9 @@ public class ApplicationsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ApplicationsService>());
 
-        var applicant = await new ContributorFactory().SeedAsync();
+        var applicant = await new ContributorsSeeder(config).SeedAsync();
 
-        var project1 = await new ProjectFactory()
+        var project1 = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
                 new PositionFactory().Build(),
@@ -1228,7 +1229,7 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var project2 = await new ProjectFactory()
+        var project2 = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>()
             {
                 new PositionFactory().Build(),
@@ -1236,39 +1237,39 @@ public class ApplicationsServiceTests
             })
             .SeedAsync();
 
-        var submittedApplication1 = await new ApplicationsFactory()
+        var submittedApplication1 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication2 = await new ApplicationsFactory()
+        var submittedApplication2 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project2.Id)
             .WithPositionId(project2.Positions.ElementAt(0).Id)
             .SeedAsync();
 
-        var submittedApplication3 = await new ApplicationsFactory()
+        var submittedApplication3 = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(1).Id)
             .SeedAsync();
 
-        var revokedApplication = await new ApplicationsFactory()
+        var revokedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Revoked)
             .SeedAsync();
 
-        var rejectedApplication = await new ApplicationsFactory()
+        var rejectedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(0).Id)
             .WithStatus(ApplicationStatus.Rejected)
             .SeedAsync();
 
-        var acceptedApplication = await new ApplicationsFactory()
+        var acceptedApplication = await new ApplicationsSeeder(config)
             .WithApplicantId(applicant.Id)
             .WithProjectId(project1.Id)
             .WithPositionId(project1.Positions.ElementAt(0).Id)
@@ -1288,7 +1289,8 @@ public class ApplicationsServiceTests
             new List<Domain.Applications.Application>()
             {
                 submittedApplication1,
-                submittedApplication3            }
+                submittedApplication3
+            }
             .OrderBy(a => a.DateSubmitted)
             .ToList(),
             b => b.WithStrictOrdering());

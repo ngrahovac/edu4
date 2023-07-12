@@ -2,8 +2,9 @@ using System.Reflection;
 using Peer.Domain.Contributors;
 using Peer.Domain.Projects;
 
-namespace Peer.Tests.Application.TestData;
-internal class PositionFactory
+namespace Peer.Tests.Utils.Factories;
+
+public class PositionFactory
 {
     private string _name = "Test position name";
     private string _description = "Test position description";

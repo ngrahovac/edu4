@@ -8,7 +8,7 @@ using Peer.Application.Models;
 using Peer.Application.Services;
 using Peer.Domain.Contributors;
 using Peer.Infrastructure;
-using Peer.Tests.Application.TestData;
+using Peer.Test.Utils.Seeders;
 
 namespace Peer.Tests.Application;
 
@@ -158,7 +158,7 @@ public class ContributorsServiceTests
         var newContactEmail = "mail2@example.com";
         var hats = new List<Hat>() { new AcademicHat("Computer Science") };
 
-        var existingContributor = await new ContributorFactory()
+        var existingContributor = await new ContributorsSeeder(config)
             .WithAccountId(contributorId)
             .WithFullName(fullName)
             .WithEmail(contactEmail)
@@ -199,7 +199,7 @@ public class ContributorsServiceTests
         var contactEmail = "mail1@example.com";
         var hats = new List<Hat>() { new AcademicHat("Computer Science") };
 
-        var existingContributor = await new ContributorFactory()
+        var existingContributor = await new ContributorsSeeder(config)
             .WithAccountId(contributorId)
             .WithFullName(fullName)
             .WithEmail(contactEmail)
@@ -240,7 +240,7 @@ public class ContributorsServiceTests
         var hats = new List<Hat>() { new AcademicHat("Computer Science") };
         var newHats = new List<Hat>() { new StudentHat("Computer Science", AcademicDegree.Doctorate) };
 
-        var existingContributor = await new ContributorFactory()
+        var existingContributor = await new ContributorsSeeder(config)
             .WithAccountId(contributorId)
             .WithFullName(fullName)
             .WithEmail(contactEmail)
@@ -275,8 +275,8 @@ public class ContributorsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
-        var requester = await new ContributorFactory().SeedAsync();
-        var contributor = await new ContributorFactory().SeedAsync();
+        var requester = await new ContributorsSeeder(config).SeedAsync();
+        var contributor = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
         var updatingAnotherContributor = async () => await sut.UpdateSelfAsync(
@@ -310,7 +310,7 @@ public class ContributorsServiceTests
             domainEvents,
             new NullLogger<ContributorsService>());
 
-        var contributor = await new ContributorFactory()
+        var contributor = await new ContributorsSeeder(config)
             .SeedAsync();
 
         // ACT
@@ -342,8 +342,8 @@ public class ContributorsServiceTests
             new MongoDbDomainEventsRepository(config),
             new NullLogger<ContributorsService>());
 
-        var requester = await new ContributorFactory().SeedAsync();
-        var contributor = await new ContributorFactory().SeedAsync();
+        var requester = await new ContributorsSeeder(config).SeedAsync();
+        var contributor = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
         var removingAnotherContributor = async () => await sut.RemoveSelfAsync(requester.Id, contributor.Id);

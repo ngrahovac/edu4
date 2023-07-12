@@ -38,6 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Peer.Application\Peer.Application.csproj" />
     <ProjectReference Include="..\..\src\Peer.Infrastructure\Peer.Infrastructure.csproj" />
+    <ProjectReference Include="..\Peer.Test.Utils.Seeders\Peer.Test.Utils.Seeders.csproj" />
   </ItemGroup>
 
 </Project>
