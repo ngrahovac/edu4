@@ -142,7 +142,8 @@ public class HatTests
                 .Build();
 
             var positionRequirements3 = HatsFactory.OfType(HatType.Student)
-                .WithStudyField("Software Engineering");
+                .WithStudyField("Software Engineering")
+                .Build();
 
             yield return new object[] { academicHat, positionRequirements1, true };
             yield return new object[] { academicHat, positionRequirements2, false };
