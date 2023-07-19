@@ -61,7 +61,7 @@ public class ProjectsService
 
     public async Task<IReadOnlyList<Project>> DiscoverAsync(
         string? keyword = null,
-        ProjectsSortOption sortOption = ProjectsSortOption.Default,
+        ProjectsSortOption sortOption = ProjectsSortOption.Unspecified,
         Hat? usersHat = null)
     {
         var discoveredProjects = await _projects.DiscoverAsync(keyword, sortOption, usersHat);

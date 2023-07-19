@@ -130,9 +130,9 @@ public class MongoDBProjectsRepository : IProjectsRepository
 
         var sorting = sortOption switch
         {
-            ProjectsSortOption.Asc => Builders<Project>.Sort.Ascending(p => p.DatePosted),
-            ProjectsSortOption.Desc => Builders<Project>.Sort.Descending(p => p.DatePosted),
-            ProjectsSortOption.Default => null,
+            ProjectsSortOption.ByDatePostedAsc => Builders<Project>.Sort.Ascending(p => p.DatePosted),
+            ProjectsSortOption.ByDatePostedDesc => Builders<Project>.Sort.Descending(p => p.DatePosted),
+            ProjectsSortOption.Unspecified => null,
             _ => throw new NotImplementedException()
         };
 

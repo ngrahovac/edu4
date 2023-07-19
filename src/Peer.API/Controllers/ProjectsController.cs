@@ -60,7 +60,7 @@ public class ProjectsController : ControllerBase
 
         var projects = await _projects.DiscoverAsync(
             keyword,
-            sort ?? ProjectsSortOption.Default,
+            sort ?? ProjectsSortOption.Unspecified,
             hatType is null ? null : requester.Hats.FirstOrDefault(h => h.Type.Equals(hatType)));
 
         return projects.Select(p => new ProjectDisplayModel(p, requester))
