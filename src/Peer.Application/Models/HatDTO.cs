@@ -2,6 +2,7 @@ using Peer.Application.Utils;
 using Peer.Domain.Contributors;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Peer.Application.Models;
 
@@ -18,11 +19,20 @@ public record HatDTO(HatType Type, Dictionary<string, object> Parameters)
             _ => throw new NotImplementedException()
         };
 
-        hat =
-            (Hat?)JsonSerializer.Deserialize(jsonString, type, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
-            throw new InvalidCastException();
+        try
+        {
+            hat = (Hat?)JsonSerializer.Deserialize(jsonString, type, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            });
 
-        return hat;
+            return hat;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Error deserializing a hat", ex);
+        }
     }
 
     public static HatDTO FromHat(Hat hat)
