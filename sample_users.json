@@ -1,9 +1,10 @@
 [
   {
-    "_id": "ce075dea-7706-409e-91e8-7f27580d2da0",
+    "_id": "65dfc7d2-31a9-40dc-a2ae-ad824fdbcac1",
     "AccountId": "google-oauth2|0",
     "ContactEmail": "mail@example.com",
     "FullName": "John Doe",
+    "Removed": false,
     "Hats": [
       {
         "_t": "StudentHat",
