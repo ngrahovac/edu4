@@ -49,24 +49,43 @@ public class ProjectsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = "Contributor")]
-    public async Task<IReadOnlyList<ProjectDisplayModel>> DiscoverAsync(
-        string? keyword,
-        HatType? hatType,
-        ProjectsSortOption? sort)
+    public async Task<ActionResult<IReadOnlyList<ProjectDisplayModel>>> DiscoverAsync(
+        [FromQuery] string? keyword = null,
+        [FromQuery] ProjectsSortOption? sort = ProjectsSortOption.Unspecified,
+        [FromQuery] string? hatType = null)
     {
+        if (!ProjectDiscoveryRequestValidator.RequestIsValid(Request.Query))
+        {
+            return BadRequest("Project discovery request is not valid");
+        }
+
+        var hatTypeEnum = HatParametersExtractor.GetHatTypeFromQueryString(Request.Query);
+
+        var hatParameters = hatTypeEnum is null ?
+            null :
+            HatParametersExtractor.ExtractHatParametersFromQueryString((HatType)hatTypeEnum, Request.Query);
+
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
         var requester = await _contributors.GetByIdAsync(requesterId);
 
+        var hat = hatTypeEnum is null ?
+            null :
+            HatDTO.ToHat(new HatDTO(hatType switch
+            {
+                "Student" => HatType.Student,
+                "Academic" => HatType.Academic,
+                _ => throw new NotImplementedException("Discovering projects by specifying hat parameters of the given type is not yet implemented"),
+            }, hatParameters!));
+
         var projects = await _projects.DiscoverAsync(
             keyword,
-            sort ?? ProjectsSortOption.Unspecified,
-            hatType is null ? null : requester.Hats.FirstOrDefault(h => h.Type.Equals(hatType)));
+            sort is null ? ProjectsSortOption.Unspecified : (ProjectsSortOption)sort,
+            hat);
 
         return projects.Select(p => new ProjectDisplayModel(p, requester))
             .ToList();
     }
-
 
     [HttpPost("{projectId}/positions")]
     [Authorize(Policy = "Contributor")]
