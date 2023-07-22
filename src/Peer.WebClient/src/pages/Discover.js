@@ -53,10 +53,9 @@ const Discover = () => {
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await discover(keyword, sort, hat != undefined ? hat.type : undefined, token);
+                let result = await discover(keyword, sort, hat, token);
 
                 if (result.outcome === successResult) {
-                    console.log("dohvaceni projekti");
                     var projects = result.payload;
                     setProjects(projects);
                     // document.getElementById('user-action-success-toast').show();
@@ -68,7 +67,7 @@ const Discover = () => {
                     //     document.getElementById('user-action-fail-toast').close();
                     // }, 3000);
                 } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze");
+                    console.log("nesto je do mreze", result);
                     // document.getElementById('user-action-fail-toast').show();
                     // setTimeout(() => {
                     //     document.getElementById('user-action-fail-toast').close();
@@ -152,7 +151,7 @@ const Discover = () => {
                             </>)
                         }
                     </div>
-                }
+                    }
 
                 {
                     projects.length <= 0 &&

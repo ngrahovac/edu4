@@ -1,4 +1,4 @@
-import { deleteAsync, getAsync, postAsync, putAsync} from './ApiService'
+import { deleteAsync, getAsync, postAsync, putAsync } from './ApiService'
 import {
     successResult,
     failureResult,
@@ -61,8 +61,8 @@ async function updateDetails(projectId, title, description, accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
         var response = await putAsync(
-            `${apiRootUri}/projects/${projectId}/details`, 
-            {title: title, description: description}, 
+            `${apiRootUri}/projects/${projectId}/details`,
+            { title: title, description: description },
             accessToken);
 
         if (response.ok) {
@@ -86,7 +86,7 @@ async function updateDetails(projectId, title, description, accessToken) {
     }
 }
 
-async function discover(keyword, sort, hatType, accessToken) {
+async function discover(keyword, sort, hat, accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
@@ -96,22 +96,25 @@ async function discover(keyword, sort, hatType, accessToken) {
 
         if (keyword != undefined)
             searchRefinemets["keyword"] = keyword;
-        
+
         if (sort != undefined)
             searchRefinemets["sort"] = sort;
 
-        if (hatType != undefined) 
-            searchRefinemets["hatType"] = hatType;
+        if (hat != undefined) {
+            searchRefinemets["hatType"] = hat.type;
+
+            Object.keys(hat.parameters).forEach(k => searchRefinemets[k] = hat.parameters[k]);
+        }
 
         if (Object.keys(searchRefinemets).length > 0) {
             requestUri += "?";
 
-            for (let parameter in searchRefinemets) 
+            for (let parameter in searchRefinemets)
                 if (searchRefinemets[parameter] != undefined)
-                    requestUri += `${parameter}=${searchRefinemets[parameter]}&`    
-            
+                    requestUri += `${parameter}=${encodeURI(searchRefinemets[parameter])}&`
+
             requestUri = requestUri.slice(0, -1);
-        }            
+        }
 
         var response = await getAsync(requestUri, accessToken);
 
@@ -167,10 +170,10 @@ async function remove(projectId, accessToken) {
     }
 }
 
-export { 
-    publish, 
-    addPositions, 
-    discover, 
-    updateDetails, 
+export {
+    publish,
+    addPositions,
+    discover,
+    updateDetails,
     remove
 }
