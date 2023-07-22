@@ -9,7 +9,7 @@ async function me(accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
-        var response = await getAsync(`${apiRootUri}/users/me`, accessToken);
+        var response = await getAsync(`${apiRootUri}/contributors/me`, accessToken);
 
         if (response.ok) {
             var body = await response.json();
