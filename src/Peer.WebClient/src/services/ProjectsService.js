@@ -97,8 +97,12 @@ async function discover(keyword, sort, hat, accessToken) {
         if (keyword != undefined)
             searchRefinemets["keyword"] = keyword;
 
-        if (sort != undefined)
-            searchRefinemets["sort"] = sort;
+        if (sort == "asc") {
+            searchRefinemets["sort"] = "byDatePostedAsc";
+        } else if (sort == "desc") {
+            searchRefinemets["sort"] = "byDatePostedDesc";
+        }
+
 
         if (hat != undefined) {
             searchRefinemets["hatType"] = hat.type;
