@@ -57,12 +57,14 @@ public class ProjectsServiceTests
 
         var title = "foo";
         var description = "bar";
+        var datePosted = DateTime.UtcNow.Date;
 
         // ACT
         var publishedProject = await sut.PublishProjectAsync(
             title,
             description,
             author.Id,
+            datePosted,
             positions);
 
         // ASSERT
@@ -73,6 +75,7 @@ public class ProjectsServiceTests
         retrievedProject.Title.Should().Be(title);
         retrievedProject.Description.Should().Be(description);
         retrievedProject.AuthorId.Should().Be(author.Id);
+        retrievedProject.DatePosted.Should().Be(datePosted);
         retrievedProject.Positions.Count.Should().Be(positions.Count);
     }
 
@@ -1859,6 +1862,7 @@ public class ProjectsServiceTests
             "test",
             "test",
             author.Id,
+            DateTime.UtcNow,
             positions.Select(p => new PositionDTO(p.Name, p.Description, HatDTO.FromHat(p.Requirements))).ToList());
 
         // ASSERT

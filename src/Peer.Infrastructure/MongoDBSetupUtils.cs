@@ -75,6 +75,7 @@ public class MongoDBSetupUtils
                 p.Title,
                 p.Description,
                 p.AuthorId,
+                p.DatePosted,
                 p.Positions.ToList()));
         });
 

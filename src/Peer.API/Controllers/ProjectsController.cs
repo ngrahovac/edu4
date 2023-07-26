@@ -32,11 +32,13 @@ public class ProjectsController : ControllerBase
     {
         var authorAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var authorId = await _contributors.GetUserIdFromAccountId(authorAccountId);
+        var currentDate = DateTime.UtcNow.Date;
 
         var project = await _projects.PublishProjectAsync(
             model.Title,
             model.Description,
             authorId,
+            currentDate,
             model.Positions.Select(m => new PositionDTO(
                 m.Name,
                 m.Description,

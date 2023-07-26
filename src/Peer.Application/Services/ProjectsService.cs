@@ -35,6 +35,7 @@ public class ProjectsService
         string title,
         string description,
         Guid authorId,
+        DateTime datePosted,
         List<PositionDTO> positionData)
     {
         var author = await _users.GetByIdAsync(authorId);
@@ -49,6 +50,7 @@ public class ProjectsService
             title,
             description,
             authorId,
+            datePosted,
             positionData.Select(
                 p => new Position(p.Name, p.Description, HatDTO.ToHat(p.Requirements))).ToList());
 
