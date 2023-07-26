@@ -155,7 +155,7 @@ const Discover = () => {
                 }
             </div>
 
-            { /* discovery refinement sidebar */}
+            { /* discovery parameters sidebar */}
             {
                 discoveryRefinementSidebarVisibility &&
                 <div className='fixed left-0 top-0'>
