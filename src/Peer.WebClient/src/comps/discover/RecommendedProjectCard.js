@@ -32,6 +32,7 @@ const RecommendedProjectCard = ({ project }) => {
     }, [])
 
     return (
+        author != undefined &&
         <div className='relative'>
             <div
                 className='flex flex-col space-y-8 w-full rounded-2xl shadow-md shadow-lime-300/20 border border-lime-300 px-20 py-16 pb-32 bg-lime-50/10'>

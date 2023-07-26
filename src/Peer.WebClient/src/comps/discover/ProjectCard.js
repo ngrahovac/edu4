@@ -33,6 +33,7 @@ const ProjectCard = ({project}) => {
     
 
     return (
+        author != undefined &&
         <div
             className='flex flex-col space-y-8 w-full rounded-2xl shadow-md shadow-indigo-300/20 border border-gray-20 px-20 py-16 pb-32 relative'>
 
