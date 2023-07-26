@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SearchFilter = (props) => {
+const SelectedDiscoveryParameter = (props) => {
   const {
     value,
     onRemoved
@@ -23,4 +23,4 @@ const SearchFilter = (props) => {
   )
 }
 
-export default SearchFilter
+export default SelectedDiscoveryParameter

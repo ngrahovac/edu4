@@ -1,12 +1,12 @@
 import React from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
 import RefineButton from '../comps/discover/RefineButton';
-import SearchFilter from '../comps/discover/SearchFilter';
-import SearchFilters from '../comps/discover/SearchFilters';
+import SelectedDiscoveryParameter from '../comps/discover/SearchFilter';
+import SelectedDiscoveryParameters from '../comps/discover/SearchFilters';
 import { useState, useEffect } from 'react';
 import ProjectCard from '../comps/discover/ProjectCard';
 import RecommendedProjectCard from '../comps/discover/RecommendedProjectCard';
-import DiscoveryRefinementSidebar from '../comps/discover/DiscoveryRefinementSidebar';
+import DiscoveryParametersSidebar from '../comps/discover/DiscoveryRefinementSidebar';
 import { discover } from '../services/ProjectsService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -16,11 +16,11 @@ const Discover = () => {
     const [projects, setProjects] = useState([
     ]);
 
-    const [hats, setHats] = useState([]);
+    const [ownHats, setOwnHats] = useState([]);
     const [keyword, setKeyword] = useState(undefined);
     const [sort, setSort] = useState(undefined);
     const [hat, setHat] = useState(undefined);
-    const [discoveryRefinementSidebarVisibility, setDiscoveryRefinementSidebarVisibility] = useState(false);
+    const [discoveryRefinementSidebarVisibility, setDiscoveryParametersSidebarVisibility] = useState(false);
 
     const { getAccessTokenWithPopup, getAccessTokenSilently } = useAuth0();
 
@@ -35,7 +35,7 @@ const Discover = () => {
                 let result = await me(token);
 
                 if (result.outcome === successResult) {
-                    setHats(result.payload.hats);
+                    setOwnHats(result.payload.hats);
                 } else {
                     console.log("error fetching users hats");
                 }
@@ -87,18 +87,18 @@ const Discover = () => {
         onDiscoveryRefinementChanged();
     }, [keyword, sort, hat])
 
-    function updateDiscoveryRefinementParams(keyword, sort, hat) {
+    function updateDiscoveryParameters(keyword, sort, hat) {
         setKeyword(keyword);
         setHat(hat);
         setSort(sort);
     }
 
-    function showDiscoveryRefinementSidebar() {
-        setDiscoveryRefinementSidebarVisibility(true);
+    function showDiscoveryParametersSidebar() {
+        setDiscoveryParametersSidebarVisibility(true);
     }
 
-    function hideDiscoveryRefinementSidebar() {
-        setDiscoveryRefinementSidebarVisibility(false);
+    function hideDiscoveryParametersSidebar() {
+        setDiscoveryParametersSidebarVisibility(false);
     }
 
     return (
@@ -106,34 +106,34 @@ const Discover = () => {
             title="Discover projects"
             description="Something encouraging here">
 
-            {/* refine button and the current refinement params */}
+            {/* refine button and selected discovery parameters */}
             <div className='flex flex-col mt-16'>
-                <RefineButton onClick={showDiscoveryRefinementSidebar}></RefineButton>
+                <RefineButton onClick={showDiscoveryParametersSidebar}></RefineButton>
 
-                {/* filters */}
-                <SearchFilters>
+                {/* selected discovery parameters */}
+                <SelectedDiscoveryParameters>
                     {
                         keyword != undefined &&
-                        <SearchFilter
+                        <SelectedDiscoveryParameter
                             value={`keyword: ${keyword}`}
                             onRemoved={() => setKeyword(undefined)}>
-                        </SearchFilter>
+                        </SelectedDiscoveryParameter>
                     }
                     {
                         sort != undefined &&
-                        <SearchFilter
-                            value={`sort: ${sort}`}
+                        <SelectedDiscoveryParameter
+                            value={`sort: ${sort == "asc" ? "oldest first" : "newest first"}`}
                             onRemoved={() => setSort(undefined)}>
-                        </SearchFilter>
+                        </SelectedDiscoveryParameter>
                     }
                     {
                         hat != undefined &&
-                        <SearchFilter
-                            value={`fit for: my ${hat.type.toLowerCase()} hat`}
+                        <SelectedDiscoveryParameter
+                            value={`looking for: a ${hat.type.toLowerCase()} like me`}
                             onRemoved={() => setHat(undefined)}>
-                        </SearchFilter>
+                        </SelectedDiscoveryParameter>
                     }
-                </SearchFilters>
+                </SelectedDiscoveryParameters>
             </div>
 
             { /* discovery results */}
@@ -151,7 +151,7 @@ const Discover = () => {
                             </>)
                         }
                     </div>
-                    }
+                }
 
                 {
                     projects.length <= 0 &&
@@ -163,14 +163,14 @@ const Discover = () => {
             {
                 discoveryRefinementSidebarVisibility &&
                 <div className='fixed left-0 top-0'>
-                    <DiscoveryRefinementSidebar
+                    <DiscoveryParametersSidebar
                         keyword={keyword}
                         sort={sort}
                         hat={hat}
-                        hats={hats}
-                        onModalClosed={hideDiscoveryRefinementSidebar}
-                        onDiscoveryRefinementParamsChanged={updateDiscoveryRefinementParams}>
-                    </DiscoveryRefinementSidebar>
+                        hats={ownHats}
+                        onModalClosed={hideDiscoveryParametersSidebar}
+                        onDiscoveryParametersChanged={updateDiscoveryParameters}>
+                    </DiscoveryParametersSidebar>
                 </div>
             }
         </SingleColumnLayout>

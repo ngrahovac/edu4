@@ -5,45 +5,45 @@ import _ from 'lodash';
 import ClearSearchFilter from './ClearSearchFilter';
 import RefreshButton from './RefreshButton';
 
-const DiscoveryRefinementSidebar = (props) => {
+const DiscoveryParametersSidebar = (props) => {
 
   const {
     onModalClosed,
-    onDiscoveryRefinementParamsChanged,
+    onDiscoveryParametersChanged,
     keyword,
     sort,
     hat,
     hats
   } = props;
 
-  const [discoveryRefinementParams, setDiscoveryRefinementParams] = useState({
+  const [discoveryParameters, setDiscoveryParameters] = useState({
     keyword: keyword,
     sort: sort,
     hat: hat
   });
 
   function setKeyword(keyword) {
-    setDiscoveryRefinementParams({...discoveryRefinementParams, keyword: keyword});
+    setDiscoveryParameters({...discoveryParameters, keyword: keyword});
   }
 
   function selectHat(hat) {
-    setDiscoveryRefinementParams({ ...discoveryRefinementParams, hat: hat });
+    setDiscoveryParameters({ ...discoveryParameters, hat: hat });
   }
 
   function selectSort(sort) {
-    setDiscoveryRefinementParams({...discoveryRefinementParams, sort: sort});
+    setDiscoveryParameters({...discoveryParameters, sort: sort});
   }
 
   function clearSearchKeyword() {
-    setDiscoveryRefinementParams({ ...discoveryRefinementParams, keyword: undefined })
+    setDiscoveryParameters({ ...discoveryParameters, keyword: undefined })
   }
 
   function clearSelectedSort() {
-    setDiscoveryRefinementParams({ ...discoveryRefinementParams, sort: undefined })
+    setDiscoveryParameters({ ...discoveryParameters, sort: undefined })
   }
 
   function clearSelectedHat() {
-    setDiscoveryRefinementParams({ ...discoveryRefinementParams, hat: undefined })
+    setDiscoveryParameters({ ...discoveryParameters, hat: undefined })
   }
 
   function onFormChange(e) {
@@ -63,10 +63,10 @@ const DiscoveryRefinementSidebar = (props) => {
       <form onChange={onFormChange} onSubmit={e => e.preventDefault()}>
         <div className='flex flex-col space-y-20'>
           <RefreshButton
-            onClick={() => onDiscoveryRefinementParamsChanged(
-              discoveryRefinementParams.keyword, 
-              discoveryRefinementParams.sort, 
-              discoveryRefinementParams.hat)}>
+            onClick={() => onDiscoveryParametersChanged(
+              discoveryParameters.keyword, 
+              discoveryParameters.sort, 
+              discoveryParameters.hat)}>
           </RefreshButton>
         
           {/* search */}
@@ -80,7 +80,7 @@ const DiscoveryRefinementSidebar = (props) => {
             <input
               type="text"
               name="keyword"
-              value={discoveryRefinementParams.keyword == undefined ? "" : discoveryRefinementParams.keyword}
+              value={discoveryParameters.keyword == undefined ? "" : discoveryParameters.keyword}
               className="w-full mt-1 block rounded-full border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
             <ClearSearchFilter onClick={clearSearchKeyword}></ClearSearchFilter>
           </label>
@@ -100,7 +100,7 @@ const DiscoveryRefinementSidebar = (props) => {
                   type="radio"
                   name="sort"
                   value="asc"
-                  checked={discoveryRefinementParams.sort == "asc"}
+                  checked={discoveryParameters.sort == "asc"}
                   className="mr-2">
                 </input>
                 Oldest first
@@ -111,7 +111,7 @@ const DiscoveryRefinementSidebar = (props) => {
                   type="radio"
                   name="sort"
                   value="desc"
-                  checked={discoveryRefinementParams.sort == "desc"}
+                  checked={discoveryParameters.sort == "desc"}
                   className="mr-2">
                 </input>
                 Newest first
@@ -130,15 +130,14 @@ const DiscoveryRefinementSidebar = (props) => {
                 </svg>
                 <p className='text-md font-semibold'>Filter</p>
               </div>
-              <p>Projects looking for:</p>
+              <p>Projects fit for:</p>
             </label>
 
-            {/* TODO: use current user's hats */}
             <div>
               {
                 hats.map(h => <div key={Math.floor((Math.random() * 10000))}>
                   {
-                    _.isEqual(h, discoveryRefinementParams.hat) ?
+                    _.isEqual(h, discoveryParameters.hat) ?
                       <SelectedHat hat={h}></SelectedHat> :
                       <div onClick={() => selectHat(h)}>
                         <Hat hat={h}></Hat>
@@ -164,4 +163,4 @@ const DiscoveryRefinementSidebar = (props) => {
   )
 }
 
-export default DiscoveryRefinementSidebar
+export default DiscoveryParametersSidebar
