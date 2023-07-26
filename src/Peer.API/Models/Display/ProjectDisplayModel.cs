@@ -7,7 +7,7 @@ namespace Peer.API.Models.Display;
 public class ProjectDisplayModel
 {
     public string ProjectUrl { get; set; }
-    public DateTime DatePosted { get; set; }
+    public string DatePosted { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public string AuthorUrl { get; set; }
@@ -22,6 +22,7 @@ public class ProjectDisplayModel
         Description = project.Description;
         AuthorUrl = ResourceUrlBuilder.BuildContributorUrl(requester.Id);
         Authored = project.WasPublishedBy(requester);
+        DatePosted = project.DatePosted.ToShortDateString();
         Recommended = project.IsRecommendedFor(requester);
         Positions = project.Positions
             .Select(pp => new PositionDisplayModel(project, pp, requester))
