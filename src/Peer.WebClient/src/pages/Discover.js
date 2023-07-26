@@ -143,11 +143,7 @@ const Discover = () => {
                     <div className='flex flex-col space-y-8'>
                         {
                             projects.map(p => <>
-                                {
-                                    p.recommended ?
-                                        <RecommendedProjectCard project={p}></RecommendedProjectCard> :
-                                        <ProjectCard project={p}></ProjectCard>
-                                }
+                                <ProjectCard project={p}></ProjectCard>
                             </>)
                         }
                     </div>
