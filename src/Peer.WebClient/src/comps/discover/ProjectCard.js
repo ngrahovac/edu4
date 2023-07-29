@@ -95,7 +95,12 @@ const ProjectCard = ({ project }) => {
                 </div>
 
                 <div className='absolute bottom-8 right-20'>
-                    <NeutralButton text="Learn more ➜"></NeutralButton>
+                    <Link to={project.projectUrl}>
+                        <BorderlessButton
+                            text="Learn more ➜"
+                            onClick={() => { }}>
+                        </BorderlessButton>
+                    </Link>
                 </div>
             </div>
 
