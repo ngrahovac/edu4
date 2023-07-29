@@ -89,6 +89,21 @@ public class ProjectsController : ControllerBase
             .ToList();
     }
 
+
+    [HttpGet("{projectId}")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult<ProjectDisplayModel>> GetByIdAsync(Guid projectId)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+        var requester = await _contributors.GetByIdAsync(requesterId);
+
+        var project = await _projects.GetByIdAsync(projectId);
+
+        return new ProjectDisplayModel(project, requester);
+    }
+
+
     [HttpPost("{projectId}/positions")]
     [Authorize(Policy = "Contributor")]
     public async Task<ActionResult> AddPositionsAsync(Guid projectId, IReadOnlyList<PositionInputModel> positions)

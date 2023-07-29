@@ -74,6 +74,14 @@ public class ProjectsService
         return discoveredProjects;
     }
 
+    public async Task<Project> GetByIdAsync(Guid projectId)
+    {
+        var project = await _projects.GetByIdAsync(projectId) ??
+            throw new InvalidOperationException("The project with the given Id does not exist");
+
+        return project;
+    }
+
     public async Task AddPositionAsync(
         Guid projectId,
         Guid requesterId,
