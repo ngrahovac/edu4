@@ -10,4 +10,6 @@ public static class ResourceUrlBuilder
 
     public static string BuildContributorUrl(Guid contributorId)
         => $"/contributors/{contributorId}";
+    public static string BuildProjectCollaborationsUrl(Guid projectId)
+            => $"/collaborations/project/{projectId}";
 }
