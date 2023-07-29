@@ -6,6 +6,7 @@ namespace Peer.API.Models.Display;
 
 public class PositionDisplayModel
 {
+    public Guid Id { get; set; }
     public string PositionUrl { get; set; }
     public DateTime DatePosted { get; set; }
     public string Name { get; set; }
@@ -18,6 +19,7 @@ public class PositionDisplayModel
         Position position,
         Contributor requester)
     {
+        Id = position.Id;
         PositionUrl = ResourceUrlBuilder.BuildPositionUrl(project.Id, position.Id);
         DatePosted = position.DatePosted;
         Name = position.Name;
