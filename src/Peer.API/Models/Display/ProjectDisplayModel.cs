@@ -6,6 +6,7 @@ namespace Peer.API.Models.Display;
 
 public class ProjectDisplayModel
 {
+    public Guid Id { get; set; }
     public string ProjectUrl { get; set; }
     public string DatePosted { get; set; }
     public string Title { get; set; }
@@ -19,6 +20,7 @@ public class ProjectDisplayModel
 
     public ProjectDisplayModel(Project project, Contributor requester)
     {
+        Id = project.Id;
         ProjectUrl = ResourceUrlBuilder.BuildProjectUrl(project.Id);
         Title = project.Title;
         Description = project.Description;
