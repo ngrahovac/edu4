@@ -18,6 +18,9 @@ import {
 import { Link, useParams } from 'react-router-dom';
 import { getContributor } from '../services/UsersService';
 import { getCollaborations } from '../services/CollaboratorsService';
+import PrimaryButton from '../comps/buttons/PrimaryButton'
+import ProjectPositions from '../comps/project/ProjectPositions';
+import { submitApplication } from '../services/ApplicationsService';
 
 const Project = () => {
     const { projectId } = useParams();
@@ -26,6 +29,8 @@ const Project = () => {
     const [project, setProject] = useState(undefined);
     const [author, setAuthor] = useState(undefined);
     const [collaborations, setCollaborations] = useState(undefined);
+    const [selectedPosition, setSelectedPosition] = useState(undefined);
+    const [applyingEnabled, setApplyingEnabled] = useState(false);
 
     const { getAccessTokenWithPopup } = useAuth0();
 
@@ -117,6 +122,16 @@ const Project = () => {
 
                 if (result.outcome === successResult) {
                     var project = result.payload;
+
+                    // sort positions by recommended first
+                    const recommendedPositionSorter = (a, b) => {
+                        if (a.recommended && !b.recommended) return -1;
+                        if (!a.recommended && b.recommended) return +1;
+                        return 0;
+                    };
+
+                    project.positions.sort(recommendedPositionSorter);
+
                     setProject(project);
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
@@ -159,6 +174,11 @@ const Project = () => {
         }
     }, [project]);
 
+    useEffect(() => {
+        setApplyingEnabled(selectedPosition != undefined);
+    }, [selectedPosition])
+
+
     function onDeleteProject() {
         (async () => {
             try {
@@ -168,6 +188,43 @@ const Project = () => {
                 });
 
                 let result = await remove(project.id, token);
+
+                if (result.outcome === successResult) {
+                    console.log("success");
+                    // document.getElementById('user-action-success-toast').show();
+                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                } else if (result.outcome === failureResult) {
+                    console.log("failure");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                } else if (result.outcome === errorResult) {
+                    console.log("network error");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                }
+            } catch (ex) {
+                console.log("error");
+                // document.getElementById('user-action-fail-toast').show();
+                // setTimeout(() => {
+                //     document.getElementById('user-action-fail-toast').close();
+                // }, 3000);
+            }
+        })();
+    }
+
+    function onSubmitApplication() {
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenWithPopup({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await submitApplication(project.id, selectedPosition.id, token);
 
                 if (result.outcome === successResult) {
                     console.log("success");
@@ -273,40 +330,13 @@ const Project = () => {
 
                         {/* positions */}
                         <div className='mt-4'>
-                            {
-                                project.authored &&
-                                <div>
-                                    <SectionTitle title="Positions"></SectionTitle>
-                                    <div className='flex flex-col space-y-2 mt-4'>
-                                        {
-                                            project.positions.map(p => <div key={p.id}>
-                                                <PositionCard position={p}></PositionCard>
-                                            </div>)
-                                        }
-                                    </div>
-                                </div>
-                            }
-
-                            {
-                                !project.authored &&
-                                <div>
-                                    <SectionTitle title="Open positions"></SectionTitle>
-                                    <div className='flex flex-col space-y-2 mt-4'>
-                                        {
-                                            project.positions.map(p => <div key={p.id}>
-                                                {
-                                                    !p.recommended &&
-                                                    <PositionCard position={p}></PositionCard>
-                                                }
-                                                {
-                                                    p.recommended &&
-                                                    <RecommendedPositionCard position={p}></RecommendedPositionCard>
-                                                }
-                                            </div>)
-                                        }
-                                    </div>
-                                </div>
-                            }
+                            <div>
+                                <SectionTitle title="Open positions"></SectionTitle>
+                                <ProjectPositions
+                                    positions={project.positions}
+                                    onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
+                                </ProjectPositions>
+                            </div>
                         </div>
 
 
@@ -334,6 +364,14 @@ const Project = () => {
                                 </BorderlessButtonWithIcon>
                             </div>
                         }
+                    </div>
+
+                    <div className='absolute bottom-16 right-0'>
+                        <PrimaryButton
+                            text="Apply"
+                            onClick={onSubmitApplication}
+                            disabled={!applyingEnabled}>
+                        </PrimaryButton>
                     </div>
                 </SingleColumnLayout>
             }
