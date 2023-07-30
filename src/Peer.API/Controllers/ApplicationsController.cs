@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Peer.API.Models.Display;
+using Peer.API.Models.Input;
 using Peer.API.Utils;
 using Peer.Application.Services;
 using Peer.Domain.Applications;
@@ -62,12 +63,12 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> SubmitAsync(Guid projectId, Guid positionId)
+    public async Task<ActionResult> SubmitAsync(ApplicationSubmissionInputModel model)
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
-        await _applications.SubmitAsync(requesterId, projectId, positionId);
+        await _applications.SubmitAsync(requesterId, model.ProjectId, model.PositionId);
 
         return Ok();
     }
