@@ -22,7 +22,7 @@ public class ProjectDisplayModel
         ProjectUrl = ResourceUrlBuilder.BuildProjectUrl(project.Id);
         Title = project.Title;
         Description = project.Description;
-        AuthorUrl = ResourceUrlBuilder.BuildContributorUrl(requester.Id);
+        AuthorUrl = ResourceUrlBuilder.BuildContributorUrl(project.AuthorId);
         Authored = project.WasPublishedBy(requester);
         DatePosted = project.DatePosted.ToShortDateString();
         Recommended = project.IsRecommendedFor(requester);
