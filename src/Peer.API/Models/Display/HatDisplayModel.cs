@@ -16,6 +16,7 @@ public class HatDisplayModel
         hat
             .GetType()
             .GetProperties()
+            .Where(p => p.Name != nameof(Hat.Type))
             .ToList()
             .ForEach(prop => Parameters.Add(prop.Name.ToCamelCase(), prop.GetValue(hat)!));
     }

@@ -19,6 +19,7 @@ public class Project : AbstractAggregateRoot
         string title,
         string description,
         Guid authorId,
+        DateTime datePosted,
         ICollection<Position> positions)
     {
         if (positions.Count == 0)
@@ -28,7 +29,7 @@ public class Project : AbstractAggregateRoot
 
         _positions = positions.ToList();
 
-        DatePosted = DateTime.UtcNow;
+        DatePosted = datePosted;
         Title = title;
         Description = description;
         AuthorId = authorId;

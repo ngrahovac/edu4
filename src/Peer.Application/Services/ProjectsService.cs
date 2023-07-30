@@ -35,6 +35,7 @@ public class ProjectsService
         string title,
         string description,
         Guid authorId,
+        DateTime datePosted,
         List<PositionDTO> positionData)
     {
         var author = await _users.GetByIdAsync(authorId);
@@ -49,6 +50,7 @@ public class ProjectsService
             title,
             description,
             authorId,
+            datePosted,
             positionData.Select(
                 p => new Position(p.Name, p.Description, HatDTO.ToHat(p.Requirements))).ToList());
 
@@ -61,12 +63,23 @@ public class ProjectsService
 
     public async Task<IReadOnlyList<Project>> DiscoverAsync(
         string? keyword = null,
-        ProjectsSortOption sortOption = ProjectsSortOption.Default,
+        ProjectsSortOption sortOption = ProjectsSortOption.Unspecified,
         Hat? usersHat = null)
     {
-        var discoveredProjects = await _projects.DiscoverAsync(keyword, sortOption, usersHat);
+        var discoveredProjects = await _projects.DiscoverAsync(
+            keyword,
+            sortOption,
+            usersHat);
 
         return discoveredProjects;
+    }
+
+    public async Task<Project> GetByIdAsync(Guid projectId)
+    {
+        var project = await _projects.GetByIdAsync(projectId) ??
+            throw new InvalidOperationException("The project with the given Id does not exist");
+
+        return project;
     }
 
     public async Task AddPositionAsync(

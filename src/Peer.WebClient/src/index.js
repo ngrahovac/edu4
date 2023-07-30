@@ -15,6 +15,7 @@ import { Auth0Provider } from "@auth0/auth0-react"
 import './index.css';
 import Project from './pages/Project';
 import EditProject from './pages/EditProject';
+import Contributor from './pages/Contributor';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -40,8 +41,9 @@ root.render(
             <Route path='/homepage' element={<Homepage></Homepage>}></Route>
             <Route path='/publish' element={<Publish></Publish>}></Route>
             <Route path='/discover' element={<Discover></Discover>}></Route>
-            <Route path='/project' element={<Project></Project>}></Route>
+            <Route path='/projects/:projectId' element={<Project></Project>}></Route>
             <Route path='/edit' element={<EditProject></EditProject>}></Route>
+            <Route path='/contributors/:contributorId' element={<Contributor></Contributor>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

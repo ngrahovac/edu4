@@ -10,6 +10,7 @@ public class ProjectsFactory
     private Guid _authorId = Guid.NewGuid();
     private List<Position> _positions = new();
     private bool _removed;
+    private DateTime _datePosted = DateTime.UtcNow.Date;
 
     public ProjectsFactory WithTitle(string title)
     {
@@ -41,12 +42,19 @@ public class ProjectsFactory
         return this;
     }
 
+    public ProjectsFactory WithDatePosted(DateTime datePosted)
+    {
+        _datePosted = datePosted;
+        return this;
+    }
+
     public Project Build()
     {
         var project = new Project(
             _title,
             _description,
             _authorId,
+            _datePosted,
             _positions);
 
         if (_removed)

@@ -57,12 +57,14 @@ public class ProjectsServiceTests
 
         var title = "foo";
         var description = "bar";
+        var datePosted = DateTime.UtcNow.Date;
 
         // ACT
         var publishedProject = await sut.PublishProjectAsync(
             title,
             description,
             author.Id,
+            datePosted,
             positions);
 
         // ASSERT
@@ -73,6 +75,7 @@ public class ProjectsServiceTests
         retrievedProject.Title.Should().Be(title);
         retrievedProject.Description.Should().Be(description);
         retrievedProject.AuthorId.Should().Be(author.Id);
+        retrievedProject.DatePosted.Should().Be(datePosted);
         retrievedProject.Positions.Count.Should().Be(positions.Count);
     }
 
@@ -668,7 +671,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Asc);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedAsc);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -725,7 +728,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Desc);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedDesc);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -776,7 +779,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Asc);
+        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.ByDatePostedAsc);
 
         // ASSERT
         discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderBy(p => p.DatePosted), options => options.WithStrictOrdering());
@@ -839,7 +842,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Desc);
+        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.ByDatePostedDesc);
 
         // ASSERT
         discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
@@ -959,7 +962,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Default, studentHat);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Unspecified, studentHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -1030,7 +1033,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Default, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Unspecified, academicHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
@@ -1203,7 +1206,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Default, studentHat);
+        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Unspecified, studentHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -1336,7 +1339,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Default, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Unspecified, academicHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(4);
@@ -1414,7 +1417,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Asc, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedAsc, academicHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
@@ -1487,7 +1490,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Desc, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedDesc, academicHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
@@ -1563,7 +1566,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Asc, studentHat);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedAsc, studentHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
@@ -1639,7 +1642,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Desc, studentHat);
+        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedDesc, studentHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
@@ -1767,7 +1770,7 @@ public class ProjectsServiceTests
             new NullLogger<ProjectsService>());
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Desc, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.ByDatePostedDesc, academicHat);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(4);
@@ -1859,6 +1862,7 @@ public class ProjectsServiceTests
             "test",
             "test",
             author.Id,
+            DateTime.UtcNow,
             positions.Select(p => new PositionDTO(p.Name, p.Description, HatDTO.FromHat(p.Requirements))).ToList());
 
         // ASSERT

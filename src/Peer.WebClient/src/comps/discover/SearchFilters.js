@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SearchFilters = ({ children }) => {
+const SelectedDiscoveryParameters = ({ children }) => {
     
     return (
         <div className='flex flex-row flex-wrap mt-4 space-x-1'>
@@ -9,4 +9,4 @@ const SearchFilters = ({ children }) => {
     )
 }
 
-export default SearchFilters
+export default SelectedDiscoveryParameters
