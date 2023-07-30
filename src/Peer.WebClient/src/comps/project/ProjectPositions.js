@@ -24,7 +24,7 @@ const ProjectPositions = (props) => {
             {
                 positions.map(p => <div key={p.id}
                     onClick={() => setSelectedPosition(p)}
-                    className={`${_.isEqual(p, selectedPosition) ? "bg-blue-100" : ""} rounded-lg hover:bg-blue-50`}>
+                    className={`${_.isEqual(p, selectedPosition) ? "bg-blue-100" : ""} rounded-lg hover:bg-blue-50 cursor-pointer`}>
                     {
                         !p.recommended &&
                         <PositionCard position={p}></PositionCard>
