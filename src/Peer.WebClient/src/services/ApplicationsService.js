@@ -36,6 +36,66 @@ async function submitApplication(projectId, positionId, accessToken) {
     }
 }
 
+async function getSubmittedApplications(accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+
+        var response = await getAsync(`${apiRootUri}/applications/sent`, accessToken);
+
+        if (response.ok) {
+            let body = await response.json();
+
+            return {
+                outcome: successResult,
+                message: "Submitted applications retrieved successfully!",
+                payload: body                
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
+async function revokeApplication(applicationId, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+        var response = await deleteAsync(
+            `${apiRootUri}/applications/${applicationId}`,
+            accessToken);
+
+        if (response.ok) {
+            return {
+                outcome: successResult,
+                message: "Application revoked successfully!"
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
 export {
-    submitApplication
+    submitApplication,
+    getSubmittedApplications,
+    revokeApplication
 }
