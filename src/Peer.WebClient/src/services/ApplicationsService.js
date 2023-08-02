@@ -66,6 +66,36 @@ async function getSubmittedApplications(accessToken) {
     }
 }
 
+async function getIncomingApplications(accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+
+        var response = await getAsync(`${apiRootUri}/applications/received`, accessToken);
+
+        if (response.ok) {
+            let body = await response.json();
+
+            return {
+                outcome: successResult,
+                message: "Received applications retrieved successfully!",
+                payload: body                
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
 async function revokeApplication(applicationId, accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
@@ -94,8 +124,38 @@ async function revokeApplication(applicationId, accessToken) {
     }
 }
 
+async function rejectApplication(applicationId, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+        var response = await deleteAsync(
+            `${apiRootUri}/applications/${applicationId}`,
+            accessToken);
+
+        if (response.ok) {
+            return {
+                outcome: successResult,
+                message: "Application rejected successfully!"
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
 export {
     submitApplication,
     getSubmittedApplications,
-    revokeApplication
+    getIncomingApplications,
+    revokeApplication,
+    rejectApplication
 }

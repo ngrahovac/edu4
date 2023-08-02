@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
-import { getSubmittedApplications } from '../services/ApplicationsService'
+import { getSubmittedApplications, getIncomingApplications } from '../services/ApplicationsService'
 import SentApplications from '../comps/applications/SentApplications'
 import {
     successResult,
@@ -9,12 +9,14 @@ import {
     errorResult
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react';
+import ReceivedApplications from '../comps/applications/ReceivedApplications'
 
 
 const Applications = () => {
 
     const [displayedApplications, setDisplayedApplications] = useState("Sent");
     const [sentApplications, setSentApplications] = useState(undefined);
+    const [receivedApplications, setReceivedApplications] = useState(undefined);
 
     const { getAccessTokenWithPopup } = useAuth0();
 
@@ -55,10 +57,49 @@ const Applications = () => {
             }
         })();
     }
+    
+    function getReceivedApplications() {
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenWithPopup({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
 
+                let result = await getIncomingApplications(token);
+
+                if (result.outcome === successResult) {
+                    const receivedApplications = result.payload;
+                    setReceivedApplications(receivedApplications);
+                    // document.getElementById('user-action-success-toast').show();
+                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                } else if (result.outcome === failureResult) {
+                    console.log("failure");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                } else if (result.outcome === errorResult) {
+                    console.log("network error");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                }
+            } catch (ex) {
+                console.log(ex);
+                // document.getElementById('user-action-fail-toast').show();
+                // setTimeout(() => {
+                //     document.getElementById('user-action-fail-toast').close();
+                // }, 3000);
+            }
+        })();
+    }
     useEffect(() => {
         if (displayedApplications == "Sent") {
             getSentApplications();
+        } else {
+            getReceivedApplications();
         }
     }, [displayedApplications])
 
@@ -85,11 +126,16 @@ const Applications = () => {
 
                 {/* sent applications */}
                 <div className='mt-16'>
-                {
-                    displayedApplications == "Sent" &&
-                    sentApplications != undefined &&
-                    <SentApplications applications={sentApplications}></SentApplications>
-                }
+                    {
+                        displayedApplications == "Sent" &&
+                        sentApplications != undefined &&
+                        <SentApplications applications={sentApplications}></SentApplications>
+                    }
+                    {
+                        displayedApplications == "Received" &&
+                        receivedApplications != undefined &&
+                        <ReceivedApplications applications={receivedApplications}></ReceivedApplications>
+                    }
                 </div>
             </div>
         </SingleColumnLayout>
