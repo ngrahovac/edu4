@@ -6,6 +6,7 @@ using Peer.Domain.Common;
 using Peer.Domain.Contributors;
 using Peer.Domain.Projects;
 using Peer.Domain.Collaborations;
+using Peer.Domain.Applications;
 
 namespace Peer.Infrastructure;
 public class MongoDBSetupUtils
@@ -97,7 +98,8 @@ public class MongoDBSetupUtils
             cm.MapProperty(cm => cm.ProjectId);
             cm.MapProperty(cm => cm.PositionId);
             cm.MapProperty(cm => cm.DateSubmitted);
-            cm.MapProperty(cm => cm.Status);
+            cm.MapProperty(cm => cm.Status)
+            .SetSerializer(new EnumSerializer<ApplicationStatus>(BsonType.String));
         });
 
         BsonClassMap.RegisterClassMap<Collaboration>(cm =>
