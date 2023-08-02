@@ -85,7 +85,7 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpPut("{applicationId}")]
-    public async Task<ActionResult> AcceptAsync(Guid applicationId, ApplicationStatus status)
+    public async Task<ActionResult> AcceptAsync(Guid applicationId, [FromBody] ApplicationStatus status)
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
