@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
 import ReceivedApplication from './ReceivedApplication';
 import PrimaryButton from '../buttons/PrimaryButton';
-import { rejectApplication, revokeApplication } from '../../services/ApplicationsService';
+import { acceptApplication, rejectApplication, revokeApplication } from '../../services/ApplicationsService';
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
 import { getContributor } from '../../services/UsersService';
 import DangerButton from '../buttons/DangerButton';
@@ -121,6 +121,48 @@ const ReceivedApplications = (props) => {
         })();
     }
 
+    function onAcceptSelectedApplications() {
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenWithPopup({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                selectedApplications.forEach(async application => {
+                    var result = await acceptApplication(application.id, token);
+
+                    if (result.outcome === successResult) {
+                        setAllApplications(allApplications.filter(a => a.id != application.id));
+                        setSelectedApplications(selectedApplications.filter(a => a.id != application.id));
+                    }
+                    else if (result.outcome === failureResult) {
+                        console.log("neuspjesan status code");
+                        // document.getElementById('user-action-fail-toast').show();
+                        // setTimeout(() => {
+                        //     document.getElementById('user-action-fail-toast').close();
+                        // }, 3000);
+                    } else if (result.outcome === errorResult) {
+                        console.log("nesto je do mreze", result);
+                        // document.getElementById('user-action-fail-toast').show();
+                        // setTimeout(() => {
+                        //     document.getElementById('user-action-fail-toast').close();
+                        // }, 3000);
+                    }
+                });
+            }
+            catch (ex) {
+                console.log(ex);
+                // document.getElementById('user-action-fail-toast').show();
+                // setTimeout(() => {
+                //     document.getElementById('user-action-fail-toast').close();
+                // }, 3000);
+            }
+        })();
+    }
+
+
+
     return (
         projects.length > 0 &&
         <div className='relative pb-32'>
@@ -176,7 +218,7 @@ const ReceivedApplications = (props) => {
 
                 <PrimaryButton
                     disabled={selectedApplications.length == 0}
-                    onClick={()=>{}}
+                    onClick={onAcceptSelectedApplications}
                     text="Accept"></PrimaryButton>
             </div>
         </div>

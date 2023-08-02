@@ -48,7 +48,7 @@ async function getSubmittedApplications(accessToken) {
             return {
                 outcome: successResult,
                 message: "Submitted applications retrieved successfully!",
-                payload: body                
+                payload: body
             };
         } else {
             var responseMessage = await response.text();
@@ -78,7 +78,7 @@ async function getIncomingApplications(accessToken) {
             return {
                 outcome: successResult,
                 message: "Received applications retrieved successfully!",
-                payload: body                
+                payload: body
             };
         } else {
             var responseMessage = await response.text();
@@ -152,10 +152,42 @@ async function rejectApplication(applicationId, accessToken) {
     }
 }
 
+async function acceptApplication(applicationId, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+        var response = await putAsync(
+            `${apiRootUri}/applications/${applicationId}`,
+            {
+                status: "Accepted"
+            },
+            accessToken);
+
+        if (response.ok) {
+            return {
+                outcome: successResult,
+                message: "Application accepted successfully!"
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
 export {
     submitApplication,
     getSubmittedApplications,
     getIncomingApplications,
     revokeApplication,
-    rejectApplication
+    rejectApplication,
+    acceptApplication
 }
