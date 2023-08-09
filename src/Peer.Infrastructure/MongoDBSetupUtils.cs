@@ -7,6 +7,7 @@ using Peer.Domain.Contributors;
 using Peer.Domain.Projects;
 using Peer.Domain.Collaborations;
 using Peer.Domain.Applications;
+using Peer.Domain.Notifications;
 
 namespace Peer.Infrastructure;
 public class MongoDBSetupUtils
@@ -109,6 +110,48 @@ public class MongoDBSetupUtils
             cm.MapProperty(c => c.ProjectId);
             cm.MapProperty(c => c.PositionId);
             cm.MapProperty(c => c.Status);
+        });
+
+        BsonClassMap.RegisterClassMap<AbstractDomainEvent>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(ade => ade.Processed);
+        });
+
+        BsonClassMap.RegisterClassMap<ApplicationAccepted>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(aa => aa.ApplicationId);
+        });
+
+        BsonClassMap.RegisterClassMap<ApplicationSubmitted>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(@as => @as.ApplicationId);
+        });
+
+        BsonClassMap.RegisterClassMap<ContributorRemoved>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(cr => cr.ContributorId);
+        });
+
+        BsonClassMap.RegisterClassMap<AbstractNotification>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(an => an.Processed);
+        });
+
+        BsonClassMap.RegisterClassMap<NewApplicationReceived>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(ar => ar.ApplicationId);
+        });
+
+        BsonClassMap.RegisterClassMap<OwnApplicationAccepted>(cm =>
+        {
+            cm.AutoMap();
+            cm.MapProperty(aa => aa.ApplicationId);
         });
     }
 }
