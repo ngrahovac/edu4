@@ -1,18 +1,14 @@
 import React from 'react'
+import ButtonBase from './ButtonBase';
 
 const DangerButton = (props) => {
-    const {
-        text,
-        onClick,
-        disabled
-    } = props;
 
     return (
-        <button
-            onClick={onClick}
-            className={`${disabled ? "bg-gray-400 cursor-not-allowed" : "bg-red-500"} py-2 px-4 rounded-full font-semibold text-gray-50`}>
-            {text}
-        </button>
+        <ButtonBase
+            {...props}
+            defaultStyle="bg-red-500 text-gray-50"
+            hoverStyle="bg-red-600">
+        </ButtonBase>
     )
 }
 export default DangerButton
