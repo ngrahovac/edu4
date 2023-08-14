@@ -11,11 +11,18 @@ import {
 import { useAuth0 } from '@auth0/auth0-react';
 import ReceivedApplications from '../comps/applications/ReceivedApplications'
 
-
 const Applications = () => {
 
-    const [displayedApplications, setDisplayedApplications] = useState("Sent");
+    const applicationType = {
+        sent: "Sent",
+        received: "Received"
+    };
+
+    const [selectedApplicationType, setSelectedApplicationType] = useState(applicationType.sent);
     const [sentApplications, setSentApplications] = useState(undefined);
+    const [projectIdFilter, setProjectIdFilter] = useState(undefined);
+    const [sort, setSort] = useState(undefined);
+
     const [receivedApplications, setReceivedApplications] = useState(undefined);
 
     const { getAccessTokenWithPopup } = useAuth0();
@@ -23,12 +30,11 @@ const Applications = () => {
     function getSentApplications() {
         (async () => {
             try {
-                {/* add validation */ }
                 let token = await getAccessTokenWithPopup({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await getSubmittedApplications(token);
+                let result = await getSubmittedApplications(token, projectIdFilter, sort);
 
                 if (result.outcome === successResult) {
                     const sentApplications = result.payload;
@@ -57,7 +63,7 @@ const Applications = () => {
             }
         })();
     }
-    
+
     function getReceivedApplications() {
         (async () => {
             try {
@@ -95,14 +101,18 @@ const Applications = () => {
             }
         })();
     }
+
     useEffect(() => {
-        if (displayedApplications == "Sent") {
+        if (selectedApplicationType == applicationType.sent) {
             getSentApplications();
         } else {
             getReceivedApplications();
         }
-    }, [displayedApplications])
+    }, [selectedApplicationType])
 
+    useEffect(() => {
+        getSentApplications();
+    }, [projectIdFilter, sort])
 
     return (
         <SingleColumnLayout
@@ -113,26 +123,29 @@ const Applications = () => {
                 {/* sent/received menu */}
                 <div className='flex flex-row space-x-8 border-b-2 pb-2'>
                     <p
-                        onClick={() => setDisplayedApplications("Sent")}
-                        className={`font-semibold ${displayedApplications == "Sent" ? "text-blue-500" : "text-gray-700"} cursor-pointer hover:text-blue-300`}>
-                        Sent
+                        onClick={() => setSelectedApplicationType(applicationType.sent)}
+                        className={`font-semibold ${selectedApplicationType == applicationType.sent ? "text-blue-500" : "text-gray-700"} cursor-pointer hover:text-blue-300`}>
+                        {applicationType.sent}
                     </p>
                     <p
-                        onClick={() => setDisplayedApplications("Received")}
-                        className={`font-semibold ${displayedApplications == "Received" ? "text-blue-500" : "text-gray-700"} cursor-pointer hover:text-blue-300`}>
-                        Received
+                        onClick={() => setSelectedApplicationType(applicationType.received)}
+                        className={`font-semibold ${selectedApplicationType == applicationType.received ? "text-blue-500" : "text-gray-700"} cursor-pointer hover:text-blue-300`}>
+                        {applicationType.received}
                     </p>
                 </div>
 
-                {/* sent applications */}
+                {/* applications */}
                 <div className='mt-16'>
                     {
-                        displayedApplications == "Sent" &&
+                        selectedApplicationType == applicationType.sent &&
                         sentApplications != undefined &&
-                        <SentApplications applications={sentApplications}></SentApplications>
+                        <SentApplications
+                            applications={sentApplications}
+                            onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
+                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}></SentApplications>
                     }
                     {
-                        displayedApplications == "Received" &&
+                        selectedApplicationType == applicationType.received &&
                         receivedApplications != undefined &&
                         <ReceivedApplications applications={receivedApplications}></ReceivedApplications>
                     }
