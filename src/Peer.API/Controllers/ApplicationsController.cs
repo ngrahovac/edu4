@@ -44,6 +44,21 @@ public class ApplicationsController : ControllerBase
         return applications.Select(a => new ApplicationDisplayModel(a)).ToList();
     }
 
+    [HttpGet("sent/projects")]
+    public async Task<ActionResult<ICollection<Guid>>> GetSubmittedApplicationsProjectsAsync()
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+
+        var applications = await _applications.GetSentAsync(
+            requesterId,
+            null,
+            null,
+            ApplicationsSortOption.Default);
+
+        return applications.Select(a => a.ProjectId).Distinct().ToList();
+    }
+
     [HttpGet("received")]
     public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetReceivedAsync(
         Guid? projectId,
