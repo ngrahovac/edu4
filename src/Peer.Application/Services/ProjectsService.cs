@@ -82,6 +82,13 @@ public class ProjectsService
         return project;
     }
 
+    public async Task<List<Project>> GetByAuthorIdAsync(Guid authorId)
+    {
+        var projects = await _projects.GetByAuthorAsync(authorId);
+
+        return projects;
+    }
+
     public async Task AddPositionAsync(
         Guid projectId,
         Guid requesterId,

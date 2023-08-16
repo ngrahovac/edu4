@@ -103,6 +103,19 @@ public class ProjectsController : ControllerBase
         return new ProjectDisplayModel(project, requester);
     }
 
+    [HttpGet("authored")]
+    [Authorize(Policy = "Contributor")]
+    public async Task<ActionResult<List<ProjectDisplayModel>>> GetAuthoredAsync()
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+        var requester = await _contributors.GetByIdAsync(requesterId);
+
+        var projects = await _projects.GetByAuthorIdAsync(requesterId);
+
+        return projects.Select(p => new ProjectDisplayModel(p, requester)).ToList();
+    }
+
 
     [HttpPost("{projectId}/positions")]
     [Authorize(Policy = "Contributor")]
