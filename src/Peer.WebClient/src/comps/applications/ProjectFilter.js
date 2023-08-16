@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from 'react'
 import { useState } from 'react';
 
-const SentApplicationsProjectSelector = (props) => {
+const ProjectFilter = (props) => {
     const {
         projects,
         onProjectSelected,
@@ -51,4 +51,4 @@ const SentApplicationsProjectSelector = (props) => {
     )
 }
 
-export default SentApplicationsProjectSelector
+export default ProjectFilter
