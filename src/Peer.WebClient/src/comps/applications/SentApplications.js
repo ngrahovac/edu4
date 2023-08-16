@@ -125,7 +125,6 @@ const SentApplications = (props) => {
 
                     if (result.outcome === successResult) {
                         setDisplayedApplications(displayedApplications.filter(a => a.id != application.id));
-                        setSelectedApplicationIds(selectedApplicationIds.filter(a => a.id != application.id));
                     }
                     else if (result.outcome === failureResult) {
                         console.log("neuspjesan status code");
@@ -155,6 +154,7 @@ const SentApplications = (props) => {
     return (
         displayedApplicationsProjects &&
         submittedApplicationsProjects &&
+        displayedApplications &&
         <div className='relative pb-32'>
             <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8'>
                 <SentApplicationsProjectSelector
