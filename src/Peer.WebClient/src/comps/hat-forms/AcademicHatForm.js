@@ -1,7 +1,12 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 
-const AcademicHatForm = ({ onValidHatChange }) => {
+const AcademicHatForm = (props) => {
+    
+    const {
+        onValidChange,
+        onInvalidChange
+    } = props;
 
     const [academicHat, setAcademicHat] = useState({
         type: "Academic",
@@ -30,7 +35,7 @@ const AcademicHatForm = ({ onValidHatChange }) => {
 
     {/* the current form doesn't allow for an invalid hat state */ }
     useEffect(() => {
-        onValidHatChange(academicHat);
+        onValidChange(academicHat);
     }, [academicHat])
 
 
