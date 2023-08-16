@@ -86,11 +86,31 @@ async function getSubmittedApplications(accessToken, projectId, sort) {
     }
 }
 
-async function getIncomingApplications(accessToken) {
+async function getIncomingApplications(accessToken, projectId, sort) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
-        var response = await getAsync(`${apiRootUri}/applications/received`, accessToken);
+        var requestUri = `${apiRootUri}/applications/received`;
+
+        var queryParams = [];
+
+        if (projectId != undefined)
+            queryParams["projectId"] = projectId;
+
+        if (sort != undefined)
+            queryParams["sort"] = sort;
+
+        if (Object.keys(queryParams).length > 0) {
+            requestUri += "?";
+
+            for (let parameter in queryParams)
+                if (queryParams[parameter] != undefined)
+                    requestUri += `${parameter}=${encodeURI(queryParams[parameter])}&`
+
+            requestUri = requestUri.slice(0, -1);
+        }
+
+        var response = await getAsync(requestUri, accessToken);
 
         if (response.ok) {
             let body = await response.json();

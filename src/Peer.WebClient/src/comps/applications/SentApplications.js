@@ -5,8 +5,8 @@ import SentApplication from './SentApplication';
 import PrimaryButton from '../buttons/PrimaryButton';
 import { revokeApplication, getSubmittedApplicationsProjectIds } from '../../services/ApplicationsService';
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
-import SentApplicationsProjectSelector from './SentApplicationsProjectSelector';
-import SentApplicationsSorter from './SentApplicationsSorter';
+import ProjectFilter from './ProjectFilter'
+import ApplicationsSorter from './SentApplicationsSorter';
 
 const SentApplications = (props) => {
 
@@ -92,10 +92,13 @@ const SentApplications = (props) => {
 
     useEffect(() => {
         fetchProjectsForDisplayedApplications();
-        fetchProjectsUserAppliedFor();
         setSelectedApplicationIds([]);
     }, [displayedApplications]);
 
+    useEffect(() => {
+        fetchProjectsUserAppliedFor();
+    }, [])
+    
     useEffect(() => {
         onProjectIdFilterChanged(projectIdFilter);
     }, [projectIdFilter])
@@ -157,14 +160,14 @@ const SentApplications = (props) => {
         displayedApplications &&
         <div className='relative pb-32'>
             <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8'>
-                <SentApplicationsProjectSelector
+                <ProjectFilter
                     projects={submittedApplicationsProjects}
                     onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
                     onProjectDeselected={() => setProjectIdFilter(undefined)}>
-                </SentApplicationsProjectSelector>
+                </ProjectFilter>
 
-                <SentApplicationsSorter onSortSelected={(sort) => setSort(sort)}>
-                </SentApplicationsSorter>
+                <ApplicationsSorter onSortSelected={(sort) => setSort(sort)}>
+                </ApplicationsSorter>
             </div>
 
 

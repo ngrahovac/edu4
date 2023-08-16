@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 
-const SentApplicationsSorter = (props) => {
+const ApplicationsSorter = (props) => {
     const {
         onSortSelected
     } = props;
@@ -29,4 +29,4 @@ const SentApplicationsSorter = (props) => {
     )
 }
 
-export default SentApplicationsSorter
+export default ApplicationsSorter

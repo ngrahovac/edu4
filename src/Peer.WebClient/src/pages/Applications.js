@@ -72,7 +72,7 @@ const Applications = () => {
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await getIncomingApplications(token);
+                let result = await getIncomingApplications(token, projectIdFilter, sort);
 
                 if (result.outcome === successResult) {
                     const receivedApplications = result.payload;
@@ -108,11 +108,7 @@ const Applications = () => {
         } else {
             getReceivedApplications();
         }
-    }, [selectedApplicationType])
-
-    useEffect(() => {
-        getSentApplications();
-    }, [projectIdFilter, sort])
+    }, [projectIdFilter, sort, selectedApplicationType])
 
     return (
         <SingleColumnLayout
@@ -147,8 +143,10 @@ const Applications = () => {
                     {
                         selectedApplicationType == applicationType.received &&
                         receivedApplications != undefined &&
-                        <ReceivedApplications 
-                            applications={receivedApplications}>
+                        <ReceivedApplications
+                            applications={receivedApplications}
+                            onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
+                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}>
                         </ReceivedApplications>
                     }
                 </div>
