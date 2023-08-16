@@ -1,19 +1,14 @@
 import React from 'react'
+import ButtonBase from './ButtonBase';
 
 const NeutralButton = (props) => {
-    const {
-        text,
-        onClick,
-        disabled
-    } = props;
-
+    
     return (
-        <button
-            onClick={onClick}
-            className={`${disabled ? 'bg-gray-200 text-gray-500' : ''} py-2 px-4 rounded-full font-semibold border border-gray-500`}
-            disabled={disabled}>
-            {text}
-        </button>
+        <ButtonBase
+            {...props}
+            defaultStyle="border border-gray-500"
+            hoverStyle="bg-gray-100">
+        </ButtonBase>
     )
 }
 

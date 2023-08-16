@@ -1,14 +1,14 @@
 import React from 'react'
 import ButtonBase from './ButtonBase';
 
-const BorderlessButton = (props) => {
-    
+const DangerButton = (props) => {
+
     return (
         <ButtonBase
             {...props}
-            hoverStyle="text-blue-500">
+            defaultStyle="bg-red-500 text-gray-50"
+            hoverStyle="bg-red-600">
         </ButtonBase>
     )
 }
-
-export default BorderlessButton
+export default DangerButton

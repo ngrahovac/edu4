@@ -1,23 +1,27 @@
-using Peer.Domain.Applications;
+using Peer.API.Utils;
 
 namespace Peer.API.Models.Display;
 
 public class ApplicationDisplayModel
 {
-    public Guid ApplicationId { get; set; }
+    public Guid Id { get; set; }
     public Guid ApplicantId { get; set; }
+    public string ApplicantUrl { get; set; }
     public Guid ProjectId { get; set; }
+    public string ProjectUrl { get; set; }
     public Guid PositionId { get; set; }
-    public DateTime DateSubmitted { get; set; }
-    public ApplicationStatus Status { get; set; }
+    public string DateSubmitted { get; set; }
+    public string Status { get; set; }
 
     public ApplicationDisplayModel(Domain.Applications.Application application)
     {
-        ApplicationId = application.Id;
+        Id = application.Id;
         ApplicantId = application.ApplicantId;
+        ApplicantUrl = ResourceUrlBuilder.BuildContributorUrl(application.ApplicantId);
         ProjectId = application.ProjectId;
+        ProjectUrl = ResourceUrlBuilder.BuildProjectUrl(application.ProjectId);
         PositionId = application.PositionId;
-        DateSubmitted = application.DateSubmitted;
-        Status = application.Status;
+        DateSubmitted = application.DateSubmitted.ToShortDateString();
+        Status = application.Status.ToString();
     }
 }
