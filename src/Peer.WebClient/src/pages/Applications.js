@@ -147,7 +147,9 @@ const Applications = () => {
                     {
                         selectedApplicationType == applicationType.received &&
                         receivedApplications != undefined &&
-                        <ReceivedApplications applications={receivedApplications}></ReceivedApplications>
+                        <ReceivedApplications 
+                            applications={receivedApplications}>
+                        </ReceivedApplications>
                     }
                 </div>
             </div>

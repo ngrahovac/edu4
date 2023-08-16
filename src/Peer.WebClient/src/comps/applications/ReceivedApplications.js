@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { getById } from '../../services/ProjectsService';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Link } from 'react-router-dom';
 import ReceivedApplication from './ReceivedApplication';
 import PrimaryButton from '../buttons/PrimaryButton';
 import { acceptApplication, rejectApplication, revokeApplication } from '../../services/ApplicationsService';
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
 import { getContributor } from '../../services/UsersService';
 import DangerButton from '../buttons/DangerButton';
-
+import { Fragment } from 'react';
 
 
 const ReceivedApplications = (props) => {
@@ -16,69 +15,90 @@ const ReceivedApplications = (props) => {
         applications
     } = props;
 
-    const [projects, setProjects] = useState([]);
+    const [displayedApplicationsProjects, setDisplayedApplicationsProjects] = useState(undefined);
     const [applicants, setApplicants] = useState([]);
-    const [selectedApplications, setSelectedApplications] = useState([])
-    const [allApplications, setAllApplications] = useState(applications);
+    const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
+    const [displayedApplications, setDisplayedApplications] = useState(applications);
 
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
-    function fetchProjects() {
-        (async () => {
+    const fetchProjects = async () => {
+        try {
+            let fetchedProjects = [];
+
+            let token = await getAccessTokenSilently({
+                audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+            });
+
             applications.forEach(async application => {
                 try {
-                    let token = await getAccessTokenSilently({
-                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                    });
-
                     let result = await getById(application.projectId, token);
 
                     if (result.outcome == successResult) {
                         let project = await result.payload;
 
-                        setProjects([...projects, project]);
+                        fetchedProjects.push(project);
+                    } else {
+                        console.log("error fetching one of the projects for received applications");
                     }
                 } catch (ex) {
                     console.log(ex);
                 }
             });
-        })();
+
+            setDisplayedApplicationsProjects(fetchedProjects);
+        } catch (ex) {
+
+        }
     }
 
-    function fetchApplicants() {
-        (async () => {
-            applications.forEach(async application => {
-                try {
-                    let token = await getAccessTokenSilently({
-                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                    });
+    const fetchApplicants = async () => {
+        try {
+            let fetchedApplicants = [];
 
+            let token = await getAccessTokenSilently({
+                audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+            });
+
+            displayedApplications.forEach(async application => {
+                try {
                     let result = await getContributor(token, application.applicantUrl);
 
                     if (result.outcome == successResult) {
                         let applicant = await result.payload;
 
-                        setApplicants([...applicants, applicant]);
+                        fetchedApplicants.push(applicant);
+                    } else {
+                        console.log("error fetching an applicant")
                     }
                 } catch (ex) {
                     console.log(ex);
                 }
             });
-        })();
-    }
+
+            setApplicants(fetchedApplicants);
+        } catch (ex) {
+            console.log("error fetching all applicants for received applications", ex);
+        }
+    };
 
     useEffect(() => {
         fetchProjects();
         fetchApplicants();
-    }, [])
+        setSelectedApplicationIds([]);
+    }, [displayedApplications])
 
+    /* mirroring prop bc we'll fake fetching data after a successful API call with UI changes */
+    useEffect(() => {
+        setDisplayedApplications(applications);
+    }, [applications]);
 
     function applicationSelected(applicationId) {
-        setSelectedApplications([...selectedApplications, applications.find(a => a.id == applicationId)])
+        setSelectedApplicationIds([...selectedApplicationIds, applicationId])
     }
 
     function applicationDeselected(applicationId) {
-        setSelectedApplications(selectedApplications.filter(a => a.id != applicationId));
+        setSelectedApplicationIds(selectedApplicationIds.filter(id => id != applicationId));
     }
 
     function onRejectSelectedApplications() {
@@ -89,12 +109,11 @@ const ReceivedApplications = (props) => {
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                selectedApplications.forEach(async application => {
+                selectedApplicationIds.forEach(async application => {
                     var result = await rejectApplication(application.id, token);
 
                     if (result.outcome === successResult) {
-                        setAllApplications(allApplications.filter(a => a.id != application.id));
-                        setSelectedApplications(selectedApplications.filter(a => a.id != application.id));
+                        setDisplayedApplications(displayedApplications.filter(a => a.id != application.id));
                     }
                     else if (result.outcome === failureResult) {
                         console.log("neuspjesan status code");
@@ -129,12 +148,12 @@ const ReceivedApplications = (props) => {
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                selectedApplications.forEach(async application => {
+                selectedApplicationIds.forEach(async application => {
                     var result = await acceptApplication(application.id, token);
 
                     if (result.outcome === successResult) {
-                        setAllApplications(allApplications.filter(a => a.id != application.id));
-                        setSelectedApplications(selectedApplications.filter(a => a.id != application.id));
+                        setDisplayedApplications(displayedApplications.filter(a => a.id != application.id));
+                        setSelectedApplicationIds(selectedApplicationIds.filter(a => a.id != application.id));
                     }
                     else if (result.outcome === failureResult) {
                         console.log("neuspjesan status code");
@@ -161,10 +180,10 @@ const ReceivedApplications = (props) => {
         })();
     }
 
-
-
     return (
-        projects.length > 0 &&
+        displayedApplicationsProjects &&
+        applicants &&
+        displayedApplications &&
         <div className='relative pb-32'>
             <table className='text-left w-full table-fixed'>
                 <thead>
@@ -179,45 +198,43 @@ const ReceivedApplications = (props) => {
                 </thead>
                 <tbody>
                     {
-                        applicants.length > 0 &&
-                        projects.length > 0 &&
-                        allApplications.map(a => <>
+                        displayedApplications.map(a => <Fragment key={a.id}>
                             <ReceivedApplication
                                 application={a}
-                                projectTitle={projects.find(p => p.id == a.projectId).title}
-                                positionName={projects.find(p => p.id == a.projectId).positions.find(p => p.id == a.positionId).name}
-                                applicantName={applicants.find(i => i.id == a.applicantId).fullName}
+                                projectTitle={displayedApplicationsProjects.find(p => p.id == a.projectId) ? displayedApplicationsProjects.find(p => p.id == a.projectId).title : "nema"}
+                                positionName={displayedApplicationsProjects.find(p => p.id == a.projectId) ? displayedApplicationsProjects.find(p => p.id == a.projectId).positions.find(p => p.id == a.positionId).name : "nema"}
+                                applicantName={applicants.find(i => i.id == a.applicantId) ? applicants.find(i => i.id == a.applicantId).fullName : "nema"}
                                 onApplicationSelected={applicationSelected}
                                 onApplicationDeselected={applicationDeselected}>
                             </ReceivedApplication>
-                        </>)
+                        </Fragment>)
                     }
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td className='text-center h-12 uppercase tracking-wide'>
+                        <td className='text-left pl-4 h-12 uppercase tracking-wide'>
                             {
-                                selectedApplications.length > 0 &&
-                                <p>{`Selected: ${selectedApplications.length}`}</p>
+                                selectedApplicationIds.length > 0 &&
+                                <p>{`Selected: ${selectedApplicationIds.length}`}</p>
                             }
                         </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>
 
             <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
                 <DangerButton
-                    disabled={selectedApplications.length == 0}
+                    disabled={selectedApplicationIds.length == 0}
                     onClick={onRejectSelectedApplications}
                     text="Reject"></DangerButton>
 
                 <PrimaryButton
-                    disabled={selectedApplications.length == 0}
+                    disabled={selectedApplicationIds.length == 0}
                     onClick={onAcceptSelectedApplications}
                     text="Accept"></PrimaryButton>
             </div>
