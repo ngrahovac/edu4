@@ -244,12 +244,12 @@ const ReceivedApplications = (props) => {
                 <table className='text-left w-full table-fixed'>
                     <thead>
                         <tr className=''>
-                            <th className='py-4 px-2 pl-4 w-1/4'>Project</th>
-                            <th className='py-4 px-2 w-1/4'>Position</th>
-                            <th className='py-4 px-2'>Date submitted</th>
-                            <th className='py-4 px-2'>Applicant</th>
-                            <th className='py-4 px-2'>Status</th>
-                            <th className='py-4 px-2 pr-4'></th>
+                            <th className='py-4 px-2 pl-4 w-1/4 truncate'>Project</th>
+                            <th className='py-4 px-2 w-1/4 truncate'>Position</th>
+                            <th className='py-4 px-2 truncate'>Date submitted</th>
+                            <th className='py-4 px-2 truncate'>Applicant</th>
+                            <th className='py-4 px-2 truncate'>Status</th>
+                            <th className='py-4 px-2 pr-4 truncate'></th>
                         </tr>
                     </thead>
                     <tbody>
