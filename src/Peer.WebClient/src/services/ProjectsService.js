@@ -178,6 +178,38 @@ async function getById(projectId, accessToken) {
     }
 }
 
+async function getAuthored(accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+
+        var requestUri = `${apiRootUri}/projects/authored`;
+
+        var response = await getAsync(requestUri, accessToken);
+
+        if (response.ok) {
+            var body = await response.json();
+
+            return {
+                outcome: successResult,
+                message: "Authored projects successfully retrieved!",
+                payload: body
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
 async function remove(projectId, accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
@@ -211,6 +243,7 @@ export {
     addPositions,
     discover,
     getById,
+    getAuthored,
     updateDetails,
     remove
 }
