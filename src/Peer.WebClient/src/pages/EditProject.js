@@ -20,6 +20,7 @@ import { Link, useParams } from 'react-router-dom';
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import ProjectPositions from '../comps/project/ProjectPositions';
 import PositionForm from '../comps/publish/PositionForm';
+import DangerButton from '../comps/buttons/DangerButton';
 
 
 const EditProject = () => {
@@ -33,9 +34,9 @@ const EditProject = () => {
     const [validPosition, setValidPosition] = useState(false);
     const [validBasicInfo, setValidBasicInfo] = useState(false);
 
-    const [selectedPositionType, setSelectedPositionType] = useState("Student");
-
     const [newPositions, setNewPositions] = useState([]);
+
+    const [selectedPosition, setSelectedPosition] = useState(undefined);
 
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
@@ -174,6 +175,18 @@ const EditProject = () => {
         })();
     }
 
+    function onPositionClosed() {
+        // if successful, update the UI / state, don't refetch
+    }
+
+    function onPositionReopened() {
+        // if successful, update the UI / state, don't refetch
+    }
+
+    function onExistingPositionRemoved() {
+        // if successful, update the UI / state, don't refetch
+    }
+
     const left = (
         project &&
         <>
@@ -217,7 +230,7 @@ const EditProject = () => {
             </div>
 
             {/* manage existing positions */}
-            <div className='mb-12'>
+            <div className='relative mb-12 pb-16'>
                 <div className='mb-8'>
                     <SubsectionTitle title="Manage existing positions"></SubsectionTitle>
                 </div>
@@ -230,8 +243,32 @@ const EditProject = () => {
                     <div className="mt-4">
                         <ProjectPositions
                             positions={project.positions}
-                            selectionEnabled={false}>
+                            selectionEnabled={true}
+                            onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
                         </ProjectPositions>
+                    </div>
+                }
+
+                {
+                    project.positions.length > 0 &&
+                    selectedPosition != undefined &&
+                    <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
+                        <DangerButton
+                            text="Close"
+                            disabled={position.open}
+                            onClick={onPositionClosed}>
+                        </DangerButton>
+
+                        <NeutralButton
+                            text="Reopen"
+                            disabled={!position.open}
+                            onClick={onPositionReopened}>
+                        </NeutralButton>
+
+                        <DangerButton
+                            text="Remove"
+                            onClick={onExistingPositionRemoved}>
+                        </DangerButton>
                     </div>
                 }
             </div>
