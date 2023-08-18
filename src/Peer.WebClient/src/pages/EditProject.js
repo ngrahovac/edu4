@@ -210,15 +210,16 @@ const EditProject = () => {
     const right = (
         project &&
         <div className='relative pb-32'>
-            <div className='mb-2'>
-                <div className="mb-8">
-                    <SectionTitle title="Positions"></SectionTitle>
-                    <p>Describe the profiles of people you're looking to find and collaborate with</p>
-                </div>
+            <div className="mb-12">
+                <SectionTitle title="Positions"></SectionTitle>
+                <p>Describe the profiles of people you're looking to find and collaborate with</p>
             </div>
 
-            <div className='mb-12 mt-12'>
-                <SubsectionTitle title="Existing positions"></SubsectionTitle>
+            {/* manage existing positions */}
+            <div className='mb-12'>
+                <div className='mb-8'>
+                    <SubsectionTitle title="Manage existing positions"></SubsectionTitle>
+                </div>
                 {
                     project.positions.length == 0 &&
                     <p className='text-gray-500'>Currently there are no added positions.</p>
@@ -234,8 +235,8 @@ const EditProject = () => {
                 }
             </div>
 
-            {/*Add a new position*/}
-            <div className='flex flex-col pb-8 relative'>
+            {/* add a new position */}
+            <div className='relative mb-8 pb-16'>
                 <div className='mb-4'>
                     <SubsectionTitle title="Add a new position"></SubsectionTitle>
                 </div>
@@ -259,37 +260,40 @@ const EditProject = () => {
                 </div>
             </div>
 
-            <div className='mb-4 mt-12'>
-                <SubsectionTitle title="New positions"></SubsectionTitle>
-            </div>
-            {
-                newPositions.length == 0 &&
-                <p className='text-gray-500'>Currently there are no added positions.</p>
-            }
-            {
-                newPositions.map(p => (
-                    <div key={Math.random() * 1000}>
-                        <div className='mb-2'>
-                            {/*  <Position position={p}></Position> */}
-                            <AddedPosition
-                                position={p}
-                                onRemoved={() => removeNewPosition(p)}>
-                            </AddedPosition>
-                        </div>
-                    </div>)
-                )
-            }
+            {/* new positions */}
+            <div>
+                <div className='mb-4 mt-12'>
+                    <SubsectionTitle title="New positions"></SubsectionTitle>
+                </div>
+                {
+                    newPositions.length == 0 &&
+                    <p className='text-gray-500'>Currently there are no added positions.</p>
+                }
+                {
+                    newPositions.map(p => (
+                        <div key={Math.random() * 1000}>
+                            <div className='mb-2'>
+                                {/*  <Position position={p}></Position> */}
+                                <AddedPosition
+                                    position={p}
+                                    onRemoved={() => removeNewPosition(p)}>
+                                </AddedPosition>
+                            </div>
+                        </div>)
+                    )
+                }
 
-            <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
-                <NeutralButton
-                    text="Cancel"
-                    onClick={() => { }}>
-                </NeutralButton>
+                <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
+                    <NeutralButton
+                        text="Cancel"
+                        onClick={() => { }}>
+                    </NeutralButton>
 
-                <PrimaryButton
-                    text="Update positions"
-                    onClick={onAddPositions}>
-                </PrimaryButton>
+                    <PrimaryButton
+                        text="Update positions"
+                        onClick={onAddPositions}>
+                    </PrimaryButton>
+                </div>
             </div>
         </div>
     );
