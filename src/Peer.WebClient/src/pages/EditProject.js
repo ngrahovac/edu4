@@ -200,7 +200,8 @@ const EditProject = () => {
 
                     <PrimaryButton
                         text="Update details"
-                        onClick={onUpdateDetails}>
+                        onClick={onUpdateDetails}
+                        disabled={!(validBasicInfo)}>
                     </PrimaryButton>
                 </div>
             </div>
@@ -286,12 +287,13 @@ const EditProject = () => {
                 <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
                     <NeutralButton
                         text="Cancel"
-                        onClick={() => { }}>
+                        onClick={() => { setNewPositions([]) }}>
                     </NeutralButton>
 
                     <PrimaryButton
                         text="Update positions"
-                        onClick={onAddPositions}>
+                        onClick={onAddPositions}
+                        disabled={newPositions.length < 1}>
                     </PrimaryButton>
                 </div>
             </div>
