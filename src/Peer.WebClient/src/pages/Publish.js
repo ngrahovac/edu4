@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import HatForm from '../comps/hat-forms/HatForm';
-import AddedPosition from '../comps/hats2/AddedPosition';
+import AddedPosition from '../comps/publish/AddedPosition';
 import { DoubleColumnLayout } from '../layout/DoubleColumnLayout'
 import { SectionTitle } from '../layout/SectionTitle'
 import SubsectionTitle from '../layout/SubsectionTitle';
@@ -14,8 +14,8 @@ import {
     errorResult
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react'
-import BasicInfo from '../comps/publish/BasicInfo';
-import Position from '../comps/publish/Position';
+import BasicInfoForm from '../comps/publish/BasicInfoForm';
+import PositionForm from '../comps/publish/PositionForm';
 
 
 const Publish = () => {
@@ -79,13 +79,13 @@ const Publish = () => {
                 <SectionTitle title="Basic info"></SectionTitle>
                 <p className='h-8'></p>
             </div>
-            <BasicInfo
+            <BasicInfoForm
                 onValidChange={basicInfo => {
                     setProject({ ...project, ...basicInfo });
                     setValidBasicInfo(true);
                 }}
                 onInvalidChange={() => setValidBasicInfo(false)}>
-            </BasicInfo>
+            </BasicInfoForm>
         </>
     );
 
@@ -97,13 +97,13 @@ const Publish = () => {
                     <p className='h-8'>Describe the profiles of people you're looking to find and collaborate with</p>
                 </div>
 
-                <Position
+                <PositionForm
                     onValidChange={position => {
                         setPosition(position);
                         setValidPosition(true);
                     }}
                     onInvalidChange={() => setValidPosition(false)}>
-                </Position>
+                </PositionForm>
 
                 <div className='absolute bottom-0 right-0'>
                     <NeutralButton
