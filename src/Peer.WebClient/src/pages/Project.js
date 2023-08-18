@@ -334,7 +334,7 @@ const Project = () => {
                             <div>
                                 <SectionTitle title="Open positions"></SectionTitle>
                                 <ProjectPositions
-                                    selectionEnabled={false}
+                                    selectionEnabled={!project.authored}
                                     positions={project.positions}
                                     onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
                                 </ProjectPositions>
