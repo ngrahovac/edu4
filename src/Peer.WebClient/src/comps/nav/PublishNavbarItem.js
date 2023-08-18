@@ -11,7 +11,7 @@ const PublishNavbarItem = () => {
                     </svg>
                 </div>
 
-                <Link to={"#"}>
+                <Link to={"publish"}>
                     Publish
                 </Link>
             </button>

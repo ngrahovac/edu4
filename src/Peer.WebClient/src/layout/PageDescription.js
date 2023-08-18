@@ -2,7 +2,7 @@ import React from 'react'
 
 const PageDescription = ({ description }) => {
     return (
-        <p>{description}</p>
+        <p className='h-8'>{description}</p>
     )
 }
 

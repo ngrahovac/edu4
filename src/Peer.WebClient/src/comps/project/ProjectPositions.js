@@ -7,7 +7,8 @@ import _ from 'lodash'
 const ProjectPositions = (props) => {
     const {
         positions,
-        onSelectedPositionChanged
+        onSelectedPositionChanged,
+        selectionEnabled = true,
     } = props;
 
     const [selectedPosition, setSelectedPosition] = useState(undefined);
@@ -24,7 +25,7 @@ const ProjectPositions = (props) => {
             {
                 positions.map(p => <div key={p.id}
                     onClick={() => setSelectedPosition(p)}
-                    className={`${_.isEqual(p, selectedPosition) ? "bg-blue-100" : ""} rounded-lg hover:bg-blue-50 cursor-pointer`}>
+                    className={`${_.isEqual(p, selectedPosition) && selectionEnabled ? "bg-blue-100" : ""} rounded-lg hover:bg-blue-50 cursor-pointer`}>
                     {
                         !p.recommended &&
                         <PositionCard position={p}></PositionCard>

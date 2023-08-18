@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
-import HatForm from '../comps/hat-forms/HatForm';
-import AddedPosition from '../comps/hats2/AddedPosition';
+import AddedPosition from '../comps/publish/AddedPosition';
 import { DoubleColumnLayout } from '../layout/DoubleColumnLayout'
 import { SectionTitle } from '../layout/SectionTitle'
 import SubsectionTitle from '../layout/SubsectionTitle';
@@ -14,34 +13,24 @@ import {
     errorResult
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react'
+import BasicInfoForm from '../comps/publish/BasicInfoForm';
+import PositionForm from '../comps/publish/PositionForm';
 
 
 const Publish = () => {
-    {/* TODO: remove static data */ }
-
-    const [selectedPositionType, setSelectedPositionType] = useState("Student");
-
+    const [project, setProject] = useState({ positions: [] });
     const [position, setPosition] = useState({});
 
-    const [project, setProject] = useState({ positions: [] });
+    const [validPosition, setValidPosition] = useState(false);
+    const [validBasicInfo, setValidBasicInfo] = useState(false);
+    const [validPositionCount, setValidPositionCount] = useState(false);
 
-    const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
+    const { getAccessTokenWithPopup } = useAuth0();
 
-    function onBasicInfoFormChange(e) {
-        setProject({ ...project, [e.target.name]: e.target.value })
-    }
+    useEffect(() => {
+        setValidPositionCount(project.positions.length > 0);
+    }, [project])
 
-    function onPositionFormChange(e) {
-        if (e.target.name == "positionType") {
-            setSelectedPositionType(e.target.value);
-        } else {
-            setPosition({ ...position, [e.target.name]: e.target.value });
-        }
-    }
-
-    function setPositionRequirements(hat) {
-        setPosition({ ...position, requirements: hat });
-    }
 
     function removePosition(positionToRemove) {
         let filteredPositions = project.positions.filter(p => p != positionToRemove);
@@ -51,149 +40,77 @@ const Publish = () => {
 
     function onPublishProject() {
         (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
+            if (validBasicInfo && validPositionCount) {
+                try {
+                    let token = await getAccessTokenWithPopup({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
 
-                let result = await publish(project, token);
+                    let result = await publish(project, token);
 
-                if (result.outcome === successResult) {
-                    document.getElementById('user-action-success-toast').show();
-                    setTimeout(() => window.location.href = "/homepage", 1000);
-                } else if (result.outcome === failureResult) {
-                    document.getElementById('user-action-fail-toast').show();
-                    setTimeout(() => {
-                        document.getElementById('user-action-fail-toast').close();
-                    }, 3000);
-                } else if (result.outcome === errorResult) {
-                    document.getElementById('user-action-fail-toast').show();
-                    setTimeout(() => {
-                        document.getElementById('user-action-fail-toast').close();
-                    }, 3000);
+                    if (result.outcome === successResult) {
+                        // document.getElementById('user-action-success-toast').show();
+                        // setTimeout(() => window.location.href = "/homepage", 1000);
+                    } else if (result.outcome === failureResult) {
+                        // document.getElementById('user-action-fail-toast').show();
+                        // setTimeout(() => {
+                        //     document.getElementById('user-action-fail-toast').close();
+                        // }, 3000);
+                    } else if (result.outcome === errorResult) {
+                        // document.getElementById('user-action-fail-toast').show();
+                        // setTimeout(() => {
+                        //     document.getElementById('user-action-fail-toast').close();
+                        // }, 3000);
+                    }
+                } catch (ex) {
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
                 }
-            } catch (ex) {
-                document.getElementById('user-action-fail-toast').show();
-                setTimeout(() => {
-                    document.getElementById('user-action-fail-toast').close();
-                }, 3000);
             }
         })();
     }
 
     const left = (
         <>
-            <div className='mb-12'>
+            <div className='mb-8'>
                 <SectionTitle title="Basic info"></SectionTitle>
+                <p className='h-8'></p>
             </div>
-            <form
-                onChange={onBasicInfoFormChange}>
-                <div className='mb-8'>
-                    <label>
-                        <p>Title*</p>
-                        <input
-                            type="text"
-                            name="title"
-                            value={project.title}
-                            className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
-                    </label>
-                </div>
-
-                <div className='mb-8'>
-                    <label>
-                        <p>Description*</p>
-                        <textarea
-                            rows={5}
-                            maxLength={1000}
-                            name="description"
-                            value={project.description}
-                            className="resize-y mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></textarea>
-                    </label>
-                </div>
-
-                <div className='flex flex-row content-between justify-between'>
-                    <label>
-                        <p>Start date*</p>
-                        <input
-                            type="date"
-                            name="startDate"
-                            className="mt-1 w-64 block rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
-                        </input>
-                    </label>
-
-                    <label>
-                        <p>End date*</p>
-                        <input
-                            type="date"
-                            name="endDate"
-                            className="mt-1 w-64 block rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
-                        </input>
-                    </label>
-                </div>
-            </form>
+            <BasicInfoForm
+                onValidChange={basicInfo => {
+                    setProject({ ...project, ...basicInfo });
+                    setValidBasicInfo(true);
+                }}
+                onInvalidChange={() => setValidBasicInfo(false)}>
+            </BasicInfoForm>
         </>
     );
 
     const right = (
         <div className='relative pb-32'>
-            <form
-                onChange={onPositionFormChange}>
+            <div className='relative pb-16'>
                 <div className="mb-8">
                     <SectionTitle title="Positions"></SectionTitle>
-                    <p>Describe the profiles of people you're looking to find and collaborate with</p>
+                    <p className='h-8'>Describe the profiles of people you're looking to find and collaborate with</p>
                 </div>
 
-                <div className='mb-8'>
-                    <label>
-                        <p>Title*</p>
-                        <input
-                            type="text"
-                            name="name"
-                            value={position.name}
-                            placeholder='e.g. .NET Backend Developer'
-                            className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
-                    </label>
-                </div>
+                <PositionForm
+                    onValidChange={position => {
+                        setPosition(position);
+                        setValidPosition(true);
+                    }}
+                    onInvalidChange={() => setValidPosition(false)}>
+                </PositionForm>
 
-                <div className='mb-8'>
-                    <label>
-                        <p>Description*</p>
-                        <textarea
-                            name="description"
-                            rows={5}
-                            maxLength={1000}
-                            value={position.description}
-                            className="resize-y mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></textarea>
-                    </label>
-                </div>
-
-                <div className='mb-8'>
-                    <label>
-                        <p>Type*</p>
-                        <select
-                            name="positionType"
-                            value={selectedPositionType}
-                            className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
-                            <option name="Student">Student</option>
-                            <option name="Academic">Academic</option>
-                        </select>
-                    </label>
-                </div>
-            </form>
-
-            <div
-                className='relative pb-16 mb-16'>
-                <HatForm
-                    hatType={selectedPositionType}
-                    onHatChanged={setPositionRequirements}>
-                </HatForm>
-
-                <div className='absolute bottom-2 right-0'>
+                <div className='absolute bottom-0 right-0'>
                     <NeutralButton
+                        disabled={!validPosition}
                         text="Add"
                         onClick={() => {
-                            setProject({ ...project, positions: [...project.positions, position] })
+                            if (validPosition)
+                                setProject({ ...project, positions: [...project.positions, position] })
                         }}>
                     </NeutralButton>
                 </div>
@@ -201,10 +118,11 @@ const Publish = () => {
 
             <div className='mb-2'>
                 <SubsectionTitle title="Added positions"></SubsectionTitle>
+                <p className='text-red-500 font-semibold h-8'>{`${validPositionCount ? "" : "Add at least one position when publishing a project."}`}</p>
             </div>
             {
                 project.positions.length == 0 &&
-                <p className='text-gray-500'>Currently there are no added positions.</p>
+                <p className='text-gray-500'>There are currently no added positions.</p>
             }
             {
                 project.positions.length > 0 &&
@@ -212,7 +130,6 @@ const Publish = () => {
                     project.positions.map(p => (
                         <div key={Math.random() * 1000}>
                             <div className='mb-2'>
-                                {/*  <Position position={p}></Position> */}
                                 <AddedPosition
                                     position={p}
                                     onRemoved={() => removePosition(p)}>
@@ -227,7 +144,8 @@ const Publish = () => {
             <div className='absolute bottom-2 right-0'>
                 <PrimaryButton
                     text="Publish"
-                    onClick={onPublishProject}>
+                    onClick={onPublishProject}
+                    disabled={!(validBasicInfo && validPositionCount)}>
                 </PrimaryButton>
             </div>
         </div>
@@ -236,7 +154,7 @@ const Publish = () => {
     return (
         <DoubleColumnLayout
             title="Publish a project"
-            description="Describe the project or an idea you're working on, let the world know about it and find your people."
+            description="Have an idea or a project you're working on? Let the world know and find your people!"
             left={left}
             right={right}>
         </DoubleColumnLayout>
