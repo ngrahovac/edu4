@@ -25,6 +25,7 @@ public class PositionDisplayModel
         Name = position.Name;
         Description = position.Description;
         Requirements = new HatDisplayModel(position.Requirements);
-        Recommended = position.IsRecommendedFor(requester);
+        Recommended = position.IsRecommendedFor(requester) &&
+            !project.WasPublishedBy(requester);
     }
 }
