@@ -7,7 +7,7 @@ import _ from 'lodash'
 const ProjectPositions = (props) => {
     const {
         positions,
-        onSelectedPositionChanged,
+        onSelectedPositionChanged = () => {},
         selectionEnabled = true,
     } = props;
 
