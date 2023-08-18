@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
 import ProjectDescriptor from '../comps/discover/ProjectDescriptor';
 import { SectionTitle } from '../layout/SectionTitle';
-import PositionCard from '../comps/discover/PositionCard';
-import RecommendedPositionCard from '../comps/discover/RecommendedPositionCard';
 import Collaborators from '../comps/project/Collaborators';
 import Author from '../comps/project/Author';
 import Collaborator from '../comps/project/Collaborator';
@@ -321,8 +319,11 @@ const Project = () => {
                                 (collaborations == undefined || collaborations.length == 0) &&
                                 <>
                                     <p>There are no other collaborators on this project.&nbsp;
-                                        <span className='italic'>Apply to a position for a chance to be the first one.
-                                        </span>
+                                        {
+                                            !project.authored &&
+                                            <span className='italic'>Apply to a position for a chance to be the first one.
+                                            </span>
+                                        }
                                     </p>
                                 </>
                             }
@@ -333,12 +334,12 @@ const Project = () => {
                             <div>
                                 <SectionTitle title="Open positions"></SectionTitle>
                                 <ProjectPositions
+                                    selectionEnabled={false}
                                     positions={project.positions}
                                     onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
                                 </ProjectPositions>
                             </div>
                         </div>
-
 
                         {
                             project.authored &&
@@ -366,13 +367,16 @@ const Project = () => {
                         }
                     </div>
 
-                    <div className='absolute bottom-16 right-0'>
-                        <PrimaryButton
-                            text="Apply"
-                            onClick={onSubmitApplication}
-                            disabled={!applyingEnabled}>
-                        </PrimaryButton>
-                    </div>
+                    {
+                        !project.authored &&
+                        <div className='absolute bottom-16 right-0'>
+                            <PrimaryButton
+                                text="Apply"
+                                onClick={onSubmitApplication}
+                                disabled={!applyingEnabled}>
+                            </PrimaryButton>
+                        </div>
+                    }
                 </SingleColumnLayout>
             }
         </>
