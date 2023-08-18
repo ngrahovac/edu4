@@ -8,96 +8,92 @@ import SubsectionTitle from '../layout/SubsectionTitle';
 import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
 import { addPositions, updateDetails } from '../services/ProjectsService';
+import { getById, remove } from '../services/ProjectsService'
+
 import {
     successResult,
     failureResult,
     errorResult
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react'
-import PositionCard from '../comps/discover/PositionCard';
+import { Link, useParams } from 'react-router-dom';
+import BasicInfoForm from '../comps/publish/BasicInfoForm';
+import ProjectPositions from '../comps/project/ProjectPositions';
+import PositionForm from '../comps/publish/PositionForm';
 
 
 const EditProject = () => {
-    const [selectedPositionType, setSelectedPositionType] = useState("Student");
 
+    const { projectId } = useParams();
+
+    const [originalProject, setOriginalProject] = useState(undefined);
+    const [project, setProject] = useState(undefined);
     const [position, setPosition] = useState({});
 
-    const [project, setProject] = useState({
-        "id": "74c6895a-1fdd-4149-aeda-f3c71d3a07db",
-        "datePosted": "2023-03-31T08:15:37.684Z",
-        "title": "Mobile App Development",
-        "description": "We are looking for a team of developers to create a mobile app for our company.",
-        "authorId": "ce075dea-7706-409e-91e8-7f27580d2da0",
-        "authored": true,
-        "recommended": false,
-        "positions": [
-            {
-                "id": "aa454375-2469-46c5-83ee-aaee3ad2ee0e",
-                "datePosted": "2023-04-14T22:53:55.0701872Z",
-                "name": "Android Developer",
-                "description": "Responsible for developing and maintaining the Android version of the app.",
-                "requirements": {
-                    "type": "Student",
-                    "parameters": {
-                        "type": 0,
-                        "studyField": "Computer Science",
-                        "academicDegree": 1
-                    }
-                },
-                "recommended": true
-            },
-            {
-                "id": "c76ec284-ed62-4099-b1ed-fc0bef743def",
-                "datePosted": "2023-04-14T22:53:55.0702114Z",
-                "name": "iOS Developer",
-                "description": "Responsible for developing and maintaining the iOS version of the app.",
-                "requirements": {
-                    "type": "Student",
-                    "parameters": {
-                        "type": 0,
-                        "studyField": "Computer Science",
-                        "academicDegree": 2
-                    }
-                },
-                "recommended": true
-            },
-            {
-                "id": "c76ec284-ed62-4099-b1ed-fc0bef743def",
-                "datePosted": "2023-04-14T22:53:55.0702114Z",
-                "name": "iOS Developer",
-                "description": "Not much",
-                "requirements": {
-                    "type": "Student",
-                    "parameters": {
-                        "type": 0,
-                        "studyField": "Electrical engineering",
-                        "academicDegree": 2
-                    }
-                },
-                "recommended": false
-            }
-        ]
-    });
+    const [validPosition, setValidPosition] = useState(false);
+    const [validBasicInfo, setValidBasicInfo] = useState(false);
+
+    const [selectedPositionType, setSelectedPositionType] = useState("Student");
 
     const [newPositions, setNewPositions] = useState([]);
 
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
-    function onBasicInfoFormChange(e) {
-        setProject({ ...project, [e.target.name]: e.target.value })
+    function fetchProject() {
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenWithPopup({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await getById(projectId, token);
+
+                if (result.outcome === successResult) {
+                    var project = result.payload;
+
+                    // sort positions by recommended first
+                    const recommendedPositionSorter = (a, b) => {
+                        if (a.recommended && !b.recommended) return -1;
+                        if (!a.recommended && b.recommended) return +1;
+                        return 0;
+                    };
+
+                    project.positions.sort(recommendedPositionSorter);
+
+                    setProject(project);
+                    // document.getElementById('user-action-success-toast').show();
+                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                } else if (result.outcome === failureResult) {
+                    console.log("neuspjesan status code");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                } else if (result.outcome === errorResult) {
+                    console.log("nesto je do mreze", result);
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                }
+            } catch (ex) {
+                console.log(ex);
+                // document.getElementById('user-action-fail-toast').show();
+                // setTimeout(() => {
+                //     document.getElementById('user-action-fail-toast').close();
+                // }, 3000);
+            }
+        })();
     }
 
-    function onPositionFormChange(e) {
-        if (e.target.name == "positionType") {
-            setSelectedPositionType(e.target.value);
-        } else {
-            setPosition({ ...position, [e.target.name]: e.target.value });
-        }
-    }
+    useEffect(() => {
+        fetchProject();
+    }, [projectId]);
 
-    function setPositionRequirements(hat) {
-        setPosition({ ...position, requirements: hat });
-    }
+    useEffect(() => {
+        setOriginalProject(project);
+    }, [project])
 
     function removeNewPosition(positionToRemove) {
         let filteredPositions = newPositions.filter(p => p != positionToRemove);
@@ -179,163 +175,89 @@ const EditProject = () => {
     }
 
     const left = (
-        <div className='relative pb-32'>
-            <div className='mb-12'>
-                <SectionTitle title="Basic info"></SectionTitle>
-            </div>
-            <form
-                onChange={onBasicInfoFormChange}>
+        project &&
+        <>
+            <div className='relative pb-16'>
                 <div className='mb-8'>
-                    <label>
-                        <p>Title*</p>
-                        <input
-                            type="text"
-                            name="title"
-                            value={project.title}
-                            className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
-                    </label>
+                    <SectionTitle title="Basic info"></SectionTitle>
+                    <p className='h-8'></p>
                 </div>
+                <BasicInfoForm
+                    basicInfo={{ title: project.title, description: project.description }}
+                    onValidChange={basicInfo => {
+                        setProject({ ...project, ...basicInfo });
+                        setValidBasicInfo(true);
+                    }}
+                    onInvalidChange={() => setValidBasicInfo(false)}>
+                </BasicInfoForm>
 
-                <div className='mb-8'>
-                    <label>
-                        <p>Description*</p>
-                        <textarea
-                            rows={5}
-                            maxLength={1000}
-                            name="description"
-                            value={project.description}
-                            className="resize-y mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></textarea>
-                    </label>
+
+                <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
+                    <NeutralButton
+                        text="Cancel"
+                        onClick={() => { setProject({ ...project, title: originalProject.title, description: originalProject.description }) }}>
+                    </NeutralButton>
+
+                    <PrimaryButton
+                        text="Update details"
+                        onClick={onUpdateDetails}>
+                    </PrimaryButton>
                 </div>
-
-                <div className='flex flex-row content-between justify-between'>
-                    <label>
-                        <p>Start date*</p>
-                        <input
-                            type="date"
-                            name="startDate"
-                            className="mt-1 w-64 block rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
-                        </input>
-                    </label>
-
-                    <label>
-                        <p>End date*</p>
-                        <input
-                            type="date"
-                            name="endDate"
-                            className="mt-1 w-64 block rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
-                        </input>
-                    </label>
-                </div>
-            </form>
-
-            <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
-                <NeutralButton
-                    text="Cancel"
-                    onClick={() => { }}>
-                </NeutralButton>
-
-                <PrimaryButton
-                    text="Update details"
-                    onClick={onUpdateDetails}>
-                </PrimaryButton>
             </div>
-        </div>
+        </>
     );
 
     const right = (
+        project &&
         <div className='relative pb-32'>
             <div className='mb-2'>
                 <div className="mb-8">
                     <SectionTitle title="Positions"></SectionTitle>
                     <p>Describe the profiles of people you're looking to find and collaborate with</p>
                 </div>
-
-                <SubsectionTitle title="Existing positions"></SubsectionTitle>
             </div>
-            {
-                project.positions.length == 0 &&
-                <p className='text-gray-500'>Currently there are no added positions.</p>
-            }
-            {
-                project.positions.length > 0 &&
-                <div className="mt-4">
-                    {
-                        project.positions.map(p => (
-                            <div key={Math.random() * 1000}>
-                                <div className='mb-2'>
-                                    {/*  <Position position={p}></Position> */}
-                                    <PositionCard
-                                        position={p}>
-                                    </PositionCard>
-                                </div>
-                            </div>)
-                        )
-                    }
-                </div>
-            }
 
-            <form
-                onChange={onPositionFormChange}>
-                <div className='mb-8 mt-16'>
-                    <div className='mb-2'>
-                        <SubsectionTitle title="Add a position"></SubsectionTitle>
+            <div className='mb-12 mt-12'>
+                <SubsectionTitle title="Existing positions"></SubsectionTitle>
+                {
+                    project.positions.length == 0 &&
+                    <p className='text-gray-500'>Currently there are no added positions.</p>
+                }
+                {
+                    project.positions.length > 0 &&
+                    <div className="mt-4">
+                        <ProjectPositions
+                            positions={project.positions}
+                            selectionEnabled={false}>
+                        </ProjectPositions>
                     </div>
-                    <label>
-                        <p>Title*</p>
-                        <input
-                            type="text"
-                            name="name"
-                            value={position.name}
-                            placeholder='e.g. .NET Backend Developer'
-                            className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
-                    </label>
+                }
+            </div>
+
+            {/*Add a new position*/}
+            <div className='flex flex-col pb-8 relative'>
+                <div className='mb-4'>
+                    <SubsectionTitle title="Add a new position"></SubsectionTitle>
                 </div>
+                <PositionForm
+                    onValidChange={position => {
+                        setPosition(position);
+                        setValidPosition(true);
+                    }}
+                    onInvalidChange={() => setValidPosition(false)}>
+                </PositionForm>
 
-                <div className='mb-8'>
-                    <label>
-                        <p>Description*</p>
-                        <textarea
-                            name="description"
-                            rows={5}
-                            maxLength={1000}
-                            value={position.description}
-                            className="resize-y mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></textarea>
-                    </label>
-                </div>
-
-                <div className='mb-8'>
-                    <label>
-                        <p>Type*</p>
-                        <select
-                            name="positionType"
-                            value={selectedPositionType}
-                            className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
-                            <option name="Student">Student</option>
-                            <option name="Academic">Academic</option>
-                        </select>
-                    </label>
-                </div>
-            </form>
-
-            <div
-                className='relative pb-16 mb-16'>
-                <HatForm
-                    hatType={selectedPositionType}
-                    onHatChanged={setPositionRequirements}>
-                </HatForm>
-
-                <div className='absolute bottom-2 right-0'>
+                <div className='absolute bottom-0 right-0'>
                     <NeutralButton
+                        disabled={!validPosition}
                         text="Add"
                         onClick={() => {
-                            setNewPositions([...newPositions, position])
+                            if (validPosition)
+                                setNewPositions([...newPositions, position])
                         }}>
                     </NeutralButton>
                 </div>
             </div>
-
-
 
             <div className='mb-4 mt-12'>
                 <SubsectionTitle title="New positions"></SubsectionTitle>
@@ -344,7 +266,6 @@ const EditProject = () => {
                 newPositions.length == 0 &&
                 <p className='text-gray-500'>Currently there are no added positions.</p>
             }
-
             {
                 newPositions.map(p => (
                     <div key={Math.random() * 1000}>
@@ -374,6 +295,7 @@ const EditProject = () => {
     );
 
     return (
+        project &&
         <DoubleColumnLayout
             title="Edit project"
             description=""
