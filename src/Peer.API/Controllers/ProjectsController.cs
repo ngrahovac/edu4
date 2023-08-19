@@ -169,12 +169,12 @@ public class ProjectsController : ControllerBase
 
     [HttpPut("{projectId}/positions/{positionId}")]
     [Authorize(Policy = "Contributor")]
-    public async Task<ActionResult> ClosePositionAsync(Guid projectId, Guid positionId, bool open)
+    public async Task<ActionResult> CloseOrReopenPositionAsync(Guid projectId, Guid positionId, [FromBody] ClosingOrReopeningPositionInputModel model)
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
-        await (open ?
+        await (model.Open ?
             _projects.ReopenPositionAsync(requesterId, projectId, positionId) :
             _projects.ClosePositionAsync(requesterId, projectId, positionId));
 
