@@ -3,11 +3,12 @@ import { useState } from 'react'
 import PositionCard from '../discover/PositionCard'
 import RecommendedPositionCard from '../discover/RecommendedPositionCard'
 import _ from 'lodash'
+import ClosedPositionCard from '../edit/ClosedPositionCard'
 
 const ProjectPositions = (props) => {
     const {
         positions,
-        onSelectedPositionChanged = () => {},
+        onSelectedPositionChanged = () => { },
         selectionEnabled = true,
     } = props;
 
@@ -26,8 +27,13 @@ const ProjectPositions = (props) => {
                 positions.map(p => <div key={p.id}
                     onClick={() => setSelectedPosition(p)}
                     className={`${_.isEqual(p, selectedPosition) && selectionEnabled ? "bg-blue-100" : ""} rounded-lg hover:bg-blue-50 cursor-pointer`}>
+
                     {
-                        !p.recommended &&
+                        !p.open &&
+                        <ClosedPositionCard position={p}></ClosedPositionCard>
+                    }
+                    {
+                        p.open && !p.recommended &&
                         <PositionCard position={p}></PositionCard>
                     }
                     {
