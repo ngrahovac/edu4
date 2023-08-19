@@ -13,6 +13,7 @@ public class PositionDisplayModel
     public string Description { get; set; }
     public HatDisplayModel Requirements { get; set; }
     public bool Recommended { get; set; }
+    public bool Open { get; set; }
 
     public PositionDisplayModel(
         Project project,
@@ -27,5 +28,6 @@ public class PositionDisplayModel
         Requirements = new HatDisplayModel(position.Requirements);
         Recommended = position.IsRecommendedFor(requester) &&
             !project.WasPublishedBy(requester);
+        Open = position.Open;
     }
 }
