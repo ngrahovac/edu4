@@ -7,7 +7,7 @@ import { SectionTitle } from '../layout/SectionTitle'
 import SubsectionTitle from '../layout/SubsectionTitle';
 import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
-import { addPositions, closePosition, reopenPosition, updateDetails } from '../services/ProjectsService';
+import { addPositions, closePosition, removePosition, reopenPosition, updateDetails } from '../services/ProjectsService';
 import { getById, remove } from '../services/ProjectsService'
 
 import {
@@ -186,7 +186,7 @@ const EditProject = () => {
                 let result = await closePosition(project.id, selectedPosition.id, token)
 
                 if (result.outcome === successResult) {
-                    setSelectedPosition({...selectedPosition, open: false});
+                    setSelectedPosition({ ...selectedPosition, open: false });
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
@@ -223,7 +223,7 @@ const EditProject = () => {
                 let result = await reopenPosition(project.id, selectedPosition.id, token)
 
                 if (result.outcome === successResult) {
-                    setSelectedPosition({...selectedPosition, open: true});
+                    setSelectedPosition({ ...selectedPosition, open: true });
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
@@ -250,7 +250,41 @@ const EditProject = () => {
     }
 
     function onExistingPositionRemoved() {
-        // if successful, update the UI / state, don't refetch
+        (async () => {
+            try {
+                {/* add validation */ }
+                let token = await getAccessTokenWithPopup({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await removePosition(project.id, selectedPosition.id, token)
+
+                if (result.outcome === successResult) {
+                    setProject({ ...project, positions: project.positions.filter(p => p.id != selectedPosition.id) })
+                    setSelectedPosition(undefined);
+                    // document.getElementById('user-action-success-toast').show();
+                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                } else if (result.outcome === failureResult) {
+                    console.log("neuspjesan status code");
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                } else if (result.outcome === errorResult) {
+                    console.log("nesto je do mreze", result);
+                    // document.getElementById('user-action-fail-toast').show();
+                    // setTimeout(() => {
+                    //     document.getElementById('user-action-fail-toast').close();
+                    // }, 3000);
+                }
+            } catch (ex) {
+                console.log(ex);
+                // document.getElementById('user-action-fail-toast').show();
+                // setTimeout(() => {
+                //     document.getElementById('user-action-fail-toast').close();
+                // }, 3000);
+            }
+        })();
     }
 
     const left = (
