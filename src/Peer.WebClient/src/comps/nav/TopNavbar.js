@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import LogoutButton from '../landing/LogoutButton'
+import LogoutButton from './LogoutButton'
 import Avatar from './Avatar'
 import LogoIcon from './LogoIcon'
 import PublishNavbarItem from './PublishNavbarItem'
