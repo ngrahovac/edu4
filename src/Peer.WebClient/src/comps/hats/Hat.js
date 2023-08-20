@@ -9,7 +9,7 @@ const Hat = (props) => {
 
     return (
         <div
-            className='my-4 bg-stone-50 px-4 py-6 rounded-md w-full border border-slate-300 overflow-clip'>
+            className='my-4 px-4 py-6 rounded-md w-full border border-gray-300 overflow-clip'>
             {
                 (() => {
                     switch (hatType) {
