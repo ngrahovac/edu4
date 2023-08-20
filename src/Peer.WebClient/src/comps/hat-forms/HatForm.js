@@ -27,7 +27,7 @@ const HatForm = (props) => {
                         value={hatTypeState}
                         className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
                         <option name="Student" value="Student">Student</option>
-                        <option name="Academic" value="Academic">Academic</option>
+                        <option name="Academic" value="Academic">Academic / Researcher</option>
                     </select>
                 </label>
             </div>
