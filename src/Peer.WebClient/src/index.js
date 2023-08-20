@@ -43,7 +43,7 @@ root.render(
             <Route path='/publish' element={<Publish></Publish>}></Route>
             <Route path='/discover' element={<Discover></Discover>}></Route>
             <Route path='/projects/:projectId' element={<Project></Project>}></Route>
-            <Route path='/edit' element={<EditProject></EditProject>}></Route>
+            <Route path='/projects/:projectId/edit' element={<EditProject></EditProject>}></Route>
             <Route path='/contributors/:contributorId' element={<Contributor></Contributor>}></Route>
             <Route path='/applications' element={<Applications></Applications>}></Route>
           </Route>
