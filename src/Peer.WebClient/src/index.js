@@ -8,7 +8,7 @@ import {
 import TopNavbar from './comps/nav/TopNavbar';
 import Homepage from './pages/Homepage';
 import Signup from './pages/Signup';
-import Welcome from './pages/Welcome'
+import Landing from './pages/Landing'
 import Publish from './pages/Publish';
 import Discover from './pages/Discover';
 import { Auth0Provider } from "@auth0/auth0-react"
@@ -34,7 +34,7 @@ root.render(
       <BrowserRouter>
         <Routes>
           { /* pages without the top navbar */}
-          <Route path='/' element={<Welcome></Welcome>}></Route>
+          <Route path='/' element={<Landing></Landing>}></Route>
           <Route path="/signup" element={<Signup></Signup>}></Route>
 
           {/* navbar layout route + top-level pages as children */}

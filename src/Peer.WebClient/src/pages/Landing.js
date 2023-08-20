@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import jwtDecode from 'jwt-decode';
 import EnterButton from '../comps/landing/EnterButton';
 
-const Welcome = () => {
+const Landing = () => {
     const {
         isAuthenticated,
         isLoading,
@@ -32,7 +32,7 @@ const Welcome = () => {
                 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
                     console.log("development mode; the logged in user is considered a contributor.");
                     console.log("redirecting to homepage...");
-                    window.location.href = "/homepage";
+                    //window.location.href = "/homepage";
                     return;
                 }
 
@@ -41,12 +41,12 @@ const Welcome = () => {
                 if (permissions.includes("contribute")) {
                     console.log("user completed the signup and IS a contributor");
                     console.log("redirecting to homepage...");
-                    window.location.href = "/homepage";
+                    //window.location.href = "/homepage";
 
                 } else {
                     console.log("user did not complete the signup");
                     console.log("redirecting to signup...");
-                    window.location.href = "/signup";
+                    //window.location.href = "/signup";
                 }
             } catch (ex) {
                 console.log("error fetching access token")
@@ -63,16 +63,16 @@ const Welcome = () => {
             <div
                 className='w-full h-full text-center pt-64 text-slate-700 absolute bottom-0 align-middle text-3xl'>
                 <p className='font-bold text-5xl'>
-                    edu4
+                    peer
                 </p>
                 <p className='mt-8 space-y-2 leading-normal'>
                     Find amazing people
                     <br />
-                    and bring your ideas to life.
+                    and bring your ideas to life
                 </p>
             </div>
         </>
     )
 }
 
-export default Welcome
+export default Landing
