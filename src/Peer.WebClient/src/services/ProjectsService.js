@@ -238,6 +238,93 @@ async function remove(projectId, accessToken) {
     }
 }
 
+async function closePosition(projectId, positionId, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+
+        var response = await putAsync(
+            `${apiRootUri}/projects/${projectId}/positions/${positionId}`,
+            { open: false },
+            accessToken);
+
+        if (response.ok) {
+            return {
+                outcome: successResult,
+                message: "Position closed successfully!"
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
+async function reopenPosition(projectId, positionId, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+        var response = await putAsync(
+            `${apiRootUri}/projects/${projectId}/positions/${positionId}`,
+            { open: true },
+            accessToken);
+
+        if (response.ok) {
+            return {
+                outcome: successResult,
+                message: "Position reopened successfully!"
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
+async function removePosition(projectId, positionId, accessToken) {
+    try {
+        const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+        var response = await deleteAsync(
+            `${apiRootUri}/projects/${projectId}/positions/${positionId}`,
+            accessToken);
+
+        if (response.ok) {
+            return {
+                outcome: successResult,
+                message: "Position removed successfully!"
+            };
+        } else {
+            var responseMessage = await response.text();
+
+            return {
+                outcome: failureResult,
+                message: responseMessage
+            };
+        }
+    } catch (ex) {
+        return {
+            outcome: errorResult,
+            message: "The request failed. Please check your connection and try again."
+        };
+    }
+}
+
 export {
     publish,
     addPositions,
@@ -245,5 +332,8 @@ export {
     getById,
     getAuthored,
     updateDetails,
-    remove
+    remove,
+    closePosition,
+    reopenPosition,
+    removePosition
 }

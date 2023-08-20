@@ -29,6 +29,7 @@ public class ProjectDisplayModel
         DatePosted = project.DatePosted.ToShortDateString();
         Recommended = project.IsRecommendedFor(requester);
         Positions = project.Positions
+            .Where(pp => !pp.Removed)
             .Select(pp => new PositionDisplayModel(project, pp, requester))
             .ToList();
         CollaborationsUrl = ResourceUrlBuilder.BuildProjectCollaborationsUrl(project.Id);
