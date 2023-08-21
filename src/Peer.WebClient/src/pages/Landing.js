@@ -9,14 +9,15 @@ import BorderlessButton from '../comps/buttons/BorderlessButton'
 import { SectionTitle } from '../layout/SectionTitle'
 import Lang from '../comps/landing/Lang';
 import Nudge from '../comps/landing/Nudge';
-import EnterButton from '../comps/landing/EnterButton';
+import PrimaryButton from '../comps/buttons/PrimaryButton';
 import GiantLogo from '../comps/landing/GiantLogo';
 
 const Landing = () => {
     const {
         isAuthenticated,
         isLoading,
-        getAccessTokenSilently
+        getAccessTokenSilently,
+        loginWithRedirect
     } = useAuth0();
 
     const [selectedHatType, setSelectedHatType] = useState(undefined);
@@ -106,7 +107,10 @@ const Landing = () => {
 
                 <Lang></Lang>
 
-                <EnterButton></EnterButton>
+                <PrimaryButton
+                    text="Enter"
+                    onClick={() => loginWithRedirect()}>
+                </PrimaryButton>
             </LandingNavbar>
 
             <div className='flex flex-col items-center space-y-16'>
@@ -165,7 +169,7 @@ const Landing = () => {
                                 placeholder='Your email here..'
                                 className="border-none focus:outline-none focus:ring-none text-lg">
                             </input>
-                            <button 
+                            <button
                                 className='text-lg font-bold px-4 rounded-full'>
                                 Go
                             </button>
