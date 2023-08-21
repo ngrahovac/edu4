@@ -6,7 +6,7 @@ import {
   Route
 } from 'react-router-dom'
 import TopNavbar from './comps/nav/TopNavbar';
-import Homepage from './pages/Homepage';
+import Welcome from './pages/Welcome';
 import Signup from './pages/Signup';
 import Landing from './pages/Landing'
 import Publish from './pages/Publish';
@@ -39,7 +39,7 @@ root.render(
 
           {/* navbar layout route + top-level pages as children */}
           <Route element={<TopNavbar></TopNavbar>}>
-            <Route path='/homepage' element={<Homepage></Homepage>}></Route>
+            <Route path='/welcome' element={<Welcome></Welcome>}></Route>
             <Route path='/publish' element={<Publish></Publish>}></Route>
             <Route path='/discover' element={<Discover></Discover>}></Route>
             <Route path='/projects/:projectId' element={<Project></Project>}></Route>

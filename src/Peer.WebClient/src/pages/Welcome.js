@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Homepage = () => {
+const Welcome = () => {
     return (
         <div
             className='absolute bottom-0 h-full w-full flex pt-64 justify-center'>
@@ -9,4 +9,4 @@ const Homepage = () => {
     )
 }
 
-export default Homepage
+export default Welcome

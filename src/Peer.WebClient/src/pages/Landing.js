@@ -33,14 +33,14 @@ const Landing = () => {
                 let decodedAccessToken = jwtDecode(accessToken);
 
                 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-                    window.location.href = "/homepage";
+                    window.location.href = "/welcome";
                     return;
                 }
 
                 let permissions = decodedAccessToken.permissions;
 
                 if (permissions.includes("contribute")) {
-                    window.location.href = "/homepage";
+                    window.location.href = "/welcome";
 
                 } else {
                     window.location.href = "/signup";
