@@ -37,7 +37,6 @@ const TopNavbar = () => {
                         link="discover">
                     </TopNavbarItem>
 
-
                     {/* applications */}
                     <TopNavbarItem
                         text="Applications"
