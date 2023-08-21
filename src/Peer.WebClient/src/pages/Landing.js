@@ -9,6 +9,7 @@ import BorderlessButton from '../comps/buttons/BorderlessButton'
 import { SectionTitle } from '../layout/SectionTitle'
 import Lang from '../comps/landing/Lang';
 import Nudge from '../comps/landing/Nudge';
+import EnterButton from '../comps/landing/EnterButton';
 
 const Landing = () => {
     const {
@@ -103,6 +104,8 @@ const Landing = () => {
                 </AccentButton>
 
                 <Lang></Lang>
+
+                <EnterButton></EnterButton>
             </LandingNavbar>
 
             <div className='flex flex-col items-center space-y-16'>
