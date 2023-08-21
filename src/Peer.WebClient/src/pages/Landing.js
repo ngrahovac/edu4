@@ -20,13 +20,8 @@ const Landing = () => {
     const [selectedHatType, setSelectedHatType] = useState(undefined);
 
     useEffect(() => {
-        if (isLoading)
+        if (isLoading || !isAuthenticated)
             return;
-
-        if (!isAuthenticated) {
-            console.log("the user is not authenticated")
-            return;
-        }
 
         (async () => {
             try {
@@ -35,29 +30,22 @@ const Landing = () => {
                 });
 
                 let decodedAccessToken = jwtDecode(accessToken);
-                console.log(decodedAccessToken);
 
                 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-                    console.log("development mode; the logged in user is considered a contributor.");
-                    console.log("redirecting to homepage...");
-                    //window.location.href = "/homepage";
+                    window.location.href = "/homepage";
                     return;
                 }
 
                 let permissions = decodedAccessToken.permissions;
 
                 if (permissions.includes("contribute")) {
-                    console.log("user completed the signup and IS a contributor");
-                    console.log("redirecting to homepage...");
-                    //window.location.href = "/homepage";
+                    window.location.href = "/homepage";
 
                 } else {
-                    console.log("user did not complete the signup");
-                    console.log("redirecting to signup...");
-                    //window.location.href = "/signup";
+                    window.location.href = "/signup";
                 }
             } catch (ex) {
-                console.log("error fetching access token")
+                console.error("error fetching access token", ex)
             }
         })();
     });
