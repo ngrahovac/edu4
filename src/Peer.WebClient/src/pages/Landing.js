@@ -10,6 +10,7 @@ import { SectionTitle } from '../layout/SectionTitle'
 import Lang from '../comps/landing/Lang';
 import Nudge from '../comps/landing/Nudge';
 import EnterButton from '../comps/landing/EnterButton';
+import GiantLogo from '../comps/landing/GiantLogo';
 
 const Landing = () => {
     const {
@@ -112,11 +113,7 @@ const Landing = () => {
                 {/* giant logo + slogan */}
                 <div className='w-full'>
                     <div className='flex flex-col space-y-8'>
-                        <img
-                            width={420}
-                            height={120}
-                            src='https://placehold.co/420x120?text=big+logo+here'>
-                        </img>
+                        <GiantLogo></GiantLogo>
 
                         <Slogan></Slogan>
                     </div>
