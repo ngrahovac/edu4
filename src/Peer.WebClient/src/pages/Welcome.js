@@ -1,11 +1,20 @@
 import React from 'react'
+import SingleColumnLayout from '../layout/SingleColumnLayout'
+import { SectionTitle } from '../layout/SectionTitle'
 
 const Welcome = () => {
     return (
-        <div
-            className='absolute bottom-0 h-full w-full flex pt-64 justify-center'>
-            <p className='text-5xl tracking-widest uppercase font-light'>Homepage</p>
-        </div>
+        <SingleColumnLayout
+            title="Welcome &#x1F49C;">
+
+            <SectionTitle
+                title="What's new">
+            </SectionTitle>
+
+            <ul className='list-disc mt-4 ml-4'>
+                <li>The platform is in private beta! Take a look around, explore, and reach out with <span className='font-bold'>ANY and ALL</span> feedback!</li>
+            </ul>
+        </SingleColumnLayout>
     )
 }
 
