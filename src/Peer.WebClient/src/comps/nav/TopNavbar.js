@@ -1,13 +1,15 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import LogoutButton from './LogoutButton'
 import Avatar from './Avatar'
 import LogoIcon from './LogoIcon'
 import PublishNavbarItem from './PublishNavbarItem'
-import Search from './Search'
 import TopNavbarItem from './TopNavbarItem'
+import { useAuth0 } from '@auth0/auth0-react'
+import NeutralButton from '../buttons/NeutralButton'
 
 const TopNavbar = () => {
+    const { logout } = useAuth0();
+
     return (
         <>
             <div
@@ -60,7 +62,10 @@ const TopNavbar = () => {
 
                     <Avatar></Avatar>
 
-                    <LogoutButton></LogoutButton>
+                    <NeutralButton
+                        text="Log out"
+                        onClick={() => logout({ returnTo: window.location.origin })}>
+                    </NeutralButton>
                 </div>
             </div>
             <Outlet></Outlet>
