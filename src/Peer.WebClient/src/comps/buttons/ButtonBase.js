@@ -3,7 +3,7 @@ import React from 'react'
 const ButtonBase = (props) => {
 
     const {
-        onClick,
+        onClick = () => {},
         disabled,
         text,
         defaultStyle = "",
