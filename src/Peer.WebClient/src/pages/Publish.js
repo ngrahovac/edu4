@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import HatForm from '../comps/hat-forms/HatForm';
 import AddedPosition from '../comps/publish/AddedPosition';
 import { DoubleColumnLayout } from '../layout/DoubleColumnLayout'
 import { SectionTitle } from '../layout/SectionTitle'
@@ -16,6 +15,7 @@ import {
 import { useAuth0 } from '@auth0/auth0-react'
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import PositionForm from '../comps/publish/PositionForm';
+import SectionTitleWrapper from '../layout/SectionTitleWrapper';
 
 
 const Publish = () => {
@@ -35,7 +35,6 @@ const Publish = () => {
 
     function removePosition(positionToRemove) {
         let filteredPositions = project.positions.filter(p => p != positionToRemove);
-        console.log(filteredPositions)
         setProject({ ...project, positions: filteredPositions });
     }
 
@@ -75,10 +74,10 @@ const Publish = () => {
 
     const left = (
         <>
-            <div className='mb-8'>
+            <SectionTitleWrapper>
                 <SectionTitle title="Basic info"></SectionTitle>
                 <p className='h-8'></p>
-            </div>
+            </SectionTitleWrapper>
             <BasicInfoForm
                 onValidChange={basicInfo => {
                     setProject({ ...project, ...basicInfo });
@@ -90,12 +89,13 @@ const Publish = () => {
     );
 
     const right = (
-        <div className='relative pb-32'>
+        <div className='relative pb-32 flex flex-col space-y-8'>
+            {/* add position */}
             <div className='relative pb-16'>
-                <div className="mb-8">
+                <SectionTitleWrapper>
                     <SectionTitle title="Positions"></SectionTitle>
-                    <p className='h-8'>Describe the profiles of people you're looking to find and collaborate with</p>
-                </div>
+                    <p className='h-8'>Describe the positions you're looking for collaborators for</p>
+                </SectionTitleWrapper>
 
                 <PositionForm
                     onValidChange={position => {
@@ -117,31 +117,34 @@ const Publish = () => {
                 </div>
             </div>
 
-            <div className='mb-2'>
-                <SubsectionTitle title="Added positions"></SubsectionTitle>
-                <p className='text-red-500 font-semibold h-8'>{`${validPositionCount ? "" : "Add at least one position when publishing a project."}`}</p>
-            </div>
-            {
-                project.positions.length == 0 &&
-                <p className='text-gray-500'>There are currently no added positions.</p>
-            }
-            {
-                project.positions.length > 0 &&
-                <div className="mt-4"> {
-                    project.positions.map(p => (
-                        <div key={Math.random() * 1000}>
-                            <div className='mb-2'>
+            {/* added positions */}
+            <div>
+                <SectionTitleWrapper>
+                    <SubsectionTitle title="Added positions"></SubsectionTitle>
+                    <p className='text-red-500 font-semibold h-8'>{`${validPositionCount ? "" : "Add at least one position when publishing a project."}`}</p>
+                </SectionTitleWrapper>
+                {
+                    project.positions.length == 0 &&
+                    <p className='text-gray-500'>There are currently no added positions.</p>
+                }
+                {
+                    project.positions.length > 0 &&
+                    <div className='flex flex-col space-y-4'> 
+                    {
+                        project.positions.map((p, index) => (
+                            <div key={index}>
                                 <AddedPosition
                                     position={p}
                                     onRemoved={() => removePosition(p)}>
                                 </AddedPosition>
-                            </div>
-                        </div>)
-                    )
+                            </div>)
+                        )
+                    }
+                    </div>
                 }
-                </div>
-            }
+            </div>
 
+            {/* publish button */}
             <div className='absolute bottom-2 right-0'>
                 <PrimaryButton
                     text="Publish"
@@ -155,7 +158,7 @@ const Publish = () => {
     return (
         <DoubleColumnLayout
             title="Publish a project"
-            description="Have an idea or a project you're working on? Let the world know and find your people!"
+            description="Have an idea or a project you're working on? Describe the collaborators you need and find your people!"
             left={left}
             right={right}>
         </DoubleColumnLayout>
