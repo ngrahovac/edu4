@@ -24,7 +24,8 @@ const TopNavbar = () => {
                 <div
                     className='flex flex-row items-center justify-end space-x-4'>
                     {/* publish */}
-                    <PublishNavbarItem></PublishNavbarItem>
+                    <PublishNavbarItem>
+                    </PublishNavbarItem>
 
                     {/* discover */}
                     <TopNavbarItem
