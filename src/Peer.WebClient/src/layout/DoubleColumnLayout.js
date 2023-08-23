@@ -11,22 +11,20 @@ export const DoubleColumnLayout = (props) => {
     } = props;
 
     return (
-        <div
-            className='w-2/3 mx-auto absolute mt-16 right-0 left-0 py-32'>
-
+        <div className='absolute max-w-7xl mx-auto right-0 left-0 py-36'>
             <div className='flex flex-col space-y-2'>
                 <PageTitle title={title}></PageTitle>
                 <PageDescription description={description}></PageDescription>
             </div>
 
-            <div className='flex flex-row mt-16'>
+            <div className='flex flex-row gap-x-24 mt-16'>
                 {/* left pane */}
-                <div className='w-1/2 mr-16'>
+                <div className='w-full'>
                     {left}
                 </div>
 
                 {/* right pane */}
-                <div className='w-1/2 ml-16'>
+                <div className='w-full'>
                     {right}
                 </div>
             </div>
