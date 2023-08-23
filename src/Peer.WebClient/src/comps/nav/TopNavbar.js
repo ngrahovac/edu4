@@ -13,17 +13,14 @@ const TopNavbar = () => {
 
     return (
         <>
-            <div
-                className='fixed w-full h-16 bg-gray-100 flex flex-row justify-between px-8 z-40'>
+            <div className='fixed w-full h-16 bg-gray-100 flex flex-row justify-between px-8 z-40'>
                 {/* navbar items on the left */}
-                <div
-                    className='flex flex-row items-center'>
+                <div className='flex flex-row items-center'>
                     <LogoIcon></LogoIcon>
                 </div>
 
                 {/* navbar items on the right */}
-                <div
-                    className='flex flex-row items-center justify-end space-x-4'>
+                <div className='flex flex-row items-center justify-end space-x-4'>
                     {/* publish */}
                     <Link to="publish">
                         <AccentButton
