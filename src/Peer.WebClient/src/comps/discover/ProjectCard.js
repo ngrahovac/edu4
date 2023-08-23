@@ -9,7 +9,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import RecommendedFlair from './RecommendedFlair';
 import { Link } from 'react-router-dom';
 import PrimaryButton from '../buttons/PrimaryButton';
-import BorderlessButtonWithIcon from '../buttons/BorderlessButtonWithIcon';
 import BorderlessButton from '../buttons/BorderlessButton';
 
 const ProjectCard = ({ project }) => {

@@ -5,7 +5,7 @@ import { SectionTitle } from '../layout/SectionTitle';
 import Collaborators from '../comps/project/Collaborators';
 import Author from '../comps/project/Author';
 import Collaborator from '../comps/project/Collaborator';
-import BorderlessButtonWithIcon from '../comps/buttons/BorderlessButtonWithIcon';
+import BorderlessButton from '../comps/buttons/BorderlessButton';
 import { getById, remove } from '../services/ProjectsService'
 import { useAuth0 } from '@auth0/auth0-react';
 import {
@@ -345,7 +345,7 @@ const Project = () => {
                             project.authored &&
                             <div className='absolute top-8 right-0 flex flex-row space-x-8'>
                                 <Link to="edit">
-                                    <BorderlessButtonWithIcon
+                                    <BorderlessButton
                                         text="Edit"
                                         icon={
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -353,10 +353,10 @@ const Project = () => {
                                             </svg>
                                         }
                                         onClick={() => { }}>
-                                    </BorderlessButtonWithIcon>
+                                    </BorderlessButton>
                                 </Link>
 
-                                <BorderlessButtonWithIcon
+                                <BorderlessButton
                                     text="Delete"
                                     icon={
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -364,7 +364,7 @@ const Project = () => {
                                         </svg>
                                     }
                                     onClick={onDeleteProject}>
-                                </BorderlessButtonWithIcon>
+                                </BorderlessButton>
                             </div>
                         }
                     </div>
