@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import InvalidFormFieldWarning from './InvalidFormFieldWarning';
 
 const BasicInfoForm = (props) => {
+    
     const {
         initialBasicInfo = { title: '', description: '' },
         onValidChange = () => { },
