@@ -1,5 +1,5 @@
 import React from 'react'
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import HatForm from '../hat-forms/HatForm';
 import InvalidFormFieldWarning from './InvalidFormFieldWarning';
 
@@ -7,10 +7,9 @@ const PositionForm = (props) => {
 
     const {
         onValidChange,
-        onInvalidChange
+        onInvalidChange,
+        startShowingValidationErrors
     } = props;
-
-    let startShowingValidationErrors = useRef(false);
 
     const [position, setPosition] = useState({
         name: '',
@@ -25,10 +24,6 @@ const PositionForm = (props) => {
     };
 
     function handlePositionFormChange(e) {
-        if (!startShowingValidationErrors.current) {
-            startShowingValidationErrors.current = true;
-        }
-
         setPosition({ ...position, [e.target.name]: e.target.value });
 
         let otherPropsValid = Object.keys(position)
@@ -73,7 +68,7 @@ const PositionForm = (props) => {
                             value={position.name}
                             placeholder='e.g. .NET Backend Developer'
                             className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
-                        <InvalidFormFieldWarning visible={startShowingValidationErrors.current && !validators.name(position.name)}></InvalidFormFieldWarning>
+                        <InvalidFormFieldWarning visible={startShowingValidationErrors && !validators.name(position.name)}></InvalidFormFieldWarning>
                     </label>
                 </div>
 
@@ -87,7 +82,7 @@ const PositionForm = (props) => {
                             maxLength={1000}
                             value={position.description}
                             className="resize-y mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></textarea>
-                        <InvalidFormFieldWarning visible={startShowingValidationErrors.current && !validators.description(position.description)}></InvalidFormFieldWarning>
+                        <InvalidFormFieldWarning visible={startShowingValidationErrors && !validators.description(position.description)}></InvalidFormFieldWarning>
                     </label>
                 </div>
             </form>

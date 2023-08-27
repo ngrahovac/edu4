@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useRef } from 'react'
 import { useState } from 'react';
 import AddedPosition from '../comps/publish/AddedPosition';
 import { DoubleColumnLayout } from '../layout/DoubleColumnLayout'
@@ -16,20 +16,19 @@ import { useAuth0 } from '@auth0/auth0-react'
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import PositionForm from '../comps/publish/PositionForm';
 import SectionTitleWrapper from '../layout/SectionTitleWrapper';
+import InvalidFormFieldWarning from '../comps/publish/InvalidFormFieldWarning';
 
 const Publish = () => {
     const [project, setProject] = useState({ positions: [] });
     const [position, setPosition] = useState({});
 
-    const [validPosition, setValidPosition] = useState(false);
-    const [validBasicInfo, setValidBasicInfo] = useState(false);
-    const [validPositionCount, setValidPositionCount] = useState(false);
+    const validBasicInfo = project.title && position;
+    const validPosition = position;
+    const validPositionCount = project.positions.length > 0;
+
+    const startShowingValidationErrors = useRef(false);
 
     const { getAccessTokenWithPopup } = useAuth0();
-
-    useEffect(() => {
-        setValidPositionCount(project.positions.length > 0);
-    }, [project]);
 
     function handleRemovePosition(position) {
         setProject({
@@ -82,9 +81,17 @@ const Publish = () => {
             <BasicInfoForm
                 onValidChange={basicInfo => {
                     setProject({ ...project, ...basicInfo });
-                    setValidBasicInfo(true);
+                    if (!startShowingValidationErrors.current) {
+                        startShowingValidationErrors.current = true;
+                    }
                 }}
-                onInvalidChange={() => setValidBasicInfo(false)}>
+                onInvalidChange={() => {
+                    setProject({ ...project, title: undefined, description: undefined });
+                    if (!startShowingValidationErrors.current) {
+                        startShowingValidationErrors.current = true;
+                    }
+                }}
+                startShowingValidationErrors={startShowingValidationErrors.current}>
             </BasicInfoForm>
         </>
     );
@@ -101,19 +108,24 @@ const Publish = () => {
                 <PositionForm
                     onValidChange={position => {
                         setPosition(position);
-                        setValidPosition(true);
+                        if (!startShowingValidationErrors.current) {
+                            startShowingValidationErrors.current = true;
+                        }
                     }}
-                    onInvalidChange={() => setValidPosition(false)}>
+                    onInvalidChange={() => {
+                        setPosition(undefined);
+                        if (!startShowingValidationErrors.current) {
+                            startShowingValidationErrors.current = true;
+                        }
+                    }}
+                    startShowingValidationErrors={startShowingValidationErrors.current}>
                 </PositionForm>
 
                 <div className='absolute bottom-2 right-0'>
                     <NeutralButton
                         disabled={!validPosition}
                         text="Add"
-                        onClick={() => {
-                            if (validPosition)
-                                setProject({ ...project, positions: [...project.positions, position] })
-                        }}>
+                        onClick={() => setProject({ ...project, positions: [...project.positions, position] })}>
                     </NeutralButton>
                 </div>
             </div>
@@ -122,7 +134,10 @@ const Publish = () => {
             <div>
                 <SectionTitleWrapper>
                     <SubsectionTitle title="Added positions"></SubsectionTitle>
-                    <p className='text-red-500 font-semibold h-8'>{`${validPositionCount ? "" : "Add at least one position when publishing a project."}`}</p>
+                    <InvalidFormFieldWarning
+                        visible={startShowingValidationErrors.current && !validPositionCount}
+                        text="Add at least one position when publishing a project.">
+                    </InvalidFormFieldWarning>
                 </SectionTitleWrapper>
                 {
                     project.positions.length == 0 &&
@@ -136,7 +151,7 @@ const Publish = () => {
                                 <div key={index}>
                                     <AddedPosition
                                         position={p}
-                                        onRemoved={() => handleRemovePosition(p)}>
+                                        onRemoved={handleRemovePosition}>
                                     </AddedPosition>
                                 </div>)
                             )
@@ -153,7 +168,7 @@ const Publish = () => {
                     disabled={!(validBasicInfo && validPositionCount)}>
                 </PrimaryButton>
             </div>
-        </div>
+        </div >
     );
 
     return (
