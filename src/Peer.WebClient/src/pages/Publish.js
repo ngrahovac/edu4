@@ -23,7 +23,7 @@ const Publish = () => {
     const [project, setProject] = useState({ positions: [] });
     const [position, setPosition] = useState({});
 
-    const validBasicInfo = project.title && position;
+    const validBasicInfo = project.title && project.description;
     const validPosition = position;
     const validPositionCount = project.positions.length > 0;
     const duplicatePositions = _.uniq(project.positions).length != project.positions.length;
