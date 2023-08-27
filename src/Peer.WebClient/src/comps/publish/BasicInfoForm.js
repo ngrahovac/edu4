@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import InvalidFormFieldWarning from './InvalidFormFieldWarning';
 
 const BasicInfoForm = (props) => {
