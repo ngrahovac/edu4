@@ -16,6 +16,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import PositionForm from '../comps/publish/PositionForm';
 import SectionTitleWrapper from '../layout/SectionTitleWrapper';
+import _ from 'lodash';
 
 
 const Publish = () => {
@@ -30,15 +31,16 @@ const Publish = () => {
 
     useEffect(() => {
         setValidPositionCount(project.positions.length > 0);
-    }, [project])
+    }, [project]);
 
-
-    function removePosition(positionToRemove) {
-        let filteredPositions = project.positions.filter(p => p != positionToRemove);
-        setProject({ ...project, positions: filteredPositions });
+    function handleRemovePosition(position) {
+        setProject({
+            ...project,
+            positions: project.positions.filter(p => p != position)
+        });
     }
 
-    function onPublishProject() {
+    function handlePublishProject() {
         (async () => {
             if (validBasicInfo && validPositionCount) {
                 try {
@@ -78,6 +80,7 @@ const Publish = () => {
                 <SectionTitle title="Basic info"></SectionTitle>
                 <p className='h-8'></p>
             </SectionTitleWrapper>
+
             <BasicInfoForm
                 onValidChange={basicInfo => {
                     setProject({ ...project, ...basicInfo });
@@ -129,17 +132,17 @@ const Publish = () => {
                 }
                 {
                     project.positions.length > 0 &&
-                    <div className='flex flex-col space-y-4'> 
-                    {
-                        project.positions.map((p, index) => (
-                            <div key={index}>
-                                <AddedPosition
-                                    position={p}
-                                    onRemoved={() => removePosition(p)}>
-                                </AddedPosition>
-                            </div>)
-                        )
-                    }
+                    <div className='flex flex-col space-y-4'>
+                        {
+                            project.positions.map((p, index) => (
+                                <div key={index}>
+                                    <AddedPosition
+                                        position={p}
+                                        onRemoved={() => handleRemovePosition(p)}>
+                                    </AddedPosition>
+                                </div>)
+                            )
+                        }
                     </div>
                 }
             </div>
@@ -148,7 +151,7 @@ const Publish = () => {
             <div className='absolute bottom-2 right-0'>
                 <PrimaryButton
                     text="Publish"
-                    onClick={onPublishProject}
+                    onClick={handlePublishProject}
                     disabled={!(validBasicInfo && validPositionCount)}>
                 </PrimaryButton>
             </div>
