@@ -16,8 +16,6 @@ import { useAuth0 } from '@auth0/auth0-react'
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import PositionForm from '../comps/publish/PositionForm';
 import SectionTitleWrapper from '../layout/SectionTitleWrapper';
-import _ from 'lodash';
-
 
 const Publish = () => {
     const [project, setProject] = useState({ positions: [] });
