@@ -92,7 +92,7 @@ const Publish = () => {
     );
 
     const right = (
-        <div className='relative pb-32 flex flex-col space-y-8'>
+        <div className='relative pb-16 flex flex-col space-y-8'>
             {/* add position */}
             <div className='relative pb-16'>
                 <SectionTitleWrapper>
@@ -108,7 +108,7 @@ const Publish = () => {
                     onInvalidChange={() => setValidPosition(false)}>
                 </PositionForm>
 
-                <div className='absolute bottom-0 right-0'>
+                <div className='absolute bottom-2 right-0'>
                     <NeutralButton
                         disabled={!validPosition}
                         text="Add"
