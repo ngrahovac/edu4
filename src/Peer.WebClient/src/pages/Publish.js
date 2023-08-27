@@ -17,6 +17,7 @@ import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import PositionForm from '../comps/publish/PositionForm';
 import SectionTitleWrapper from '../layout/SectionTitleWrapper';
 import InvalidFormFieldWarning from '../comps/publish/InvalidFormFieldWarning';
+import _ from 'lodash';
 
 const Publish = () => {
     const [project, setProject] = useState({ positions: [] });
@@ -25,6 +26,7 @@ const Publish = () => {
     const validBasicInfo = project.title && position;
     const validPosition = position;
     const validPositionCount = project.positions.length > 0;
+    const duplicatePositions = _.uniq(project.positions).length != project.positions.length;
 
     const startShowingValidationErrors = useRef(false);
 
@@ -138,6 +140,10 @@ const Publish = () => {
                         visible={startShowingValidationErrors.current && !validPositionCount}
                         text="Add at least one position when publishing a project.">
                     </InvalidFormFieldWarning>
+                    <InvalidFormFieldWarning
+                        visible={startShowingValidationErrors.current && duplicatePositions}
+                        text="A project cannot contain duplicate positions.">
+                    </InvalidFormFieldWarning>
                 </SectionTitleWrapper>
                 {
                     project.positions.length == 0 &&
@@ -165,7 +171,7 @@ const Publish = () => {
                 <PrimaryButton
                     text="Publish"
                     onClick={handlePublishProject}
-                    disabled={!(validBasicInfo && validPositionCount)}>
+                    disabled={!(validBasicInfo && validPositionCount && !duplicatePositions)}>
                 </PrimaryButton>
             </div>
         </div >
