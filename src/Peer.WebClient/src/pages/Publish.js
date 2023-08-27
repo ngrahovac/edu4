@@ -73,116 +73,123 @@ const Publish = () => {
         })();
     }
 
-    const left = (
-        <>
-            <SectionTitleWrapper>
-                <SectionTitle title="Basic info"></SectionTitle>
-                <p className='h-8'></p>
-            </SectionTitleWrapper>
+    const children = (
+        <div className='flex flex-col gap-y-24'>
+            {/* basic info */}
+            <div className='flex flex-row gap-x-24'>
+                <div className='w-full'>
+                    <SectionTitleWrapper>
+                        <SectionTitle title="Basic info"></SectionTitle>
+                        <p className='h-8'></p>
+                    </SectionTitleWrapper>
 
-            <BasicInfoForm
-                onValidChange={basicInfo => {
-                    setProject({ ...project, ...basicInfo });
-                    if (!startShowingValidationErrors.current) {
-                        startShowingValidationErrors.current = true;
-                    }
-                }}
-                onInvalidChange={() => {
-                    setProject({ ...project, title: undefined, description: undefined });
-                    if (!startShowingValidationErrors.current) {
-                        startShowingValidationErrors.current = true;
-                    }
-                }}
-                startShowingValidationErrors={startShowingValidationErrors.current}>
-            </BasicInfoForm>
-        </>
-    );
-
-    const right = (
-        <div className='relative pb-16 flex flex-col space-y-8'>
-            {/* add position */}
-            <div className='relative pb-16'>
-                <SectionTitleWrapper>
-                    <SectionTitle title="Positions"></SectionTitle>
-                    <p className='h-8'>Describe the positions you're looking for collaborators for</p>
-                </SectionTitleWrapper>
-
-                <PositionForm
-                    onValidChange={position => {
-                        setPosition(position);
-                        if (!startShowingValidationErrors.current) {
-                            startShowingValidationErrors.current = true;
-                        }
-                    }}
-                    onInvalidChange={() => {
-                        setPosition(undefined);
-                        if (!startShowingValidationErrors.current) {
-                            startShowingValidationErrors.current = true;
-                        }
-                    }}
-                    startShowingValidationErrors={startShowingValidationErrors.current}>
-                </PositionForm>
-
-                <div className='absolute bottom-2 right-0'>
-                    <NeutralButton
-                        disabled={!validPosition}
-                        text="Add"
-                        onClick={() => setProject({ ...project, positions: [...project.positions, position] })}>
-                    </NeutralButton>
+                    <BasicInfoForm
+                        onValidChange={basicInfo => {
+                            setProject({ ...project, ...basicInfo });
+                            if (!startShowingValidationErrors.current) {
+                                startShowingValidationErrors.current = true;
+                            }
+                        }}
+                        onInvalidChange={() => {
+                            setProject({ ...project, title: undefined, description: undefined });
+                            if (!startShowingValidationErrors.current) {
+                                startShowingValidationErrors.current = true;
+                            }
+                        }}
+                        startShowingValidationErrors={startShowingValidationErrors.current}>
+                    </BasicInfoForm>
+                </div>
+                <div className='w-full'>
                 </div>
             </div>
 
-            {/* added positions */}
-            <div>
-                <SectionTitleWrapper>
-                    <SubsectionTitle title="Added positions"></SubsectionTitle>
-                    <InvalidFormFieldWarning
-                        visible={startShowingValidationErrors.current && !validPositionCount}
-                        text="Add at least one position when publishing a project.">
-                    </InvalidFormFieldWarning>
-                    <InvalidFormFieldWarning
-                        visible={startShowingValidationErrors.current && duplicatePositions}
-                        text="A project cannot contain duplicate positions.">
-                    </InvalidFormFieldWarning>
-                </SectionTitleWrapper>
-                {
-                    project.positions.length == 0 &&
-                    <p className='text-gray-500'>There are currently no added positions.</p>
-                }
-                {
-                    project.positions.length > 0 &&
-                    <div className='flex flex-col space-y-4'>
-                        {
-                            project.positions.map((p, index) => (
-                                <div key={index}>
-                                    <AddedPosition
-                                        position={p}
-                                        onRemoved={handleRemovePosition}>
-                                    </AddedPosition>
-                                </div>)
-                            )
-                        }
-                    </div>
-                }
-            </div>
+            <div className='flex flex-row gap-x-24 h-full'>
+                {/* add position */}
+                <div className='relative pb-16 w-full'>
+                    <SectionTitleWrapper>
+                        <SectionTitle title="Positions"></SectionTitle>
+                        <p className='h-8'>Describe the positions you're looking for collaborators for</p>
+                    </SectionTitleWrapper>
 
-            {/* publish button */}
-            <div className='absolute bottom-2 right-0'>
-                <PrimaryButton
-                    text="Publish"
-                    onClick={handlePublishProject}
-                    disabled={!(validBasicInfo && validPositionCount && !duplicatePositions)}>
-                </PrimaryButton>
+                    <PositionForm
+                        onValidChange={position => {
+                            setPosition(position);
+                            if (!startShowingValidationErrors.current) {
+                                startShowingValidationErrors.current = true;
+                            }
+                        }}
+                        onInvalidChange={() => {
+                            setPosition(undefined);
+                            if (!startShowingValidationErrors.current) {
+                                startShowingValidationErrors.current = true;
+                            }
+                        }}
+                        startShowingValidationErrors={startShowingValidationErrors.current}>
+                    </PositionForm>
+
+                    <div className='absolute bottom-0 right-0'>
+                        <NeutralButton
+                            disabled={!validPosition}
+                            text="Add"
+                            onClick={() => setProject({ ...project, positions: [...project.positions, position] })}>
+                        </NeutralButton>
+                    </div>
+                </div>
+
+                {/* added positions + publish */}
+                <div className='w-full relative'>
+                    <div className='mt-24'>
+                        <SubsectionTitle title="Added positions"></SubsectionTitle>
+                        <InvalidFormFieldWarning
+                            visible={startShowingValidationErrors.current && !validPositionCount}
+                            text="Add at least one position when publishing a project.">
+                        </InvalidFormFieldWarning>
+                        <InvalidFormFieldWarning
+                            visible={startShowingValidationErrors.current && duplicatePositions}
+                            text="A project cannot contain duplicate positions.">
+                        </InvalidFormFieldWarning>
+
+                        <div className='absolute w-full bottom-16 top-52 overflow-y-auto'>
+                            {
+                                project.positions.length == 0 &&
+                                <p className='text-gray-500'>There are currently no added positions.</p>
+                            }
+                            {
+                                project.positions.length > 0 &&
+                                <div className='flex flex-col space-y-4'>
+                                    {
+                                        project.positions.map((p, index) => (
+                                            <div key={index}>
+                                                <AddedPosition
+                                                    position={p}
+                                                    onRemoved={handleRemovePosition}>
+                                                </AddedPosition>
+                                            </div>)
+                                        )
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    {/* publish button */}
+                    <div className='absolute bottom-0 right-0'>
+                        <PrimaryButton
+                            text="Publish"
+                            onClick={handlePublishProject}
+                            disabled={!(validBasicInfo && validPositionCount && !duplicatePositions)}>
+                        </PrimaryButton>
+                    </div>
+                </div>
             </div>
-        </div >
+        </div>
     );
 
     return (
         <DoubleColumnLayout
             title="Publish a project"
-            description="Have an idea or a project you're working on? Describe the collaborators you need and find your people!"
-            left={left}
-            right={right}>
+            description="Have an idea or a project you're working on? Describe the collaborators you need and find your people!">
+            {children}
         </DoubleColumnLayout>
     );
 }
