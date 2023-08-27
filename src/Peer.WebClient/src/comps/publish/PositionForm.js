@@ -1,6 +1,7 @@
 import React from 'react'
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import HatForm from '../hat-forms/HatForm';
+import InvalidFormFieldWarning from './InvalidFormFieldWarning';
 
 const PositionForm = (props) => {
 
@@ -9,51 +10,70 @@ const PositionForm = (props) => {
         onInvalidChange
     } = props;
 
-    const [positionState, setPositionState] = useState({
+    let startShowingValidationErrors = useRef(false);
+
+    const [position, setPosition] = useState({
         name: '',
         description: '',
         requirements: {}
     });
 
-    const [propValidity, setPropValidity] = useState({
-        name: false,
-        description: false,
-        requirements: false
-    });
+    const validators = {
+        name: name => name.length > 0,
+        description: description => description.length > 0,
+        requirements: r => true
+    };
 
-    function validate() {
-        setPropValidity({
-            name: positionState.name.length > 0,
-            description: positionState.description.length > 0,
-            requirements: true
-        });
+    function handlePositionFormChange(e) {
+        if (!startShowingValidationErrors.current) {
+            startShowingValidationErrors.current = true;
+        }
+
+        setPosition({ ...position, [e.target.name]: e.target.value });
+
+        let otherPropsValid = Object.keys(position)
+            .filter(k => k != e.target.name)
+            .map(prop => validators[prop](position[prop]))
+            .every(r => r);
+
+        let changedPropValid = validators[e.target.name](e.target.value);
+
+        if (otherPropsValid && changedPropValid) {
+            onValidChange({ ...position, [e.target.name]: e.target.value });
+        } else {
+            onInvalidChange();
+        }
     }
 
-    useEffect(() => {
-        Object.values(propValidity).every(v => v) ?
-            onValidChange(positionState) :
-            onInvalidChange();
-    }, [propValidity, positionState]);
+    function handleValidHatChange(hat) {
+        setPosition({ ...position, requirements: hat });
 
-    function onPositionFormChange(e) {
-        setPositionState({ ...positionState, [e.target.name]: e.target.value });
+        let otherPropsValid = Object.keys(position)
+            .filter(k => k != "requirements")
+            .map(prop => validators[prop](position[prop]))
+            .every(r => r);
+
+        if (otherPropsValid) {
+            onValidChange({...position, requirements: hat});
+        }
     }
 
     return (
         <>
             <form
-                onChange={onPositionFormChange}
-                onBlur={validate}>
+                onChange={handlePositionFormChange}>
                 <div className='mb-4'>
                     <label>
                         <p>Title*</p>
                         <input
                             type="text"
                             name="name"
-                            value={positionState.name}
+                            onChange={handlePositionFormChange}
+                            maxLength={100}
+                            value={position.name}
                             placeholder='e.g. .NET Backend Developer'
                             className="w-full mt-1 block rounded-md border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
-                        <p className='text-red-500 font-semibold h-8'>{`${propValidity.name ? "" : "The provided value is not valid"}`}</p>
+                        <InvalidFormFieldWarning visible={startShowingValidationErrors.current && !validators.name(position.name)}></InvalidFormFieldWarning>
                     </label>
                 </div>
 
@@ -62,18 +82,18 @@ const PositionForm = (props) => {
                         <p>Description*</p>
                         <textarea
                             name="description"
+                            onChange={handlePositionFormChange}
                             rows={5}
                             maxLength={1000}
-                            value={positionState.description}
+                            value={position.description}
                             className="resize-y mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></textarea>
-                        <p className='text-red-500 font-semibold h-8'>{`${propValidity.description ? "" : "The provided value is not valid"}`}</p>
-
+                        <InvalidFormFieldWarning visible={startShowingValidationErrors.current && !validators.description(position.description)}></InvalidFormFieldWarning>
                     </label>
                 </div>
             </form>
 
             <HatForm
-                onValidChange={hat => setPositionState({ ...positionState, requirements: hat })}
+                onValidChange={handleValidHatChange}
                 onInvalidChange={onInvalidChange}>
             </HatForm>
         </>
