@@ -18,10 +18,13 @@ import PositionForm from '../comps/publish/PositionForm';
 import SectionTitleWrapper from '../layout/SectionTitleWrapper';
 import InvalidFormFieldWarning from '../comps/publish/InvalidFormFieldWarning';
 import _ from 'lodash';
+import { BeatLoader } from 'react-spinners';
+import SpinnerLayout from '../layout/SpinnerLayout';
 
 const Publish = () => {
     const [project, setProject] = useState({ title: '', description: '', positions: [] });
     const [position, setPosition] = useState(undefined);
+    const [loading, setLoading] = useState(false);
 
     const validBasicInfo = project.title && project.description;
     const validPosition = position;
@@ -30,7 +33,7 @@ const Publish = () => {
 
     const startShowingValidationErrors = useRef(false);
 
-    const { getAccessTokenWithPopup } = useAuth0();
+    const { getAccessTokenWithPopup, getAccessTokenSilently } = useAuth0();
 
     function handleRemovePosition(position) {
         setProject({
@@ -42,12 +45,15 @@ const Publish = () => {
     function handlePublishProject() {
         (async () => {
             if (validBasicInfo && validPositionCount) {
+                setLoading(true);
+
                 try {
-                    let token = await getAccessTokenWithPopup({
+                    let token = await getAccessTokenSilently({
                         audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                     });
 
                     let result = await publish(project, token);
+                    console.log("done with api call");
 
                     if (result.outcome === successResult) {
                         // document.getElementById('user-action-success-toast').show();
@@ -68,6 +74,8 @@ const Publish = () => {
                     // setTimeout(() => {
                     //     document.getElementById('user-action-fail-toast').close();
                     // }, 3000);
+                } finally {
+                    setLoading(false);
                 }
             }
         })();
@@ -185,6 +193,18 @@ const Publish = () => {
             </div>
         </div>
     );
+
+    if (loading) {
+        return (
+            <SpinnerLayout>
+                <BeatLoader
+                    loading={loading}
+                    size={24}
+                    color="blue">
+                </BeatLoader>
+            </SpinnerLayout>
+        );
+    }
 
     return (
         <DoubleColumnLayout
