@@ -20,7 +20,7 @@ import InvalidFormFieldWarning from '../comps/publish/InvalidFormFieldWarning';
 import _ from 'lodash';
 
 const Publish = () => {
-    const [project, setProject] = useState({ title: undefined, description: undefined, positions: [] });
+    const [project, setProject] = useState({ title: '', description: '', positions: [] });
     const [position, setPosition] = useState(undefined);
 
     const validBasicInfo = project.title && project.description;
@@ -84,6 +84,7 @@ const Publish = () => {
                     </SectionTitleWrapper>
 
                     <BasicInfoForm
+                        initialBasicInfo={{ title: project.title, description: project.description }}
                         onValidChange={basicInfo => {
                             setProject({ ...project, ...basicInfo });
                             if (!startShowingValidationErrors.current) {
@@ -91,7 +92,7 @@ const Publish = () => {
                             }
                         }}
                         onInvalidChange={() => {
-                            setProject({ ...project, title: undefined, description: undefined });
+                            setProject({ ...project, title: '', description: '' });
                             if (!startShowingValidationErrors.current) {
                                 startShowingValidationErrors.current = true;
                             }
