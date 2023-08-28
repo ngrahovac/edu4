@@ -20,8 +20,8 @@ import InvalidFormFieldWarning from '../comps/publish/InvalidFormFieldWarning';
 import _ from 'lodash';
 
 const Publish = () => {
-    const [project, setProject] = useState({ positions: [] });
-    const [position, setPosition] = useState({});
+    const [project, setProject] = useState({ title: undefined, description: undefined, positions: [] });
+    const [position, setPosition] = useState(undefined);
 
     const validBasicInfo = project.title && project.description;
     const validPosition = position;
