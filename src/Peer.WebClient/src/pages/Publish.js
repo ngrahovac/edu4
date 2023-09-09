@@ -20,6 +20,7 @@ import InvalidFormFieldWarning from '../comps/publish/InvalidFormFieldWarning';
 import _ from 'lodash';
 import { BeatLoader } from 'react-spinners';
 import SpinnerLayout from '../layout/SpinnerLayout';
+import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
 
 const Publish = () => {
     const [project, setProject] = useState({ title: '', description: '', positions: [] });
@@ -31,9 +32,10 @@ const Publish = () => {
     const validPositionCount = project.positions.length > 0;
     const duplicatePositions = _.uniq(project.positions).length != project.positions.length;
 
-    const startShowingValidationErrors = useRef(false);
+    const [startShowingValidationErrors, setStartShowingValidationErrors] = useState(false);
+    const confirmationDialogRef = useRef(null);
 
-    const { getAccessTokenWithPopup, getAccessTokenSilently } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
 
     function handleRemovePosition(position) {
         setProject({
@@ -42,7 +44,11 @@ const Publish = () => {
         });
     }
 
-    function handlePublishProject() {
+    function handlePublishProjectRequested() {
+        confirmationDialogRef.current.showModal();
+    }
+
+    function handlePublishProjectConfirmed() {
         (async () => {
             if (validBasicInfo && validPositionCount) {
                 setLoading(true);
@@ -82,116 +88,128 @@ const Publish = () => {
     }
 
     const children = (
-        <div className='flex flex-col gap-y-24'>
-            {/* basic info */}
-            <div className='flex flex-row gap-x-24'>
-                <div className='w-full'>
-                    <SectionTitleWrapper>
-                        <SectionTitle title="Basic info"></SectionTitle>
-                        <p className='h-8'></p>
-                    </SectionTitleWrapper>
+        <>
+            <dialog ref={confirmationDialogRef}>
+                <ConfirmationDialog
+                    ref={confirmationDialogRef}
+                    question="Are you sure you want to publish this project?"
+                    description="After publishing, it will become visible to other contributors."
+                    onConfirm={handlePublishProjectConfirmed}
+                    onCancel={() => confirmationDialogRef.current.close()}>
+                </ConfirmationDialog>
+            </dialog>
 
-                    <BasicInfoForm
-                        initialBasicInfo={{ title: project.title, description: project.description }}
-                        onValidChange={basicInfo => {
-                            setProject({ ...project, ...basicInfo });
-                            if (!startShowingValidationErrors.current) {
-                                startShowingValidationErrors.current = true;
-                            }
-                        }}
-                        onInvalidChange={() => {
-                            setProject({ ...project, title: '', description: '' });
-                            if (!startShowingValidationErrors.current) {
-                                startShowingValidationErrors.current = true;
-                            }
-                        }}
-                        startShowingValidationErrors={startShowingValidationErrors.current}>
-                    </BasicInfoForm>
-                </div>
-                <div className='w-full'>
-                </div>
-            </div>
+            <div className='flex flex-col gap-y-24'>
+                {/* basic info */}
+                <div className='flex flex-row gap-x-24'>
+                    <div className='w-full'>
+                        <SectionTitleWrapper>
+                            <SectionTitle title="Basic info"></SectionTitle>
+                            <p className='h-8'></p>
+                        </SectionTitleWrapper>
 
-            <div className='flex flex-row gap-x-24 h-full'>
-                {/* add position */}
-                <div className='relative pb-16 w-full'>
-                    <SectionTitleWrapper>
-                        <SectionTitle title="Positions"></SectionTitle>
-                        <p className='h-8'>Describe the positions you're looking for collaborators for</p>
-                    </SectionTitleWrapper>
-
-                    <PositionForm
-                        onValidChange={position => {
-                            setPosition(position);
-                            if (!startShowingValidationErrors.current) {
-                                startShowingValidationErrors.current = true;
-                            }
-                        }}
-                        onInvalidChange={() => {
-                            setPosition(undefined);
-                            if (!startShowingValidationErrors.current) {
-                                startShowingValidationErrors.current = true;
-                            }
-                        }}
-                        startShowingValidationErrors={startShowingValidationErrors.current}>
-                    </PositionForm>
-
-                    <div className='absolute bottom-0 right-0'>
-                        <NeutralButton
-                            disabled={!validPosition}
-                            text="Add"
-                            onClick={() => setProject({ ...project, positions: [...project.positions, position] })}>
-                        </NeutralButton>
+                        <BasicInfoForm
+                            initialBasicInfo={{ title: project.title, description: project.description }}
+                            onValidChange={basicInfo => {
+                                setProject({ ...project, ...basicInfo });
+                                if (!startShowingValidationErrors) {
+                                    setStartShowingValidationErrors(true);
+                                }
+                            }}
+                            onInvalidChange={() => {
+                                setProject({ ...project, title: '', description: '' });
+                                if (!startShowingValidationErrors) {
+                                    setStartShowingValidationErrors(true);
+                                }
+                            }}
+                            startShowingValidationErrors={startShowingValidationErrors}>
+                        </BasicInfoForm>
+                    </div>
+                    <div className='w-full'>
                     </div>
                 </div>
 
-                {/* added positions + publish */}
-                <div className='w-full relative'>
-                    <div className='mt-24'>
-                        <SubsectionTitle title="Added positions"></SubsectionTitle>
-                        <InvalidFormFieldWarning
-                            visible={startShowingValidationErrors.current && !validPositionCount}
-                            text="Add at least one position when publishing a project.">
-                        </InvalidFormFieldWarning>
-                        <InvalidFormFieldWarning
-                            visible={startShowingValidationErrors.current && duplicatePositions}
-                            text="A project cannot contain duplicate positions.">
-                        </InvalidFormFieldWarning>
+                <div className='flex flex-row gap-x-24 h-full'>
+                    {/* add position */}
+                    <div className='relative pb-16 w-full'>
+                        <SectionTitleWrapper>
+                            <SectionTitle title="Positions"></SectionTitle>
+                            <p className='h-8'>Describe the positions you're looking for collaborators for</p>
+                        </SectionTitleWrapper>
 
-                        <div className='absolute w-full bottom-16 top-52 overflow-y-auto'>
-                            {
-                                project.positions.length == 0 &&
-                                <p className='text-gray-500'>There are currently no added positions.</p>
-                            }
-                            {
-                                project.positions.length > 0 &&
-                                <div className='flex flex-col space-y-4'>
-                                    {
-                                        project.positions.map((p, index) => (
-                                            <div key={index}>
-                                                <AddedPosition
-                                                    position={p}
-                                                    onRemoved={handleRemovePosition}>
-                                                </AddedPosition>
-                                            </div>)
-                                        )
-                                    }
-                                </div>
-                            }
+                        <PositionForm
+                            onValidChange={position => {
+                                setPosition(position);
+                                if (!startShowingValidationErrors) {
+                                    setStartShowingValidationErrors(true);
+                                }
+                            }}
+                            onInvalidChange={() => {
+                                setPosition(undefined);
+                                if (!startShowingValidationErrors) {
+                                    setStartShowingValidationErrors(true);
+                                }
+                            }}
+                            startShowingValidationErrors={startShowingValidationErrors}>
+                        </PositionForm>
+
+                        <div className='absolute bottom-0 right-0'>
+                            <NeutralButton
+                                disabled={!validPosition}
+                                text="Add"
+                                onClick={() => setProject({ ...project, positions: [...project.positions, position] })}>
+                            </NeutralButton>
                         </div>
                     </div>
 
-                    {/* publish button */}
-                    <div className='absolute bottom-0 right-0'>
-                        <PrimaryButton
-                            text="Publish"
-                            onClick={handlePublishProject}
-                            disabled={!(validBasicInfo && validPositionCount && !duplicatePositions)}>
-                        </PrimaryButton>
+                    {/* added positions + publish */}
+                    <div className='w-full relative'>
+                        <div className='mt-24'>
+                            <SubsectionTitle title="Added positions"></SubsectionTitle>
+                            <InvalidFormFieldWarning
+                                visible={startShowingValidationErrors && !validPositionCount}
+                                text="Add at least one position when publishing a project.">
+                            </InvalidFormFieldWarning>
+                            <InvalidFormFieldWarning
+                                visible={startShowingValidationErrors && duplicatePositions}
+                                text="A project cannot contain duplicate positions.">
+                            </InvalidFormFieldWarning>
+
+                            <div className='absolute w-full bottom-16 top-52 overflow-y-auto'>
+                                {
+                                    project.positions.length == 0 &&
+                                    <p className='text-gray-500'>There are currently no added positions.</p>
+                                }
+                                {
+                                    project.positions.length > 0 &&
+                                    <div className='flex flex-col space-y-4'>
+                                        {
+                                            project.positions.map((p, index) => (
+                                                <div key={index}>
+                                                    <AddedPosition
+                                                        position={p}
+                                                        onRemoved={handleRemovePosition}>
+                                                    </AddedPosition>
+                                                </div>)
+                                            )
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        {/* publish button */}
+                        <div className='absolute bottom-0 right-0'>
+                            <PrimaryButton
+                                text="Publish"
+                                onClick={handlePublishProjectRequested}
+                                disabled={!(validBasicInfo && validPositionCount && !duplicatePositions)}>
+                            </PrimaryButton>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 
     if (loading) {
