@@ -296,7 +296,7 @@ const EditProject = () => {
                     <p className='h-8'></p>
                 </div>
                 <BasicInfoForm
-                    basicInfo={{ title: project.title, description: project.description }}
+                    existingBasicInfo={{ title: project.title, description: project.description }}
                     onValidChange={basicInfo => {
                         setProject({ ...project, ...basicInfo });
                         setValidBasicInfo(true);
