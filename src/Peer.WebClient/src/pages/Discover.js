@@ -23,6 +23,7 @@ const Discover = () => {
     const [discoveryRefinementSidebarVisibility, setDiscoveryParametersSidebarVisibility] = useState(false);
 
     const [pageLoading, setPageLoading] = useState(true);
+    const [projectsLoading, setProjectsLoading] = useState(true);
 
     const { getAccessTokenSilently } = useAuth0();
 
@@ -59,14 +60,14 @@ const Discover = () => {
         const handleDiscoveryRefinementsChange = () => {
             (async () => {
                 try {
-                    setPageLoading(true);
+                    setProjectsLoading(true);
 
                     let token = await getAccessTokenSilently({
                         audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                     });
 
                     let result = await discover(keyword, sort, hat, token);
-                    setPageLoading(false);
+                    setProjectsLoading(false);
 
                     if (result.outcome === successResult) {
                         var projects = result.payload;
@@ -79,7 +80,7 @@ const Discover = () => {
                 } catch (ex) {
                     console.log("exception", ex);
                 } finally {
-                    setPageLoading(false);
+                    setProjectsLoading(false);
                 }
             })();
         }
@@ -105,7 +106,7 @@ const Discover = () => {
         );
     }
 
-    const discoveryResults = discoveredProjects === undefined ?
+    const discoveryResults = projectsLoading ?
         <BeatLoader></BeatLoader> :
         !discoveredProjects.length ?
             <p>There are currently no projects satisfying the criteria.</p> :
