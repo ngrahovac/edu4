@@ -35,7 +35,6 @@ const Project = () => {
     function fetchAuthor() {
         (async () => {
             try {
-                {/* add validation */ }
                 let token = await getAccessTokenWithPopup({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
@@ -45,27 +44,13 @@ const Project = () => {
                 if (result.outcome === successResult) {
                     var author = result.payload;
                     setAuthor(author);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("failure");
                 } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
@@ -73,7 +58,6 @@ const Project = () => {
     function fetchCollaborations() {
         (async () => {
             try {
-                {/* add validation */ }
                 let token = await getAccessTokenWithPopup({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
@@ -83,27 +67,13 @@ const Project = () => {
                 if (result.outcome === successResult) {
                     var collaborations = result.payload;
                     setCollaborations(collaborations);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("failure");
                 } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
@@ -111,7 +81,6 @@ const Project = () => {
     function fetchProject() {
         (async () => {
             try {
-                {/* add validation */ }
                 let token = await getAccessTokenWithPopup({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
@@ -131,27 +100,13 @@ const Project = () => {
                     project.positions.sort(recommendedPositionSorter);
 
                     setProject(project);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("failure");
                 } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error", result);
                 }
             } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
@@ -180,7 +135,6 @@ const Project = () => {
     function onDeleteProject() {
         (async () => {
             try {
-                {/* add validation */ }
                 let token = await getAccessTokenWithPopup({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
@@ -189,27 +143,13 @@ const Project = () => {
 
                 if (result.outcome === successResult) {
                     console.log("success");
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
                 } else if (result.outcome === errorResult) {
-                    console.log("network error");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log("error");
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
@@ -217,7 +157,6 @@ const Project = () => {
     function onSubmitApplication() {
         (async () => {
             try {
-                {/* add validation */ }
                 let token = await getAccessTokenWithPopup({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
@@ -226,27 +165,13 @@ const Project = () => {
 
                 if (result.outcome === successResult) {
                     console.log("success");
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
                 } else if (result.outcome === errorResult) {
-                    console.log("network error");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log("error");
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
