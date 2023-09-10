@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
 import ProjectDescriptor from '../comps/discover/ProjectDescriptor';
 import { SectionTitle } from '../layout/SectionTitle';
@@ -21,6 +21,7 @@ import ProjectPositions from '../comps/project/ProjectPositions';
 import { submitApplication } from '../services/ApplicationsService';
 import SpinnerLayout from '../layout/SpinnerLayout';
 import { BeatLoader } from 'react-spinners';
+import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
 
 const Project = () => {
     const { projectId } = useParams();
@@ -35,33 +36,35 @@ const Project = () => {
 
     const [pageLoading, setPageLoading] = useState(true);
 
+    const deleteConfirmationDialogRef = useRef(null);
+
     const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
         const fetchProject = () => {
             (async () => {
                 setPageLoading(true);
-                
+
                 try {
                     let token = await getAccessTokenSilently({
                         audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                     });
-    
+
                     let result = await getById(projectId, token);
                     setPageLoading(false);
-    
+
                     if (result.outcome === successResult) {
                         var project = result.payload;
-    
+
                         // sort positions by recommended first
                         const recommendedPositionSorter = (a, b) => {
                             if (a.recommended && !b.recommended) return -1;
                             if (!a.recommended && b.recommended) return +1;
                             return 0;
                         };
-    
+
                         project.positions.sort(recommendedPositionSorter);
-    
+
                         setProject(project);
                     } else if (result.outcome === failureResult) {
                         console.log("failure");
@@ -86,9 +89,9 @@ const Project = () => {
                     let token = await getAccessTokenSilently({
                         audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                     });
-    
+
                     let result = await getContributor(token, project.authorUrl);
-    
+
                     if (result.outcome === successResult) {
                         var author = result.payload;
                         setAuthor(author);
@@ -102,16 +105,16 @@ const Project = () => {
                 }
             })();
         }
-    
+
         const fetchCollaborations = () => {
             (async () => {
                 try {
                     let token = await getAccessTokenSilently({
                         audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                     });
-    
+
                     let result = await getCollaborations(project.collaborationsUrl, token);
-    
+
                     if (result.outcome === successResult) {
                         var collaborations = result.payload;
                         setCollaborations(collaborations);
@@ -132,14 +135,21 @@ const Project = () => {
         }
     }, [project, getAccessTokenSilently]);
 
-    function handleDeleteProject() {
+    function handleDeleteProjectRequested() {
+        deleteConfirmationDialogRef.current.showModal();
+    }
+
+    function handleDeleteProjectConfirmed() {
         (async () => {
+            setPageLoading(true);
+
             try {
                 let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
                 let result = await remove(project.id, token);
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
                     console.log("success");
@@ -150,6 +160,8 @@ const Project = () => {
                 }
             } catch (ex) {
                 console.log("exception", ex);
+            } finally {
+                setPageLoading(false);
             }
         })();
     }
@@ -190,6 +202,15 @@ const Project = () => {
 
     return (
         <>
+            <dialog ref={deleteConfirmationDialogRef}>
+                <ConfirmationDialog
+                    question="Are you sure you want to delete this project?"
+                    description="You cannot undo this action"
+                    onConfirm={handleDeleteProjectConfirmed}
+                    onCancel={() => deleteConfirmationDialogRef.current.close()}>
+                </ConfirmationDialog>
+            </dialog>
+
             {
                 project !== undefined &&
                 author !== undefined &&
@@ -300,7 +321,7 @@ const Project = () => {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                         </svg>
                                     }
-                                    onClick={handleDeleteProject}>
+                                    onClick={handleDeleteProjectRequested}>
                                 </BorderlessButton>
                             </div>
                         }
