@@ -12,7 +12,7 @@ import BorderlessButton from '../buttons/BorderlessButton';
 const ProjectCard = ({ project }) => {
     const [author, setAuthor] = useState(undefined);
 
-    const { getAccessTokenWithPopup, getAccessTokenSilently } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
 
     function fetchAuthor() {
         (async () => {
