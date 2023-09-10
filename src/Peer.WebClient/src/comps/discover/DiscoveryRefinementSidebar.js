@@ -81,6 +81,7 @@ const DiscoveryParametersSidebar = (props) => {
               type="text"
               name="keyword"
               value={discoveryParameters.keyword === undefined ? "" : discoveryParameters.keyword}
+              onChange={onFormChange}
               className="w-full mt-1 block rounded-full border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
             <ClearSearchFilter onClick={clearSearchKeyword}></ClearSearchFilter>
           </label>
@@ -101,6 +102,7 @@ const DiscoveryParametersSidebar = (props) => {
                   name="sort"
                   value="asc"
                   checked={discoveryParameters.sort === "asc"}
+                  onChange={onFormChange}
                   className="mr-2">
                 </input>
                 Oldest first
@@ -112,6 +114,7 @@ const DiscoveryParametersSidebar = (props) => {
                   name="sort"
                   value="desc"
                   checked={discoveryParameters.sort === "desc"}
+                  onChange={onFormChange}
                   className="mr-2">
                 </input>
                 Newest first
