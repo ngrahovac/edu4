@@ -34,12 +34,12 @@ const Project = () => {
 
     const [pageLoading, setPageLoading] = useState(true);
 
-    const { getAccessTokenWithPopup } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
 
     function fetchAuthor() {
         (async () => {
             try {
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -62,7 +62,7 @@ const Project = () => {
     function fetchCollaborations() {
         (async () => {
             try {
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -87,7 +87,7 @@ const Project = () => {
             setPageLoading(true);
             
             try {
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -140,7 +140,7 @@ const Project = () => {
     function onDeleteProject() {
         (async () => {
             try {
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -162,7 +162,7 @@ const Project = () => {
     function onSubmitApplication() {
         (async () => {
             try {
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
