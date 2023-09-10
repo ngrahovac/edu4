@@ -14,24 +14,23 @@ const ProjectCard = ({ project }) => {
 
     const { getAccessTokenSilently } = useAuth0();
 
-    function fetchAuthor() {
-        (async () => {
-            let token = await getAccessTokenSilently({
-                audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-            });
-
-            var result = await getContributor(token, project.authorUrl);
-
-            if (result.outcome === successResult) {
-                setAuthor(result.payload);
-            }
-        })();
-    }
-
     useEffect(() => {
-        fetchAuthor();
-    }, [])
+        function fetchAuthor() {
+            (async () => {
+                let token = await getAccessTokenSilently({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+    
+                var result = await getContributor(token, project.authorUrl);
+    
+                if (result.outcome === successResult) {
+                    setAuthor(result.payload);
+                }
+            })();
+        }
 
+        fetchAuthor();
+    }, [getAccessTokenSilently, project])
 
     return (
         author !== undefined &&
