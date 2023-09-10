@@ -22,7 +22,7 @@ const ProjectCard = ({ project }) => {
 
             var result = await getContributor(token, project.authorUrl);
 
-            if (result.outcome == successResult) {
+            if (result.outcome === successResult) {
                 setAuthor(result.payload);
             }
         })();
@@ -34,7 +34,7 @@ const ProjectCard = ({ project }) => {
 
 
     return (
-        author != undefined &&
+        author !== undefined &&
 
         <div className='relative'>
             <div
