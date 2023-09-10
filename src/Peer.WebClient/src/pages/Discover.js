@@ -10,81 +10,82 @@ import { discover } from '../services/ProjectsService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
 import { useAuth0 } from '@auth0/auth0-react';
 import { me } from '../services/UsersService'
+import SpinnerLayout from '../layout/SpinnerLayout';
+import { BeatLoader } from 'react-spinners';
 
 const Discover = () => {
-    const [projects, setProjects] = useState([
-    ]);
+    const [projects, setProjects] = useState([]);
 
-    const [ownHats, setOwnHats] = useState([]);
+    const [ownHats, setOwnHats] = useState(undefined);
     const [keyword, setKeyword] = useState(undefined);
     const [sort, setSort] = useState(undefined);
     const [hat, setHat] = useState(undefined);
     const [discoveryRefinementSidebarVisibility, setDiscoveryParametersSidebarVisibility] = useState(false);
 
-    const { getAccessTokenWithPopup, getAccessTokenSilently } = useAuth0();
+    const [loading, setLoading] = useState(true);
+
+    const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
-        (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
+        const fetchOwnHats = () => {
+            (async () => {
+                setLoading(true);
 
-                let result = await me(token);
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
 
-                if (result.outcome === successResult) {
-                    setOwnHats(result.payload.hats);
-                } else {
-                    console.log("error fetching users hats");
+                    let result = await me(token);
+                    setLoading(false);
+
+                    if (result.outcome === successResult) {
+                        setOwnHats(result.payload.hats);
+                    } else {
+                        console.log("error fetching users hats");
+                    }
+                } catch (ex) {
+                    console.log(ex);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (ex) {
-                console.log(ex);
-            }
-        })();
-    }, [])
+            })();
+        }
 
-    function onDiscoveryRefinementChanged() {
-        (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await discover(keyword, sort, hat, token);
-
-                if (result.outcome === successResult) {
-                    var projects = result.payload;
-                    setProjects(projects);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
-                } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                }
-            } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
-            }
-        })();
-    }
+        fetchOwnHats();
+    }, [getAccessTokenSilently])
 
     useEffect(() => {
-        onDiscoveryRefinementChanged();
-    }, [keyword, sort, hat])
+        const handleDiscoveryRefinementsChange = () => {
+            (async () => {
+                try {
+                    setLoading(true);
+
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+
+                    let result = await discover(keyword, sort, hat, token);
+                    setLoading(false);
+
+                    if (result.outcome === successResult) {
+                        var projects = result.payload;
+                        setProjects(projects);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error");
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                } finally {
+                    setLoading(false);
+                }
+            })();
+        }
+
+        handleDiscoveryRefinementsChange();
+    }, [keyword, sort, hat, getAccessTokenSilently])
 
     function updateDiscoveryParameters(keyword, sort, hat) {
         setKeyword(keyword);
@@ -92,7 +93,20 @@ const Discover = () => {
         setSort(sort);
     }
 
+    if (loading) {
+        return (
+            <SpinnerLayout>
+                <BeatLoader
+                    loading={loading}
+                    size={24}
+                    color="blue">
+                </BeatLoader>
+            </SpinnerLayout>
+        );
+    }
+
     return (
+        ownHats &&
         <SingleColumnLayout
             title="Discover projects"
             description="Something encouraging here">
@@ -104,21 +118,21 @@ const Discover = () => {
                 {/* selected discovery parameters */}
                 <SelectedDiscoveryParameters>
                     {
-                        keyword != undefined &&
+                        keyword !== undefined &&
                         <SelectedDiscoveryParameter
                             value={`keyword: ${keyword}`}
                             onRemoved={() => setKeyword(undefined)}>
                         </SelectedDiscoveryParameter>
                     }
                     {
-                        sort != undefined &&
+                        sort !== undefined &&
                         <SelectedDiscoveryParameter
-                            value={`sort: ${sort == "asc" ? "oldest first" : "newest first"}`}
+                            value={`sort: ${sort === "asc" ? "oldest first" : "newest first"}`}
                             onRemoved={() => setSort(undefined)}>
                         </SelectedDiscoveryParameter>
                     }
                     {
-                        hat != undefined &&
+                        hat !== undefined &&
                         <SelectedDiscoveryParameter
                             value={`looking for: a ${hat.type.toLowerCase()} like me`}
                             onRemoved={() => setHat(undefined)}>
@@ -133,9 +147,9 @@ const Discover = () => {
                     projects.length > 0 &&
                     <div className='flex flex-col space-y-8'>
                         {
-                            projects.map(p => <>
+                            projects.map((p, index) => <div key={index}>
                                 <ProjectCard project={p}></ProjectCard>
-                            </>)
+                            </div>)
                         }
                     </div>
                 }
