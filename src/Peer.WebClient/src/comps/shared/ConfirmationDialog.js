@@ -1,6 +1,7 @@
 import React from 'react'
 import NeutralButton from '../buttons/NeutralButton';
 import PrimaryButton from '../buttons/PrimaryButton';
+import BorderlessButton from '../buttons/BorderlessButton';
 
 const ConfirmationDialog = (props) => {
 
@@ -20,10 +21,11 @@ const ConfirmationDialog = (props) => {
                 </div>
 
                 <div className='absolute flex flex-row space-x-2 bottom-8 right-8'>
-                    <NeutralButton
+                    <BorderlessButton
                         text="Go back"
                         onClick={onCancel}>
-                    </NeutralButton>
+                    </BorderlessButton>
+                    
                     <PrimaryButton
                         text="Confirm"
                         onClick={onConfirm}>
