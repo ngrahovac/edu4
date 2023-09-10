@@ -5,7 +5,6 @@ import SelectedDiscoveryParameter from '../comps/discover/SearchFilter';
 import SelectedDiscoveryParameters from '../comps/discover/SearchFilters';
 import { useState, useEffect } from 'react';
 import ProjectCard from '../comps/discover/ProjectCard';
-import RecommendedProjectCard from '../comps/discover/RecommendedProjectCard';
 import DiscoveryParametersSidebar from '../comps/discover/DiscoveryRefinementSidebar';
 import { discover } from '../services/ProjectsService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
