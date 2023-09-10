@@ -92,14 +92,6 @@ const Discover = () => {
         setSort(sort);
     }
 
-    function showDiscoveryParametersSidebar() {
-        setDiscoveryParametersSidebarVisibility(true);
-    }
-
-    function hideDiscoveryParametersSidebar() {
-        setDiscoveryParametersSidebarVisibility(false);
-    }
-
     return (
         <SingleColumnLayout
             title="Discover projects"
@@ -107,7 +99,7 @@ const Discover = () => {
 
             {/* refine button and selected discovery parameters */}
             <div className='flex flex-col mt-16'>
-                <RefineButton onClick={showDiscoveryParametersSidebar}></RefineButton>
+                <RefineButton onClick={() => setDiscoveryParametersSidebarVisibility(true)}></RefineButton>
 
                 {/* selected discovery parameters */}
                 <SelectedDiscoveryParameters>
@@ -163,7 +155,7 @@ const Discover = () => {
                         sort={sort}
                         hat={hat}
                         hats={ownHats}
-                        onModalClosed={hideDiscoveryParametersSidebar}
+                        onModalClosed={() => setDiscoveryParametersSidebarVisibility(false)}
                         onDiscoveryParametersChanged={updateDiscoveryParameters}>
                     </DiscoveryParametersSidebar>
                 </div>
