@@ -19,6 +19,8 @@ import { getCollaborations } from '../services/CollaboratorsService';
 import PrimaryButton from '../comps/buttons/PrimaryButton'
 import ProjectPositions from '../comps/project/ProjectPositions';
 import { submitApplication } from '../services/ApplicationsService';
+import SpinnerLayout from '../layout/SpinnerLayout';
+import { BeatLoader } from 'react-spinners';
 
 const Project = () => {
     const { projectId } = useParams();
@@ -28,7 +30,9 @@ const Project = () => {
     const [author, setAuthor] = useState(undefined);
     const [collaborations, setCollaborations] = useState(undefined);
     const [selectedPosition, setSelectedPosition] = useState(undefined);
-    const [applyingEnabled, setApplyingEnabled] = useState(false);
+    const applyingEnabled = !selectedPosition;
+
+    const [pageLoading, setPageLoading] = useState(true);
 
     const { getAccessTokenWithPopup } = useAuth0();
 
@@ -80,12 +84,15 @@ const Project = () => {
 
     function fetchProject() {
         (async () => {
+            setPageLoading(true);
+            
             try {
                 let token = await getAccessTokenWithPopup({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
                 let result = await getById(projectId, token);
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
                     var project = result.payload;
@@ -107,6 +114,8 @@ const Project = () => {
                 }
             } catch (ex) {
                 console.log("exception", ex);
+            } finally {
+                setPageLoading(false);
             }
         })();
     }
@@ -126,10 +135,6 @@ const Project = () => {
             fetchAuthor();
         }
     }, [project]);
-
-    useEffect(() => {
-        setApplyingEnabled(selectedPosition !== undefined);
-    }, [selectedPosition])
 
 
     function onDeleteProject() {
@@ -174,6 +179,18 @@ const Project = () => {
                 console.log("exception", ex);
             }
         })();
+    }
+
+    if (pageLoading) {
+        return (
+            <SpinnerLayout>
+                <BeatLoader
+                    loading={pageLoading}
+                    size={24}
+                    color="blue">
+                </BeatLoader>
+            </SpinnerLayout>
+        );
     }
 
     return (
