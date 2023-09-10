@@ -116,19 +116,19 @@ const Project = () => {
     }, [projectId]);
 
     useEffect(() => {
-        if (project != undefined) {
+        if (project !== undefined) {
             fetchCollaborations();
         }
     }, [project]);
 
     useEffect(() => {
-        if (project != undefined) {
+        if (project !== undefined) {
             fetchAuthor();
         }
     }, [project]);
 
     useEffect(() => {
-        setApplyingEnabled(selectedPosition != undefined);
+        setApplyingEnabled(selectedPosition !== undefined);
     }, [selectedPosition])
 
 
@@ -179,8 +179,8 @@ const Project = () => {
     return (
         <>
             {
-                project != undefined &&
-                author != undefined &&
+                project !== undefined &&
+                author !== undefined &&
 
                 <SingleColumnLayout
                     title={project.title}>
@@ -221,14 +221,14 @@ const Project = () => {
                             <SectionTitle title="Collaborators"></SectionTitle>
                             <Collaborators>
                                 {
-                                    author != undefined &&
+                                    author !== undefined &&
                                     <Author
                                         name={author.fullName}>
                                     </Author>
                                 }
 
                                 {
-                                    (collaborations != undefined && collaborations.length >= 0) &&
+                                    (collaborations !== undefined && collaborations.length >= 0) &&
                                     collaborations.map(c => <div key={c.id}>
                                         <Collaborator
                                             avatar={avatar}
@@ -241,7 +241,7 @@ const Project = () => {
                             </Collaborators>
 
                             {
-                                (collaborations == undefined || collaborations.length == 0) &&
+                                (collaborations === undefined || collaborations.length === 0) &&
                                 <>
                                     <p>There are no other collaborators on this project.&nbsp;
                                         {
