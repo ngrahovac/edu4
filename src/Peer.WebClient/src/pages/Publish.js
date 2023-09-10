@@ -30,22 +30,23 @@ const Publish = () => {
     const validBasicInfo = project.title && project.description;
     const validPosition = position;
     const validPositionCount = project.positions.length > 0;
-    const duplicatePositions = _.uniq(project.positions).length != project.positions.length;
+    const duplicatePositions = _.uniq(project.positions).length !== project.positions.length;
 
     const [startShowingValidationErrors, setStartShowingValidationErrors] = useState(false);
-    const confirmationDialogRef = useRef(null);
+
+    const publishConfirmationDialogRef = useRef(null);
 
     const { getAccessTokenSilently } = useAuth0();
 
     function handleRemovePosition(position) {
         setProject({
             ...project,
-            positions: project.positions.filter(p => p != position)
+            positions: project.positions.filter(p => p !== position)
         });
     }
 
     function handlePublishProjectRequested() {
-        confirmationDialogRef.current.showModal();
+        publishConfirmationDialogRef.current.showModal();
     }
 
     function handlePublishProjectConfirmed() {
@@ -59,27 +60,17 @@ const Publish = () => {
                     });
 
                     let result = await publish(project, token);
-                    console.log("done with api call");
+                    setLoading(false);
 
                     if (result.outcome === successResult) {
-                        // document.getElementById('user-action-success-toast').show();
-                        // setTimeout(() => window.location.href = "/homepage", 1000);
+                        console.log("success");
                     } else if (result.outcome === failureResult) {
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("failure");
                     } else if (result.outcome === errorResult) {
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("error");
                     }
                 } catch (ex) {
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("exception", ex);
                 } finally {
                     setLoading(false);
                 }
@@ -89,13 +80,13 @@ const Publish = () => {
 
     const children = (
         <>
-            <dialog ref={confirmationDialogRef}>
+            <dialog ref={publishConfirmationDialogRef}>
                 <ConfirmationDialog
-                    ref={confirmationDialogRef}
+                    ref={publishConfirmationDialogRef}
                     question="Are you sure you want to publish this project?"
                     description="After publishing, it will become visible to other contributors."
                     onConfirm={handlePublishProjectConfirmed}
-                    onCancel={() => confirmationDialogRef.current.close()}>
+                    onCancel={() => publishConfirmationDialogRef.current.close()}>
                 </ConfirmationDialog>
             </dialog>
 
@@ -177,7 +168,7 @@ const Publish = () => {
 
                             <div className='absolute w-full bottom-16 top-52 overflow-y-auto'>
                                 {
-                                    project.positions.length == 0 &&
+                                    project.positions.length === 0 &&
                                     <p className='text-gray-500'>There are currently no added positions.</p>
                                 }
                                 {
