@@ -30,112 +30,107 @@ const Project = () => {
     const [author, setAuthor] = useState(undefined);
     const [collaborations, setCollaborations] = useState(undefined);
     const [selectedPosition, setSelectedPosition] = useState(undefined);
-    const applyingEnabled = !selectedPosition;
+    
+    const applyingEnabled = selectedPosition !== undefined;
 
     const [pageLoading, setPageLoading] = useState(true);
 
     const { getAccessTokenSilently } = useAuth0();
 
-    function fetchAuthor() {
-        (async () => {
-            try {
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await getContributor(token, project.authorUrl);
-
-                if (result.outcome === successResult) {
-                    var author = result.payload;
-                    setAuthor(author);
-                } else if (result.outcome === failureResult) {
-                    console.log("failure");
-                } else if (result.outcome === errorResult) {
-                    console.log("error");
-                }
-            } catch (ex) {
-                console.log("exception", ex);
-            }
-        })();
-    }
-
-    function fetchCollaborations() {
-        (async () => {
-            try {
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await getCollaborations(project.collaborationsUrl, token);
-
-                if (result.outcome === successResult) {
-                    var collaborations = result.payload;
-                    setCollaborations(collaborations);
-                } else if (result.outcome === failureResult) {
-                    console.log("failure");
-                } else if (result.outcome === errorResult) {
-                    console.log("error");
-                }
-            } catch (ex) {
-                console.log("exception", ex);
-            }
-        })();
-    }
-
-    function fetchProject() {
-        (async () => {
-            setPageLoading(true);
-            
-            try {
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await getById(projectId, token);
-                setPageLoading(false);
-
-                if (result.outcome === successResult) {
-                    var project = result.payload;
-
-                    // sort positions by recommended first
-                    const recommendedPositionSorter = (a, b) => {
-                        if (a.recommended && !b.recommended) return -1;
-                        if (!a.recommended && b.recommended) return +1;
-                        return 0;
-                    };
-
-                    project.positions.sort(recommendedPositionSorter);
-
-                    setProject(project);
-                } else if (result.outcome === failureResult) {
-                    console.log("failure");
-                } else if (result.outcome === errorResult) {
-                    console.log("error", result);
-                }
-            } catch (ex) {
-                console.log("exception", ex);
-            } finally {
-                setPageLoading(false);
-            }
-        })();
-    }
-
     useEffect(() => {
+        const fetchProject = () => {
+            (async () => {
+                setPageLoading(true);
+                
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+    
+                    let result = await getById(projectId, token);
+                    setPageLoading(false);
+    
+                    if (result.outcome === successResult) {
+                        var project = result.payload;
+    
+                        // sort positions by recommended first
+                        const recommendedPositionSorter = (a, b) => {
+                            if (a.recommended && !b.recommended) return -1;
+                            if (!a.recommended && b.recommended) return +1;
+                            return 0;
+                        };
+    
+                        project.positions.sort(recommendedPositionSorter);
+    
+                        setProject(project);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error", result);
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                } finally {
+                    setPageLoading(false);
+                }
+            })();
+        }
+
         fetchProject();
-    }, [projectId]);
+    }, [getAccessTokenSilently, projectId]);
 
     useEffect(() => {
+        const fetchAuthor = () => {
+            (async () => {
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+    
+                    let result = await getContributor(token, project.authorUrl);
+    
+                    if (result.outcome === successResult) {
+                        var author = result.payload;
+                        setAuthor(author);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error");
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                }
+            })();
+        }
+    
+        const fetchCollaborations = () => {
+            (async () => {
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+    
+                    let result = await getCollaborations(project.collaborationsUrl, token);
+    
+                    if (result.outcome === successResult) {
+                        var collaborations = result.payload;
+                        setCollaborations(collaborations);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error");
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                }
+            })();
+        }
+
         if (project !== undefined) {
             fetchCollaborations();
-        }
-    }, [project]);
-
-    useEffect(() => {
-        if (project !== undefined) {
             fetchAuthor();
         }
-    }, [project]);
-
+    }, [project, getAccessTokenSilently]);
 
     function onDeleteProject() {
         (async () => {
