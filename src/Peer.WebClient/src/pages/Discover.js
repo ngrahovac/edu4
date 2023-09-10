@@ -14,7 +14,7 @@ import SpinnerLayout from '../layout/SpinnerLayout';
 import { BeatLoader } from 'react-spinners';
 
 const Discover = () => {
-    const [projects, setProjects] = useState([]);
+    const [discoveredProjects, setDiscoveredProjects] = useState(undefined);
 
     const [ownHats, setOwnHats] = useState(undefined);
     const [keyword, setKeyword] = useState(undefined);
@@ -22,14 +22,14 @@ const Discover = () => {
     const [hat, setHat] = useState(undefined);
     const [discoveryRefinementSidebarVisibility, setDiscoveryParametersSidebarVisibility] = useState(false);
 
-    const [loading, setLoading] = useState(true);
+    const [pageLoading, setPageLoading] = useState(true);
 
     const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
         const fetchOwnHats = () => {
             (async () => {
-                setLoading(true);
+                setPageLoading(true);
 
                 try {
                     let token = await getAccessTokenSilently({
@@ -37,7 +37,7 @@ const Discover = () => {
                     });
 
                     let result = await me(token);
-                    setLoading(false);
+                    setPageLoading(false);
 
                     if (result.outcome === successResult) {
                         setOwnHats(result.payload.hats);
@@ -47,7 +47,7 @@ const Discover = () => {
                 } catch (ex) {
                     console.log(ex);
                 } finally {
-                    setLoading(false);
+                    setPageLoading(false);
                 }
             })();
         }
@@ -59,18 +59,18 @@ const Discover = () => {
         const handleDiscoveryRefinementsChange = () => {
             (async () => {
                 try {
-                    setLoading(true);
+                    setPageLoading(true);
 
                     let token = await getAccessTokenSilently({
                         audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                     });
 
                     let result = await discover(keyword, sort, hat, token);
-                    setLoading(false);
+                    setPageLoading(false);
 
                     if (result.outcome === successResult) {
                         var projects = result.payload;
-                        setProjects(projects);
+                        setDiscoveredProjects(projects);
                     } else if (result.outcome === failureResult) {
                         console.log("failure");
                     } else if (result.outcome === errorResult) {
@@ -79,7 +79,7 @@ const Discover = () => {
                 } catch (ex) {
                     console.log("exception", ex);
                 } finally {
-                    setLoading(false);
+                    setPageLoading(false);
                 }
             })();
         }
@@ -93,17 +93,29 @@ const Discover = () => {
         setSort(sort);
     }
 
-    if (loading) {
+    if (pageLoading) {
         return (
             <SpinnerLayout>
                 <BeatLoader
-                    loading={loading}
+                    loading={pageLoading}
                     size={24}
                     color="blue">
                 </BeatLoader>
             </SpinnerLayout>
         );
     }
+
+    const discoveryResults = discoveredProjects === undefined ?
+        <BeatLoader></BeatLoader> :
+        !discoveredProjects.length ?
+            <p>There are currently no projects satisfying the criteria.</p> :
+            <div className='flex flex-col space-y-8'>
+                {
+                    discoveredProjects.map((p, index) => <div key={index}>
+                        <ProjectCard project={p}></ProjectCard>
+                    </div>)
+                }
+            </div>;
 
     return (
         ownHats &&
@@ -143,21 +155,7 @@ const Discover = () => {
 
             { /* discovery results */}
             <div className='mt-16'>
-                {
-                    projects.length > 0 &&
-                    <div className='flex flex-col space-y-8'>
-                        {
-                            projects.map((p, index) => <div key={index}>
-                                <ProjectCard project={p}></ProjectCard>
-                            </div>)
-                        }
-                    </div>
-                }
-
-                {
-                    projects.length <= 0 &&
-                    <p>There are currently no projects satisfying the criteria.</p>
-                }
+                {discoveryResults}
             </div>
 
             { /* discovery parameters sidebar */}
