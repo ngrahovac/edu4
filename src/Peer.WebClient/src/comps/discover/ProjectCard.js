@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { successResult } from '../../services/RequestResult';
 import SubsectionTitle from '../../layout/SubsectionTitle';
-import NeutralButton from '../buttons/NeutralButton';
 import PositionCard from './PositionCard';
 import ProjectDescriptor from './ProjectDescriptor';
 import { getContributor } from '../../services/UsersService';
 import { useAuth0 } from '@auth0/auth0-react';
 import RecommendedFlair from './RecommendedFlair';
 import { Link } from 'react-router-dom';
-import PrimaryButton from '../buttons/PrimaryButton';
 import BorderlessButton from '../buttons/BorderlessButton';
 
 const ProjectCard = ({ project }) => {
@@ -37,7 +35,7 @@ const ProjectCard = ({ project }) => {
 
     return (
         author != undefined &&
-        
+
         <div className='relative'>
             <div
                 className={`flex flex-col space-y-8 w-full rounded-2xl border ${project.recommended ? "border-lime-500" : "border-gray-300"} px-20 py-16 pb-32 relative hover:bg-gray-50/50`}>
