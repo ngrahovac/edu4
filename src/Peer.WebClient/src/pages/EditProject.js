@@ -101,7 +101,7 @@ const EditProject = () => {
         setNewPositions(filteredPositions);
     }
 
-    function onAddPositions() {
+    function handleAddPositions() {
         (async () => {
             try {
                 {/* add validation */ }
@@ -138,7 +138,7 @@ const EditProject = () => {
         })();
     }
 
-    function onUpdateDetails() {
+    function handleUpdateDetails() {
         (async () => {
             try {
                 {/* add validation */ }
@@ -175,7 +175,7 @@ const EditProject = () => {
         })();
     }
 
-    function onPositionClosed() {
+    function handlePositionClosed() {
         (async () => {
             try {
                 {/* add validation */ }
@@ -212,7 +212,7 @@ const EditProject = () => {
         })();
     }
 
-    function onPositionReopened() {
+    function handlePositionReopened() {
         (async () => {
             try {
                 {/* add validation */ }
@@ -249,7 +249,7 @@ const EditProject = () => {
         })();
     }
 
-    function onExistingPositionRemoved() {
+    function handleExistingPositionRemoved() {
         (async () => {
             try {
                 {/* add validation */ }
@@ -313,7 +313,7 @@ const EditProject = () => {
 
                     <PrimaryButton
                         text="Update details"
-                        onClick={onUpdateDetails}
+                        onClick={handleUpdateDetails}
                         disabled={!(validBasicInfo)}>
                     </PrimaryButton>
                 </div>
@@ -355,19 +355,19 @@ const EditProject = () => {
                         <DangerButton
                             text="Close"
                             disabled={!selectedPosition || !selectedPosition.open}
-                            onClick={onPositionClosed}>
+                            onClick={handlePositionClosed}>
                         </DangerButton>
 
                         <NeutralButton
                             text="Reopen"
                             disabled={!selectedPosition || selectedPosition.open}
-                            onClick={onPositionReopened}>
+                            onClick={handlePositionReopened}>
                         </NeutralButton>
 
                         <DangerButton
                             text="Remove"
                             disabled={!selectedPosition}
-                            onClick={onExistingPositionRemoved}>
+                            onClick={handleExistingPositionRemoved}>
                         </DangerButton>
                     </div>
                 }
@@ -429,7 +429,7 @@ const EditProject = () => {
 
                     <PrimaryButton
                         text="Update positions"
-                        onClick={onAddPositions}
+                        onClick={handleAddPositions}
                         disabled={newPositions.length < 1}>
                     </PrimaryButton>
                 </div>
