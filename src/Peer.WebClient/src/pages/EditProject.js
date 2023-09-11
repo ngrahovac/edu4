@@ -286,8 +286,7 @@ const EditProject = () => {
         })();
     }
 
-    const left = (
-        project &&
+    const children = (
         <>
             <div className='relative pb-16'>
                 <div className='mb-8'>
@@ -317,132 +316,129 @@ const EditProject = () => {
                     </PrimaryButton>
                 </div>
             </div>
-        </>
-    );
 
-    const right = (
-        project &&
-        <div className='relative pb-32'>
-            <div className="mb-12">
-                <SectionTitle title="Positions"></SectionTitle>
-                <p>Describe the profiles of people you're looking to find and collaborate with</p>
-            </div>
-
-            {/* manage existing positions */}
-            <div className='relative mb-12 pb-16'>
-                <div className='mb-8'>
-                    <SubsectionTitle title="Manage existing positions"></SubsectionTitle>
+            <div className='relative pb-32'>
+                <div className="mb-12">
+                    <SectionTitle title="Positions"></SectionTitle>
+                    <p>Describe the profiles of people you're looking to find and collaborate with</p>
                 </div>
-                {
-                    project.positions.length == 0 &&
-                    <p className='text-gray-500'>Currently there are no added positions.</p>
-                }
-                {
-                    project.positions.length > 0 &&
-                    <div className="mt-4">
-                        <ProjectPositions
-                            positions={project.positions}
-                            selectionEnabled={true}
-                            onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
-                        </ProjectPositions>
+
+                {/* manage existing positions */}
+                <div className='relative mb-12 pb-16'>
+                    <div className='mb-8'>
+                        <SubsectionTitle title="Manage existing positions"></SubsectionTitle>
                     </div>
-                }
+                    {
+                        project.positions.length == 0 &&
+                        <p className='text-gray-500'>Currently there are no added positions.</p>
+                    }
+                    {
+                        project.positions.length > 0 &&
+                        <div className="mt-4">
+                            <ProjectPositions
+                                positions={project.positions}
+                                selectionEnabled={true}
+                                onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
+                            </ProjectPositions>
+                        </div>
+                    }
 
-                {
-                    project.positions.length > 0 &&
-                    <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
-                        <DangerButton
-                            text="Close"
-                            disabled={!selectedPosition || !selectedPosition.open}
-                            onClick={handlePositionClosed}>
-                        </DangerButton>
+                    {
+                        project.positions.length > 0 &&
+                        <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
+                            <DangerButton
+                                text="Close"
+                                disabled={!selectedPosition || !selectedPosition.open}
+                                onClick={handlePositionClosed}>
+                            </DangerButton>
 
+                            <NeutralButton
+                                text="Reopen"
+                                disabled={!selectedPosition || selectedPosition.open}
+                                onClick={handlePositionReopened}>
+                            </NeutralButton>
+
+                            <DangerButton
+                                text="Remove"
+                                disabled={!selectedPosition}
+                                onClick={handleExistingPositionRemoved}>
+                            </DangerButton>
+                        </div>
+                    }
+                </div>
+
+                {/* add a new position */}
+                <div className='relative mb-8 pb-16'>
+                    <div className='mb-4'>
+                        <SubsectionTitle title="Add a new position"></SubsectionTitle>
+                    </div>
+                    <PositionForm
+                        onValidChange={position => {
+                            setPosition(position);
+                            setValidPosition(true);
+                        }}
+                        onInvalidChange={() => setValidPosition(false)}>
+                    </PositionForm>
+
+                    <div className='absolute bottom-0 right-0'>
                         <NeutralButton
-                            text="Reopen"
-                            disabled={!selectedPosition || selectedPosition.open}
-                            onClick={handlePositionReopened}>
+                            disabled={!validPosition}
+                            text="Add"
+                            onClick={() => {
+                                if (validPosition)
+                                    setNewPositions([...newPositions, position])
+                            }}>
+                        </NeutralButton>
+                    </div>
+                </div>
+
+                {/* new positions */}
+                <div>
+                    <div className='mb-4 mt-12'>
+                        <SubsectionTitle title="New positions"></SubsectionTitle>
+                    </div>
+                    {
+                        newPositions.length == 0 &&
+                        <p className='text-gray-500'>Currently there are no added positions.</p>
+                    }
+                    {
+                        newPositions.map(p => (
+                            <div key={Math.random() * 1000}>
+                                <div className='mb-2'>
+                                    {/*  <Position position={p}></Position> */}
+                                    <AddedPosition
+                                        position={p}
+                                        onRemoved={() => removeNewPosition(p)}>
+                                    </AddedPosition>
+                                </div>
+                            </div>)
+                        )
+                    }
+
+                    <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
+                        <NeutralButton
+                            text="Cancel"
+                            onClick={() => { setNewPositions([]) }}>
                         </NeutralButton>
 
-                        <DangerButton
-                            text="Remove"
-                            disabled={!selectedPosition}
-                            onClick={handleExistingPositionRemoved}>
-                        </DangerButton>
+                        <PrimaryButton
+                            text="Update positions"
+                            onClick={handleAddPositions}
+                            disabled={newPositions.length < 1}>
+                        </PrimaryButton>
                     </div>
-                }
-            </div>
-
-            {/* add a new position */}
-            <div className='relative mb-8 pb-16'>
-                <div className='mb-4'>
-                    <SubsectionTitle title="Add a new position"></SubsectionTitle>
-                </div>
-                <PositionForm
-                    onValidChange={position => {
-                        setPosition(position);
-                        setValidPosition(true);
-                    }}
-                    onInvalidChange={() => setValidPosition(false)}>
-                </PositionForm>
-
-                <div className='absolute bottom-0 right-0'>
-                    <NeutralButton
-                        disabled={!validPosition}
-                        text="Add"
-                        onClick={() => {
-                            if (validPosition)
-                                setNewPositions([...newPositions, position])
-                        }}>
-                    </NeutralButton>
                 </div>
             </div>
+        </>
 
-            {/* new positions */}
-            <div>
-                <div className='mb-4 mt-12'>
-                    <SubsectionTitle title="New positions"></SubsectionTitle>
-                </div>
-                {
-                    newPositions.length == 0 &&
-                    <p className='text-gray-500'>Currently there are no added positions.</p>
-                }
-                {
-                    newPositions.map(p => (
-                        <div key={Math.random() * 1000}>
-                            <div className='mb-2'>
-                                {/*  <Position position={p}></Position> */}
-                                <AddedPosition
-                                    position={p}
-                                    onRemoved={() => removeNewPosition(p)}>
-                                </AddedPosition>
-                            </div>
-                        </div>)
-                    )
-                }
-
-                <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
-                    <NeutralButton
-                        text="Cancel"
-                        onClick={() => { setNewPositions([]) }}>
-                    </NeutralButton>
-
-                    <PrimaryButton
-                        text="Update positions"
-                        onClick={handleAddPositions}
-                        disabled={newPositions.length < 1}>
-                    </PrimaryButton>
-                </div>
-            </div>
-        </div>
     );
 
     return (
-        project &&
+        project != undefined &&
         <DoubleColumnLayout
             title="Edit project"
-            description=""
-            left={left}
-            right={right}>
+            description="">
+            {children}
         </DoubleColumnLayout>
     );
 }
