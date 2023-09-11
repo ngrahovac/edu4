@@ -20,6 +20,8 @@ import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import ProjectPositions from '../comps/project/ProjectPositions';
 import PositionForm from '../comps/publish/PositionForm';
 import DangerButton from '../comps/buttons/DangerButton';
+import { BeatLoader } from 'react-spinners';
+import SpinnerLayout from '../layout/SpinnerLayout';
 
 
 const EditProject = () => {
@@ -37,10 +39,14 @@ const EditProject = () => {
 
     const [selectedPosition, setSelectedPosition] = useState(undefined);
 
+    const [pageLoading, setPageLoading] = useState(true);
+
     const { getAccessTokenSilently } = useAuth0();
 
     function fetchProject() {
         (async () => {
+            setPageLoading(true);
+
             try {
                 {/* add validation */ }
                 let token = await getAccessTokenSilently({
@@ -48,6 +54,7 @@ const EditProject = () => {
                 });
 
                 let result = await getById(projectId, token);
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
                     var project = result.payload;
@@ -61,28 +68,14 @@ const EditProject = () => {
 
                     project.positions.sort(recommendedPositionSorter);
 
-                    setProject(project);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                    setOriginalProject(project);
                 } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("failure");
                 } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
@@ -92,8 +85,9 @@ const EditProject = () => {
     }, [projectId]);
 
     useEffect(() => {
-        setOriginalProject(project);
-    }, [project])
+      setProject(originalProject);
+    }, [originalProject])
+    
 
     function removeNewPosition(positionToRemove) {
         let filteredPositions = newPositions.filter(p => p != positionToRemove);
@@ -287,6 +281,7 @@ const EditProject = () => {
     }
 
     const children = (
+        project &&
         <>
             <div className='relative pb-16'>
                 <div className='mb-8'>
@@ -433,8 +428,14 @@ const EditProject = () => {
 
     );
 
+    if (pageLoading) {
+        return <SpinnerLayout>
+            <BeatLoader></BeatLoader>
+        </SpinnerLayout>
+    }
+
     return (
-        project != undefined &&
+        originalProject != undefined &&
         <DoubleColumnLayout
             title="Edit project"
             description="">
