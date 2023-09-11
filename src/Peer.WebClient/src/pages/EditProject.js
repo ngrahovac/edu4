@@ -38,13 +38,13 @@ const EditProject = () => {
 
     const [selectedPosition, setSelectedPosition] = useState(undefined);
 
-    const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
 
     function fetchProject() {
         (async () => {
             try {
                 {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -105,7 +105,7 @@ const EditProject = () => {
         (async () => {
             try {
                 {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -142,7 +142,7 @@ const EditProject = () => {
         (async () => {
             try {
                 {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -179,7 +179,7 @@ const EditProject = () => {
         (async () => {
             try {
                 {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -216,7 +216,7 @@ const EditProject = () => {
         (async () => {
             try {
                 {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -253,7 +253,7 @@ const EditProject = () => {
         (async () => {
             try {
                 {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
