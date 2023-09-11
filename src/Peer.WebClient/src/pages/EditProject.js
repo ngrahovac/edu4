@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import HatForm from '../comps/hat-forms/HatForm';
 import AddedPosition from '../comps/publish/AddedPosition';
 import { DoubleColumnLayout } from '../layout/DoubleColumnLayout'
 import { SectionTitle } from '../layout/SectionTitle'
@@ -8,7 +7,7 @@ import SubsectionTitle from '../layout/SubsectionTitle';
 import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
 import { addPositions, closePosition, removePosition, reopenPosition, updateDetails } from '../services/ProjectsService';
-import { getById, remove } from '../services/ProjectsService'
+import { getById } from '../services/ProjectsService'
 
 import {
     successResult,
@@ -16,7 +15,7 @@ import {
     errorResult
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react'
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import ProjectPositions from '../comps/project/ProjectPositions';
 import PositionForm from '../comps/publish/PositionForm';
