@@ -90,7 +90,7 @@ const EditProject = () => {
     
 
     function removeNewPosition(positionToRemove) {
-        let filteredPositions = newPositions.filter(p => p != positionToRemove);
+        let filteredPositions = newPositions.filter(p => p !== positionToRemove);
         setNewPositions(filteredPositions);
     }
 
@@ -253,7 +253,7 @@ const EditProject = () => {
                 let result = await removePosition(project.id, selectedPosition.id, token)
 
                 if (result.outcome === successResult) {
-                    setProject({ ...project, positions: project.positions.filter(p => p.id != selectedPosition.id) })
+                    setProject({ ...project, positions: project.positions.filter(p => p.id !== selectedPosition.id) })
                     setSelectedPosition(undefined);
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
@@ -324,7 +324,7 @@ const EditProject = () => {
                         <SubsectionTitle title="Manage existing positions"></SubsectionTitle>
                     </div>
                     {
-                        project.positions.length == 0 &&
+                        project.positions.length === 0 &&
                         <p className='text-gray-500'>Currently there are no added positions.</p>
                     }
                     {
@@ -393,7 +393,7 @@ const EditProject = () => {
                         <SubsectionTitle title="New positions"></SubsectionTitle>
                     </div>
                     {
-                        newPositions.length == 0 &&
+                        newPositions.length === 0 &&
                         <p className='text-gray-500'>Currently there are no added positions.</p>
                     }
                     {
@@ -435,7 +435,7 @@ const EditProject = () => {
     }
 
     return (
-        originalProject != undefined &&
+        originalProject !== undefined &&
         <DoubleColumnLayout
             title="Edit project"
             description="">
