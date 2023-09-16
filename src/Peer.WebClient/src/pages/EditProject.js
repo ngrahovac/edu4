@@ -68,6 +68,7 @@ const EditProject = () => {
                     project.positions.sort(recommendedPositionSorter);
 
                     setOriginalProject(project);
+                    setProject(project);
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
                 } else if (result.outcome === errorResult) {
@@ -82,11 +83,6 @@ const EditProject = () => {
     useEffect(() => {
         fetchProject();
     }, [projectId]);
-
-    useEffect(() => {
-      setProject(originalProject);
-    }, [originalProject])
-    
 
     function handleNewPositionRemoved(positionToRemove) {
         let filteredPositions = newPositions.filter(p => p !== positionToRemove);
