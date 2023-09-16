@@ -89,7 +89,7 @@ const EditProject = () => {
     }, [originalProject])
     
 
-    function removeNewPosition(positionToRemove) {
+    function handleNewPositionRemoved(positionToRemove) {
         let filteredPositions = newPositions.filter(p => p !== positionToRemove);
         setNewPositions(filteredPositions);
     }
@@ -403,7 +403,7 @@ const EditProject = () => {
                                     {/*  <Position position={p}></Position> */}
                                     <AddedPosition
                                         position={p}
-                                        onRemoved={() => removeNewPosition(p)}>
+                                        onRemoved={() => handleNewPositionRemoved(p)}>
                                     </AddedPosition>
                                 </div>
                             </div>)
