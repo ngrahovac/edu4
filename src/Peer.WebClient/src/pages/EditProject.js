@@ -47,46 +47,46 @@ const EditProject = () => {
 
     const { getAccessTokenSilently } = useAuth0();
 
-    function fetchProject() {
-        (async () => {
-            setPageLoading(true);
-
-            try {
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await getById(projectId, token);
-                setPageLoading(false);
-
-                if (result.outcome === successResult) {
-                    var project = result.payload;
-
-                    // sort positions by recommended first
-                    const recommendedPositionSorter = (a, b) => {
-                        if (a.recommended && !b.recommended) return -1;
-                        if (!a.recommended && b.recommended) return +1;
-                        return 0;
-                    };
-
-                    project.positions.sort(recommendedPositionSorter);
-
-                    setOriginalProject(project);
-                    setProject(project);
-                } else if (result.outcome === failureResult) {
-                    console.log("failure");
-                } else if (result.outcome === errorResult) {
-                    console.log("error");
-                }
-            } catch (ex) {
-                console.log("exception", ex);
-            }
-        })();
-    }
-
     useEffect(() => {
+        const fetchProject = () => {
+            (async () => {
+                setPageLoading(true);
+    
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+    
+                    let result = await getById(projectId, token);
+                    setPageLoading(false);
+    
+                    if (result.outcome === successResult) {
+                        var project = result.payload;
+    
+                        // sort positions by recommended first
+                        const recommendedPositionSorter = (a, b) => {
+                            if (a.recommended && !b.recommended) return -1;
+                            if (!a.recommended && b.recommended) return +1;
+                            return 0;
+                        };
+    
+                        project.positions.sort(recommendedPositionSorter);
+    
+                        setOriginalProject(project);
+                        setProject(project);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error");
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                }
+            })();
+        }
+        
         fetchProject();
-    }, [projectId]);
+    }, [projectId, getAccessTokenSilently]);
 
     function handleNewPositionRemoved(positionToRemove) {
         let filteredPositions = newPositions.filter(p => p !== positionToRemove);
@@ -148,7 +148,7 @@ const EditProject = () => {
         })();
     }
 
-    function handlePositionClosed() {
+    function handleClosePosition() {
         (async () => {
             setPageLoading(true);
 
@@ -185,7 +185,7 @@ const EditProject = () => {
         })();
     }
 
-    function handlePositionReopened() {
+    function handleReopenPosition() {
         (async () => {
             setPageLoading(true);
 
@@ -335,13 +335,13 @@ const EditProject = () => {
                             <DangerButton
                                 text="Close"
                                 disabled={!selectedPosition || !selectedPosition.open}
-                                onClick={handlePositionClosed}>
+                                onClick={handleClosePosition}>
                             </DangerButton>
 
                             <NeutralButton
                                 text="Reopen"
                                 disabled={!selectedPosition || selectedPosition.open}
-                                onClick={handlePositionReopened}>
+                                onClick={handleReopenPosition}>
                             </NeutralButton>
 
                             <DangerButton
