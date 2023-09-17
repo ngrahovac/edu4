@@ -30,7 +30,7 @@ const EditProject = () => {
 
     const [originalProject, setOriginalProject] = useState(undefined);
     const [project, setProject] = useState(undefined);
-    const [position, setPosition] = useState({});
+    const [position, setPosition] = useState(undefined);
 
     const validPosition = position;
     const validBasicInfo = project && project.title && project.description;
