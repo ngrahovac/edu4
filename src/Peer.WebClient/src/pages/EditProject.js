@@ -22,11 +22,14 @@ import PositionForm from '../comps/publish/PositionForm';
 import DangerButton from '../comps/buttons/DangerButton';
 import { BeatLoader } from 'react-spinners';
 import SpinnerLayout from '../layout/SpinnerLayout';
-
+import { useRef } from 'react';
+import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
 
 const EditProject = () => {
 
     const { projectId } = useParams();
+
+    const removePositionConfirmationDialogRef = useRef(null);
 
     const [originalProject, setOriginalProject] = useState(undefined);
     const [project, setProject] = useState(undefined);
@@ -198,7 +201,7 @@ const EditProject = () => {
         })();
     }
 
-    function handleExistingPositionRemoved() {
+    function handleRemoveExistingPositionConfirmed() {
         (async () => {
             setPageLoading(true);
 
@@ -226,9 +229,22 @@ const EditProject = () => {
         })();
     }
 
+    function handleRemoveExistingPositionRequested() {
+        removePositionConfirmationDialogRef.current.showModal();
+    }
+
     const children = (
         project &&
         <>
+            <dialog ref={removePositionConfirmationDialogRef}>
+                <ConfirmationDialog
+                    question="Are you sure you want to remove this position?"
+                    description="It will no longer be visible on the project page and other collaborators will not be able to apply. You cannot undo this action."
+                    onConfirm={handleRemoveExistingPositionConfirmed}
+                    onCancel={() => removePositionConfirmationDialogRef.current.close()}>
+                </ConfirmationDialog>
+            </dialog>
+
             <div className='relative pb-16'>
                 <div className='mb-8'>
                     <SectionTitle title="Basic info"></SectionTitle>
@@ -310,7 +326,7 @@ const EditProject = () => {
                             <DangerButton
                                 text="Remove"
                                 disabled={!selectedPosition}
-                                onClick={handleExistingPositionRemoved}>
+                                onClick={handleRemoveExistingPositionRequested}>
                             </DangerButton>
                         </div>
                     }
