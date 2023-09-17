@@ -32,11 +32,10 @@ const EditProject = () => {
     const [project, setProject] = useState(undefined);
     const [position, setPosition] = useState({});
 
-    const [validPosition, setValidPosition] = useState(false);
-    const [validBasicInfo, setValidBasicInfo] = useState(false);
+    const validPosition = position;
+    const validBasicInfo = project && project.title && project.description;
 
     const [newPositions, setNewPositions] = useState([]);
-
     const [selectedPosition, setSelectedPosition] = useState(undefined);
 
     const [pageLoading, setPageLoading] = useState(true);
@@ -237,9 +236,8 @@ const EditProject = () => {
                     existingBasicInfo={{ title: project.title, description: project.description }}
                     onValidChange={basicInfo => {
                         setProject({ ...project, ...basicInfo });
-                        setValidBasicInfo(true);
                     }}
-                    onInvalidChange={() => setValidBasicInfo(false)}>
+                    onInvalidChange={() => setProject({ ...project, title: '', description: '' })}>
                 </BasicInfoForm>
 
 
@@ -315,9 +313,8 @@ const EditProject = () => {
                     <PositionForm
                         onValidChange={position => {
                             setPosition(position);
-                            setValidPosition(true);
                         }}
-                        onInvalidChange={() => setValidPosition(false)}>
+                        onInvalidChange={() => setPosition(undefined)}>
                     </PositionForm>
 
                     <div className='absolute bottom-0 right-0'>
