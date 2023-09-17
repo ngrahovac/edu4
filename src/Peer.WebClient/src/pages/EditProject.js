@@ -8,7 +8,7 @@ import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
 import { addPositions, closePosition, removePosition, reopenPosition, updateDetails } from '../services/ProjectsService';
 import { getById } from '../services/ProjectsService'
-
+import _ from 'lodash';
 import {
     successResult,
     failureResult,
@@ -160,7 +160,17 @@ const EditProject = () => {
                 setPageLoading(false);
 
                 if (result.outcome === successResult) {
-                    setSelectedPosition({ ...selectedPosition, open: false });
+                    let closedPosition = { ...selectedPosition, open: false };
+
+                    setProject({
+                        ...project,
+                        positions: [
+                            ...project.positions.filter(p => !_.eq(p, selectedPosition)),
+                            closedPosition
+                        ]
+                    });
+
+                    setSelectedPosition(closedPosition);
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
                 } else if (result.outcome === errorResult) {
@@ -187,7 +197,17 @@ const EditProject = () => {
                 setPageLoading(false);
 
                 if (result.outcome === successResult) {
-                    setSelectedPosition({ ...selectedPosition, open: true });
+                    let reopenedPosition = {...selectedPosition, open: true };
+
+                    setProject({
+                        ...project,
+                        positions: [
+                            ...project.positions.filter(p => !_.eq(p, selectedPosition)),
+                            reopenedPosition
+                        ]
+                    });
+
+                    setSelectedPosition(reopenedPosition);
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
                 } else if (result.outcome === errorResult) {
