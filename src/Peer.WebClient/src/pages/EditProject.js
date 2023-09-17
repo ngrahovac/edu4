@@ -107,6 +107,7 @@ const EditProject = () => {
 
                 if (result.outcome === successResult) {
                     console.log("success");
+                    // TODO: reload
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
                 } else if (result.outcome === errorResult) {
