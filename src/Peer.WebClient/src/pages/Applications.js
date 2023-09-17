@@ -18,7 +18,7 @@ const Applications = () => {
         received: "Received"
     };
 
-    const { getAccessTokenWithPopup } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
 
     const [selectedApplicationType, setSelectedApplicationType] = useState(applicationType.sent);
 
@@ -37,7 +37,7 @@ const Applications = () => {
     function getSentApplications() {
         (async () => {
             try {
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -75,7 +75,7 @@ const Applications = () => {
         (async () => {
             try {
                 {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
