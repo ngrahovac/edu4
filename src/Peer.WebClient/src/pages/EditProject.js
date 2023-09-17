@@ -40,6 +40,8 @@ const EditProject = () => {
 
     const [pageLoading, setPageLoading] = useState(true);
 
+    const [startShowingValidationErrors, setStartShowingValidationErrors] = useState(false);
+
     const { getAccessTokenSilently } = useAuth0();
 
     function fetchProject() {
@@ -236,8 +238,17 @@ const EditProject = () => {
                     initialBasicInfo={{ title: project.title, description: project.description }}
                     onValidChange={basicInfo => {
                         setProject({ ...project, ...basicInfo });
+                        if (!startShowingValidationErrors) {
+                            setStartShowingValidationErrors(true);
+                        }
                     }}
-                    onInvalidChange={() => setProject({ ...project, title: '', description: '' })}>
+                    onInvalidChange={() => {
+                        setProject({ ...project, title: '', description: '' });
+                        if (!startShowingValidationErrors) {
+                            setStartShowingValidationErrors(true);
+                        }
+                    }}
+                    startShowingValidationErrors={startShowingValidationErrors}>
                 </BasicInfoForm>
 
 
@@ -313,8 +324,17 @@ const EditProject = () => {
                     <PositionForm
                         onValidChange={position => {
                             setPosition(position);
+                            if (!startShowingValidationErrors) {
+                                setStartShowingValidationErrors(true);
+                            }
                         }}
-                        onInvalidChange={() => setPosition(undefined)}>
+                        onInvalidChange={() => {
+                            setPosition(undefined);
+                            if (!startShowingValidationErrors) {
+                                setStartShowingValidationErrors(true);
+                            }
+                        }}
+                        startShowingValidationErrors={startShowingValidationErrors}>
                     </PositionForm>
 
                     <div className='absolute bottom-0 right-0'>
