@@ -18,14 +18,21 @@ const Applications = () => {
         received: "Received"
     };
 
+    const { getAccessTokenWithPopup } = useAuth0();
+
     const [selectedApplicationType, setSelectedApplicationType] = useState(applicationType.sent);
+
     const [sentApplications, setSentApplications] = useState(undefined);
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
     const [sort, setSort] = useState(undefined);
 
     const [receivedApplications, setReceivedApplications] = useState(undefined);
 
-    const { getAccessTokenWithPopup } = useAuth0();
+    if (selectedApplicationType == applicationType.sent) {
+        getSentApplications();
+    } else {
+        getReceivedApplications();
+    }
 
     function getSentApplications() {
         (async () => {
@@ -101,14 +108,6 @@ const Applications = () => {
             }
         })();
     }
-
-    useEffect(() => {
-        if (selectedApplicationType == applicationType.sent) {
-            getSentApplications();
-        } else {
-            getReceivedApplications();
-        }
-    }, [projectIdFilter, sort, selectedApplicationType])
 
     return (
         <SingleColumnLayout
