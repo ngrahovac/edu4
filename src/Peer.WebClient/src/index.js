@@ -29,7 +29,8 @@ root.render(
     domain={domain}
     clientId={clientId}
     redirectUri={window.location.origin}
-    audience={audience}>
+    audience={audience}
+    cacheLocation='localstorage'>
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
