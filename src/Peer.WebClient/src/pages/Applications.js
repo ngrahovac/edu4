@@ -12,7 +12,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ReceivedApplications from '../comps/applications/ReceivedApplications'
 
 const Applications = () => {
-
     const applicationType = {
         sent: "Sent",
         received: "Received"
@@ -28,11 +27,14 @@ const Applications = () => {
 
     const [receivedApplications, setReceivedApplications] = useState(undefined);
 
-    if (selectedApplicationType == applicationType.sent) {
-        getSentApplications();
-    } else {
-        getReceivedApplications();
-    }
+    useEffect(() => {
+        if (selectedApplicationType == applicationType.sent) {
+            getSentApplications();
+        } else {
+            getReceivedApplications();
+        }
+    }, [selectedApplicationType, sort, projectIdFilter])
+
 
     function getSentApplications() {
         (async () => {
