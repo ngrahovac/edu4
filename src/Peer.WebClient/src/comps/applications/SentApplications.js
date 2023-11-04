@@ -7,6 +7,7 @@ import { revokeApplication, getSubmittedApplicationsProjectIds } from '../../ser
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
 import ProjectFilter from './ProjectFilter'
 import ApplicationsSorter from './SentApplicationsSorter';
+import { BeatLoader } from 'react-spinners';
 
 const SentApplications = (props) => {
 
@@ -15,6 +16,8 @@ const SentApplications = (props) => {
         onProjectIdFilterChanged,
         onSortChanged
     } = props;
+
+    const [loading, setLoading] = useState(true);
 
     const [displayedApplicationsProjects, setDisplayedApplicationsProjects] = useState(undefined);
     const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
@@ -27,14 +30,28 @@ const SentApplications = (props) => {
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
     const fetchProjectsForDisplayedApplications = async () => {
+        setLoading(true);
         try {
             var fetchedProjects = [];
 
-            displayedApplications.forEach(async application => {
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
+            let token = await getAccessTokenSilently({
+                audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+            });
 
+            for (let a of displayedApplications) {
+                let result = await getById(a.projectId, token);
+
+                if (result.outcome == successResult) {
+                    let project = await result.payload;
+                    fetchedProjects.push(project);
+                } else {
+                    console.log("error fetching a single project")
+                }
+            }
+
+            setDisplayedApplicationsProjects(fetchedProjects);
+
+            displayedApplications.forEach(async application => {
                 let result = await getById(application.projectId, token);
 
                 if (result.outcome == successResult) {
@@ -45,9 +62,10 @@ const SentApplications = (props) => {
                 }
             });
 
-            setDisplayedApplicationsProjects(fetchedProjects);
         } catch (ex) {
             console.log("error fetching one project for currently displayed applications", ex);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -98,7 +116,7 @@ const SentApplications = (props) => {
     useEffect(() => {
         fetchProjectsUserAppliedFor();
     }, [])
-    
+
     useEffect(() => {
         onProjectIdFilterChanged(projectIdFilter);
     }, [projectIdFilter])
@@ -127,37 +145,28 @@ const SentApplications = (props) => {
                     var result = await revokeApplication(application.id, token);
 
                     if (result.outcome === successResult) {
+                        console.log("success");
                         setDisplayedApplications(displayedApplications.filter(a => a.id != application.id));
                     }
                     else if (result.outcome === failureResult) {
-                        console.log("neuspjesan status code");
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("failure");
                     } else if (result.outcome === errorResult) {
-                        console.log("nesto je do mreze", result);
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("error")
                     }
                 });
             }
             catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
 
+    if (loading) {
+        return <BeatLoader></BeatLoader>
+    }
     return (
         displayedApplicationsProjects &&
         submittedApplicationsProjects &&
-        displayedApplications &&
         <div className='relative pb-32'>
             <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8'>
                 <ProjectFilter

@@ -31,6 +31,8 @@ const ReceivedApplications = (props) => {
 
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
+    const [loading, setLoading] = useState(true);
+
     const fetchProjectsForDisplayedApplications = async () => {
         try {
             let fetchedProjects = [];
@@ -39,7 +41,7 @@ const ReceivedApplications = (props) => {
                 audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
             });
 
-            applications.forEach(async application => {
+            for (let application of displayedApplications) {
                 try {
                     let result = await getById(application.projectId, token);
 
@@ -53,7 +55,7 @@ const ReceivedApplications = (props) => {
                 } catch (ex) {
                     console.log(ex);
                 }
-            });
+            };
 
             setDisplayedApplicationsProjects(fetchedProjects);
         } catch (ex) {
@@ -69,7 +71,7 @@ const ReceivedApplications = (props) => {
                 audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
             });
 
-            displayedApplications.forEach(async application => {
+            for (let application of displayedApplications) {
                 try {
                     let result = await getContributor(token, application.applicantUrl);
 
@@ -83,7 +85,7 @@ const ReceivedApplications = (props) => {
                 } catch (ex) {
                     console.log(ex);
                 }
-            });
+            };
 
             setApplicants(fetchedApplicants);
         } catch (ex) {
@@ -117,9 +119,11 @@ const ReceivedApplications = (props) => {
     }, [])
 
     useEffect(() => {
+        setLoading(true);
         fetchProjectsForDisplayedApplications();
         fetchApplicantsForDisplayedApplications();
         setSelectedApplicationIds([]);
+        setLoading(false);
     }, [displayedApplications])
 
     /* mirroring prop bc we'll fake fetching data after a successful API call with UI changes */
@@ -155,29 +159,18 @@ const ReceivedApplications = (props) => {
                     var result = await rejectApplication(application.id, token);
 
                     if (result.outcome === successResult) {
+                        console.log("success");
                         setDisplayedApplications(displayedApplications.filter(a => a.id != application.id));
                     }
                     else if (result.outcome === failureResult) {
-                        console.log("neuspjesan status code");
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("failure");
                     } else if (result.outcome === errorResult) {
-                        console.log("nesto je do mreze", result);
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("error");
                     }
                 });
             }
             catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
@@ -194,30 +187,19 @@ const ReceivedApplications = (props) => {
                     var result = await acceptApplication(application.id, token);
 
                     if (result.outcome === successResult) {
+                        console.log("success");
                         setDisplayedApplications(displayedApplications.filter(a => a.id != application.id));
                         setSelectedApplicationIds(selectedApplicationIds.filter(a => a.id != application.id));
                     }
                     else if (result.outcome === failureResult) {
-                        console.log("neuspjesan status code");
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("failure");
                     } else if (result.outcome === errorResult) {
-                        console.log("nesto je do mreze", result);
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("error");
                     }
                 });
             }
             catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
