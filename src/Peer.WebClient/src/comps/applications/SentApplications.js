@@ -63,6 +63,8 @@ const SentApplications = (props) => {
     };
 
     const fetchProjectsUserAppliedFor = async () => {
+        setLoading(true);
+
         try {
             let fetchedProjects = [];
 
@@ -93,6 +95,8 @@ const SentApplications = (props) => {
             setSubmittedApplicationsProjects(fetchedProjects);
         } catch (ex) {
             console.log("error fetching all projects user applied to", ex);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -181,6 +185,7 @@ const SentApplications = (props) => {
     if (loading) {
         return <BeatLoader></BeatLoader>
     }
+
     return (
         displayedApplicationsProjects &&
         submittedApplicationsProjects &&
