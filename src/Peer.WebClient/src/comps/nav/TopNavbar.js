@@ -1,18 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Avatar from './Avatar'
 import LogoIcon from './LogoIcon'
-import { useAuth0 } from '@auth0/auth0-react'
-import NeutralButton from '../buttons/NeutralButton'
 import BorderlessButton from '../buttons/BorderlessButton'
 import { Link } from 'react-router-dom'
 import AccentButton from '../buttons/AccentButton'
+import TopNavbarContextMenu from './TopNavbarContextMenu'
 
 const TopNavbar = () => {
-    const { logout } = useAuth0();
+    const [topNavbarContextMenuHidden, setTopNavbarContextMenuHidden] = useState(true);
+
+    function toggleTopNavbarContextMenuVisibility() {
+        setTopNavbarContextMenuHidden(!topNavbarContextMenuHidden);
+    }
+
+    const topNavbarContextMenu = (<div className='w-64 fixed right-0 top-14 right-8 z-50'>
+        <TopNavbarContextMenu
+            hidden={topNavbarContextMenuHidden}>
+        </TopNavbarContextMenu>
+    </div>);
 
     return (
         <>
+            <>
+                {topNavbarContextMenu}
+            </>
+
             <div className='fixed w-full h-16 bg-gray-100 flex flex-row justify-between px-8 z-40'>
                 {/* navbar items on the left */}
                 <div className='flex flex-row items-center'>
@@ -59,12 +72,9 @@ const TopNavbar = () => {
                         </svg>}>
                     </BorderlessButton>
 
-                    <Avatar></Avatar>
-
-                    <NeutralButton
-                        text="Log out"
-                        onClick={() => logout({ returnTo: window.location.origin })}>
-                    </NeutralButton>
+                    <div onClick={toggleTopNavbarContextMenuVisibility}>
+                        <Avatar></Avatar>
+                    </div>
                 </div>
             </div>
             <Outlet></Outlet>
