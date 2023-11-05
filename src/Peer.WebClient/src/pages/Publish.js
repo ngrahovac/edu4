@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useRef } from 'react'
 import { useState } from 'react';
-import HatForm from '../comps/hat-forms/HatForm';
 import AddedPosition from '../comps/publish/AddedPosition';
 import { DoubleColumnLayout } from '../layout/DoubleColumnLayout'
 import { SectionTitle } from '../layout/SectionTitle'
@@ -16,148 +15,211 @@ import {
 import { useAuth0 } from '@auth0/auth0-react'
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import PositionForm from '../comps/publish/PositionForm';
-
+import SectionTitleWrapper from '../layout/SectionTitleWrapper';
+import InvalidFormFieldWarning from '../comps/publish/InvalidFormFieldWarning';
+import _ from 'lodash';
+import { BeatLoader } from 'react-spinners';
+import SpinnerLayout from '../layout/SpinnerLayout';
+import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
 
 const Publish = () => {
-    const [project, setProject] = useState({ positions: [] });
-    const [position, setPosition] = useState({});
+    const [project, setProject] = useState({ title: '', description: '', positions: [] });
+    const [position, setPosition] = useState(undefined);
+    const [loading, setLoading] = useState(false);
 
-    const [validPosition, setValidPosition] = useState(false);
-    const [validBasicInfo, setValidBasicInfo] = useState(false);
-    const [validPositionCount, setValidPositionCount] = useState(false);
+    const validBasicInfo = project.title && project.description;
+    const validPosition = position;
+    const validPositionCount = project.positions.length > 0;
+    const duplicatePositions = _.uniq(project.positions).length !== project.positions.length;
 
-    const { getAccessTokenWithPopup } = useAuth0();
+    const [startShowingValidationErrors, setStartShowingValidationErrors] = useState(false);
 
-    useEffect(() => {
-        setValidPositionCount(project.positions.length > 0);
-    }, [project])
+    const publishConfirmationDialogRef = useRef(null);
 
+    const { getAccessTokenSilently } = useAuth0();
 
-    function removePosition(positionToRemove) {
-        let filteredPositions = project.positions.filter(p => p != positionToRemove);
-        console.log(filteredPositions)
-        setProject({ ...project, positions: filteredPositions });
+    function handleRemovePosition(position) {
+        setProject({
+            ...project,
+            positions: project.positions.filter(p => p !== position)
+        });
     }
 
-    function onPublishProject() {
+    function handlePublishProjectRequested() {
+        publishConfirmationDialogRef.current.showModal();
+    }
+
+    function handlePublishProjectConfirmed() {
         (async () => {
             if (validBasicInfo && validPositionCount) {
+                setLoading(true);
+
                 try {
-                    let token = await getAccessTokenWithPopup({
+                    let token = await getAccessTokenSilently({
                         audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                     });
 
                     let result = await publish(project, token);
+                    setLoading(false);
 
                     if (result.outcome === successResult) {
-                        // document.getElementById('user-action-success-toast').show();
-                        // setTimeout(() => window.location.href = "/homepage", 1000);
+                        console.log("success");
                     } else if (result.outcome === failureResult) {
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("failure");
                     } else if (result.outcome === errorResult) {
-                        // document.getElementById('user-action-fail-toast').show();
-                        // setTimeout(() => {
-                        //     document.getElementById('user-action-fail-toast').close();
-                        // }, 3000);
+                        console.log("error");
                     }
                 } catch (ex) {
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("exception", ex);
+                } finally {
+                    setLoading(false);
                 }
             }
         })();
     }
 
-    const left = (
+    const children = (
         <>
-            <div className='mb-8'>
-                <SectionTitle title="Basic info"></SectionTitle>
-                <p className='h-8'></p>
+            <dialog ref={publishConfirmationDialogRef}>
+                <ConfirmationDialog
+                    ref={publishConfirmationDialogRef}
+                    question="Are you sure you want to publish this project?"
+                    description="After publishing, it will become visible to other contributors."
+                    onConfirm={handlePublishProjectConfirmed}
+                    onCancel={() => publishConfirmationDialogRef.current.close()}>
+                </ConfirmationDialog>
+            </dialog>
+
+            <div className='flex flex-col gap-y-24'>
+                {/* basic info */}
+                <div className='flex flex-row gap-x-24'>
+                    <div className='w-full'>
+                        <SectionTitleWrapper>
+                            <SectionTitle title="Basic info"></SectionTitle>
+                            <p className='h-8'></p>
+                        </SectionTitleWrapper>
+
+                        <BasicInfoForm
+                            initialBasicInfo={{ title: project.title, description: project.description }}
+                            onValidChange={basicInfo => {
+                                setProject({ ...project, ...basicInfo });
+                                if (!startShowingValidationErrors) {
+                                    setStartShowingValidationErrors(true);
+                                }
+                            }}
+                            onInvalidChange={() => {
+                                setProject({ ...project, title: '', description: '' });
+                                if (!startShowingValidationErrors) {
+                                    setStartShowingValidationErrors(true);
+                                }
+                            }}
+                            startShowingValidationErrors={startShowingValidationErrors}>
+                        </BasicInfoForm>
+                    </div>
+                    <div className='w-full'>
+                    </div>
+                </div>
+
+                <div className='flex flex-row gap-x-24 h-full'>
+                    {/* add position */}
+                    <div className='relative pb-16 w-full'>
+                        <SectionTitleWrapper>
+                            <SectionTitle title="Positions"></SectionTitle>
+                            <p className='h-8'>Describe the positions you're looking for collaborators for</p>
+                        </SectionTitleWrapper>
+
+                        <PositionForm
+                            onValidChange={position => {
+                                setPosition(position);
+                                if (!startShowingValidationErrors) {
+                                    setStartShowingValidationErrors(true);
+                                }
+                            }}
+                            onInvalidChange={() => {
+                                setPosition(undefined);
+                                if (!startShowingValidationErrors) {
+                                    setStartShowingValidationErrors(true);
+                                }
+                            }}
+                            startShowingValidationErrors={startShowingValidationErrors}>
+                        </PositionForm>
+
+                        <div className='absolute bottom-0 right-0'>
+                            <NeutralButton
+                                disabled={!validPosition}
+                                text="Add"
+                                onClick={() => setProject({ ...project, positions: [...project.positions, position] })}>
+                            </NeutralButton>
+                        </div>
+                    </div>
+
+                    {/* added positions + publish */}
+                    <div className='w-full relative'>
+                        <div className='mt-24'>
+                            <SubsectionTitle title="Added positions"></SubsectionTitle>
+                            <InvalidFormFieldWarning
+                                visible={startShowingValidationErrors && !validPositionCount}
+                                text="Add at least one position when publishing a project.">
+                            </InvalidFormFieldWarning>
+                            <InvalidFormFieldWarning
+                                visible={startShowingValidationErrors && duplicatePositions}
+                                text="A project cannot contain duplicate positions.">
+                            </InvalidFormFieldWarning>
+
+                            <div className='absolute w-full bottom-16 top-52 overflow-y-auto'>
+                                {
+                                    project.positions.length === 0 &&
+                                    <p className='text-gray-500'>There are currently no added positions.</p>
+                                }
+                                {
+                                    project.positions.length > 0 &&
+                                    <div className='flex flex-col space-y-4'>
+                                        {
+                                            project.positions.map((p, index) => (
+                                                <div key={index}>
+                                                    <AddedPosition
+                                                        position={p}
+                                                        onRemoved={handleRemovePosition}>
+                                                    </AddedPosition>
+                                                </div>)
+                                            )
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        {/* publish button */}
+                        <div className='absolute bottom-0 right-0'>
+                            <PrimaryButton
+                                text="Publish"
+                                onClick={handlePublishProjectRequested}
+                                disabled={!(validBasicInfo && validPositionCount && !duplicatePositions)}>
+                            </PrimaryButton>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <BasicInfoForm
-                onValidChange={basicInfo => {
-                    setProject({ ...project, ...basicInfo });
-                    setValidBasicInfo(true);
-                }}
-                onInvalidChange={() => setValidBasicInfo(false)}>
-            </BasicInfoForm>
         </>
     );
 
-    const right = (
-        <div className='relative pb-32'>
-            <div className='relative pb-16'>
-                <div className="mb-8">
-                    <SectionTitle title="Positions"></SectionTitle>
-                    <p className='h-8'>Describe the profiles of people you're looking to find and collaborate with</p>
-                </div>
-
-                <PositionForm
-                    onValidChange={position => {
-                        setPosition(position);
-                        setValidPosition(true);
-                    }}
-                    onInvalidChange={() => setValidPosition(false)}>
-                </PositionForm>
-
-                <div className='absolute bottom-0 right-0'>
-                    <NeutralButton
-                        disabled={!validPosition}
-                        text="Add"
-                        onClick={() => {
-                            if (validPosition)
-                                setProject({ ...project, positions: [...project.positions, position] })
-                        }}>
-                    </NeutralButton>
-                </div>
-            </div>
-
-            <div className='mb-2'>
-                <SubsectionTitle title="Added positions"></SubsectionTitle>
-                <p className='text-red-500 font-semibold h-8'>{`${validPositionCount ? "" : "Add at least one position when publishing a project."}`}</p>
-            </div>
-            {
-                project.positions.length == 0 &&
-                <p className='text-gray-500'>There are currently no added positions.</p>
-            }
-            {
-                project.positions.length > 0 &&
-                <div className="mt-4"> {
-                    project.positions.map(p => (
-                        <div key={Math.random() * 1000}>
-                            <div className='mb-2'>
-                                <AddedPosition
-                                    position={p}
-                                    onRemoved={() => removePosition(p)}>
-                                </AddedPosition>
-                            </div>
-                        </div>)
-                    )
-                }
-                </div>
-            }
-
-            <div className='absolute bottom-2 right-0'>
-                <PrimaryButton
-                    text="Publish"
-                    onClick={onPublishProject}
-                    disabled={!(validBasicInfo && validPositionCount)}>
-                </PrimaryButton>
-            </div>
-        </div>
-    );
+    if (loading) {
+        return (
+            <SpinnerLayout>
+                <BeatLoader
+                    loading={loading}
+                    size={24}
+                    color="blue">
+                </BeatLoader>
+            </SpinnerLayout>
+        );
+    }
 
     return (
         <DoubleColumnLayout
             title="Publish a project"
-            description="Have an idea or a project you're working on? Let the world know and find your people!"
-            left={left}
-            right={right}>
+            description="Have an idea or a project you're working on? Describe the collaborators you need and find your people!">
+            {children}
         </DoubleColumnLayout>
     );
 }

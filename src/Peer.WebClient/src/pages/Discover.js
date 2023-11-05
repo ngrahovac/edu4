@@ -5,87 +5,88 @@ import SelectedDiscoveryParameter from '../comps/discover/SearchFilter';
 import SelectedDiscoveryParameters from '../comps/discover/SearchFilters';
 import { useState, useEffect } from 'react';
 import ProjectCard from '../comps/discover/ProjectCard';
-import RecommendedProjectCard from '../comps/discover/RecommendedProjectCard';
 import DiscoveryParametersSidebar from '../comps/discover/DiscoveryRefinementSidebar';
 import { discover } from '../services/ProjectsService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
 import { useAuth0 } from '@auth0/auth0-react';
 import { me } from '../services/UsersService'
+import SpinnerLayout from '../layout/SpinnerLayout';
+import { BeatLoader } from 'react-spinners';
 
 const Discover = () => {
-    const [projects, setProjects] = useState([
-    ]);
+    const [discoveredProjects, setDiscoveredProjects] = useState(undefined);
 
-    const [ownHats, setOwnHats] = useState([]);
+    const [ownHats, setOwnHats] = useState(undefined);
     const [keyword, setKeyword] = useState(undefined);
     const [sort, setSort] = useState(undefined);
     const [hat, setHat] = useState(undefined);
     const [discoveryRefinementSidebarVisibility, setDiscoveryParametersSidebarVisibility] = useState(false);
 
-    const { getAccessTokenWithPopup, getAccessTokenSilently } = useAuth0();
+    const [pageLoading, setPageLoading] = useState(true);
+    const [projectsLoading, setProjectsLoading] = useState(true);
+
+    const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
-        (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
+        const fetchOwnHats = () => {
+            (async () => {
+                setPageLoading(true);
 
-                let result = await me(token);
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
 
-                if (result.outcome === successResult) {
-                    setOwnHats(result.payload.hats);
-                } else {
-                    console.log("error fetching users hats");
+                    let result = await me(token);
+                    setPageLoading(false);
+
+                    if (result.outcome === successResult) {
+                        setOwnHats(result.payload.hats);
+                    } else {
+                        console.log("error fetching users hats");
+                    }
+                } catch (ex) {
+                    console.log(ex);
+                } finally {
+                    setPageLoading(false);
                 }
-            } catch (ex) {
-                console.log(ex);
-            }
-        })();
-    }, [])
+            })();
+        }
 
-    function onDiscoveryRefinementChanged() {
-        (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await discover(keyword, sort, hat, token);
-
-                if (result.outcome === successResult) {
-                    var projects = result.payload;
-                    setProjects(projects);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
-                } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                }
-            } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
-            }
-        })();
-    }
+        fetchOwnHats();
+    }, [getAccessTokenSilently])
 
     useEffect(() => {
-        onDiscoveryRefinementChanged();
-    }, [keyword, sort, hat])
+        const handleDiscoveryRefinementsChange = () => {
+            (async () => {
+                try {
+                    setProjectsLoading(true);
+
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+
+                    let result = await discover(keyword, sort, hat, token);
+                    setProjectsLoading(false);
+
+                    if (result.outcome === successResult) {
+                        var projects = result.payload;
+                        setDiscoveredProjects(projects);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error");
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                } finally {
+                    setProjectsLoading(false);
+                }
+            })();
+        }
+
+        handleDiscoveryRefinementsChange();
+    }, [keyword, sort, hat, getAccessTokenSilently])
 
     function updateDiscoveryParameters(keyword, sort, hat) {
         setKeyword(keyword);
@@ -93,41 +94,58 @@ const Discover = () => {
         setSort(sort);
     }
 
-    function showDiscoveryParametersSidebar() {
-        setDiscoveryParametersSidebarVisibility(true);
+    if (pageLoading) {
+        return (
+            <SpinnerLayout>
+                <BeatLoader
+                    loading={pageLoading}
+                    size={24}
+                    color="blue">
+                </BeatLoader>
+            </SpinnerLayout>
+        );
     }
 
-    function hideDiscoveryParametersSidebar() {
-        setDiscoveryParametersSidebarVisibility(false);
-    }
+    const discoveryResults = projectsLoading ?
+        <BeatLoader></BeatLoader> :
+        !discoveredProjects.length ?
+            <p>There are currently no projects satisfying the criteria.</p> :
+            <div className='flex flex-col space-y-8'>
+                {
+                    discoveredProjects.map((p, index) => <div key={index}>
+                        <ProjectCard project={p}></ProjectCard>
+                    </div>)
+                }
+            </div>;
 
     return (
+        ownHats &&
         <SingleColumnLayout
             title="Discover projects"
             description="Something encouraging here">
 
             {/* refine button and selected discovery parameters */}
             <div className='flex flex-col mt-16'>
-                <RefineButton onClick={showDiscoveryParametersSidebar}></RefineButton>
+                <RefineButton onClick={() => setDiscoveryParametersSidebarVisibility(true)}></RefineButton>
 
                 {/* selected discovery parameters */}
                 <SelectedDiscoveryParameters>
                     {
-                        keyword != undefined &&
+                        keyword !== undefined &&
                         <SelectedDiscoveryParameter
                             value={`keyword: ${keyword}`}
                             onRemoved={() => setKeyword(undefined)}>
                         </SelectedDiscoveryParameter>
                     }
                     {
-                        sort != undefined &&
+                        sort !== undefined &&
                         <SelectedDiscoveryParameter
-                            value={`sort: ${sort == "asc" ? "oldest first" : "newest first"}`}
+                            value={`sort: ${sort === "asc" ? "oldest first" : "newest first"}`}
                             onRemoved={() => setSort(undefined)}>
                         </SelectedDiscoveryParameter>
                     }
                     {
-                        hat != undefined &&
+                        hat !== undefined &&
                         <SelectedDiscoveryParameter
                             value={`looking for: a ${hat.type.toLowerCase()} like me`}
                             onRemoved={() => setHat(undefined)}>
@@ -138,21 +156,7 @@ const Discover = () => {
 
             { /* discovery results */}
             <div className='mt-16'>
-                {
-                    projects.length > 0 &&
-                    <div className='flex flex-col space-y-8'>
-                        {
-                            projects.map(p => <>
-                                <ProjectCard project={p}></ProjectCard>
-                            </>)
-                        }
-                    </div>
-                }
-
-                {
-                    projects.length <= 0 &&
-                    <p>There are currently no projects satisfying the criteria.</p>
-                }
+                {discoveryResults}
             </div>
 
             { /* discovery parameters sidebar */}
@@ -164,7 +168,7 @@ const Discover = () => {
                         sort={sort}
                         hat={hat}
                         hats={ownHats}
-                        onModalClosed={hideDiscoveryParametersSidebar}
+                        onModalClosed={() => setDiscoveryParametersSidebarVisibility(false)}
                         onDiscoveryParametersChanged={updateDiscoveryParameters}>
                     </DiscoveryParametersSidebar>
                 </div>

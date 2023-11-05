@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 
 const ApplicationsSorter = (props) => {
     const {
-        onSortSelected
+        onSortSelected,
+        sort = undefined
     } = props;
 
-    const [selectedSort, setSelectedSort] = useState("Default");
+    const [selectedSort, setSelectedSort] = useState(sort ? sort : "Default");
 
     const handleSelectChange = (e) => {
         setSelectedSort(e.target.value);

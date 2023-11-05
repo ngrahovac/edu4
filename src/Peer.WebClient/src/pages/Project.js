@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
 import ProjectDescriptor from '../comps/discover/ProjectDescriptor';
 import { SectionTitle } from '../layout/SectionTitle';
 import Collaborators from '../comps/project/Collaborators';
 import Author from '../comps/project/Author';
 import Collaborator from '../comps/project/Collaborator';
-import BorderlessButtonWithIcon from '../comps/buttons/BorderlessButtonWithIcon';
+import BorderlessButton from '../comps/buttons/BorderlessButton';
 import { getById, remove } from '../services/ProjectsService'
 import { useAuth0 } from '@auth0/auth0-react';
 import {
@@ -19,6 +19,9 @@ import { getCollaborations } from '../services/CollaboratorsService';
 import PrimaryButton from '../comps/buttons/PrimaryButton'
 import ProjectPositions from '../comps/project/ProjectPositions';
 import { submitApplication } from '../services/ApplicationsService';
+import SpinnerLayout from '../layout/SpinnerLayout';
+import { BeatLoader } from 'react-spinners';
+import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
 
 const Project = () => {
     const { projectId } = useParams();
@@ -28,197 +31,145 @@ const Project = () => {
     const [author, setAuthor] = useState(undefined);
     const [collaborations, setCollaborations] = useState(undefined);
     const [selectedPosition, setSelectedPosition] = useState(undefined);
-    const [applyingEnabled, setApplyingEnabled] = useState(false);
 
-    const { getAccessTokenWithPopup } = useAuth0();
+    const applyingEnabled = selectedPosition !== undefined;
 
-    function fetchAuthor() {
-        (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
+    const [pageLoading, setPageLoading] = useState(true);
 
-                let result = await getContributor(token, project.authorUrl);
+    const deleteConfirmationDialogRef = useRef(null);
 
-                if (result.outcome === successResult) {
-                    var author = result.payload;
-                    setAuthor(author);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
-                } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                }
-            } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
-            }
-        })();
-    }
-
-    function fetchCollaborations() {
-        (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await getCollaborations(project.collaborationsUrl, token);
-
-                if (result.outcome === successResult) {
-                    var collaborations = result.payload;
-                    setCollaborations(collaborations);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
-                } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                }
-            } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
-            }
-        })();
-    }
-
-    function fetchProject() {
-        (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await getById(projectId, token);
-
-                if (result.outcome === successResult) {
-                    var project = result.payload;
-
-                    // sort positions by recommended first
-                    const recommendedPositionSorter = (a, b) => {
-                        if (a.recommended && !b.recommended) return -1;
-                        if (!a.recommended && b.recommended) return +1;
-                        return 0;
-                    };
-
-                    project.positions.sort(recommendedPositionSorter);
-
-                    setProject(project);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
-                } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                }
-            } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
-            }
-        })();
-    }
+    const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
-        fetchProject();
-    }, [projectId]);
+        const fetchProject = () => {
+            (async () => {
+                setPageLoading(true);
 
-    useEffect(() => {
-        if (project != undefined) {
-            fetchCollaborations();
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+
+                    let result = await getById(projectId, token);
+                    setPageLoading(false);
+
+                    if (result.outcome === successResult) {
+                        var project = result.payload;
+
+                        // sort positions by recommended first
+                        const recommendedPositionSorter = (a, b) => {
+                            if (a.recommended && !b.recommended) return -1;
+                            if (!a.recommended && b.recommended) return +1;
+                            return 0;
+                        };
+
+                        project.positions.sort(recommendedPositionSorter);
+
+                        setProject(project);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error", result);
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                } finally {
+                    setPageLoading(false);
+                }
+            })();
         }
-    }, [project]);
+
+        fetchProject();
+    }, [getAccessTokenSilently, projectId]);
 
     useEffect(() => {
-        if (project != undefined) {
+        const fetchAuthor = () => {
+            (async () => {
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+
+                    let result = await getContributor(token, project.authorUrl);
+
+                    if (result.outcome === successResult) {
+                        var author = result.payload;
+                        setAuthor(author);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error");
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                }
+            })();
+        }
+
+        const fetchCollaborations = () => {
+            (async () => {
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+
+                    let result = await getCollaborations(project.collaborationsUrl, token);
+
+                    if (result.outcome === successResult) {
+                        var collaborations = result.payload;
+                        setCollaborations(collaborations);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error");
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
+                }
+            })();
+        }
+
+        if (project !== undefined) {
+            fetchCollaborations();
             fetchAuthor();
         }
-    }, [project]);
+    }, [project, getAccessTokenSilently]);
 
-    useEffect(() => {
-        setApplyingEnabled(selectedPosition != undefined);
-    }, [selectedPosition])
+    function handleDeleteProjectRequested() {
+        deleteConfirmationDialogRef.current.showModal();
+    }
 
-
-    function onDeleteProject() {
+    function handleDeleteProjectConfirmed() {
         (async () => {
+            setPageLoading(true);
+
             try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
                 let result = await remove(project.id, token);
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
                     console.log("success");
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
                 } else if (result.outcome === errorResult) {
-                    console.log("network error");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log("error");
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
+            } finally {
+                setPageLoading(false);
             }
         })();
     }
 
-    function onSubmitApplication() {
+    function handleSubmitApplication() {
         (async () => {
             try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -226,36 +177,43 @@ const Project = () => {
 
                 if (result.outcome === successResult) {
                     console.log("success");
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
                 } else if (result.outcome === errorResult) {
-                    console.log("network error");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log("error");
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
             }
         })();
     }
 
+    if (pageLoading) {
+        return (
+            <SpinnerLayout>
+                <BeatLoader
+                    loading={pageLoading}
+                    size={24}
+                    color="blue">
+                </BeatLoader>
+            </SpinnerLayout>
+        );
+    }
+
     return (
         <>
+            <dialog ref={deleteConfirmationDialogRef}>
+                <ConfirmationDialog
+                    question="Are you sure you want to delete this project?"
+                    description="You cannot undo this action"
+                    onConfirm={handleDeleteProjectConfirmed}
+                    onCancel={() => deleteConfirmationDialogRef.current.close()}>
+                </ConfirmationDialog>
+            </dialog>
+
             {
-                project != undefined &&
-                author != undefined &&
+                project !== undefined &&
+                author !== undefined &&
 
                 <SingleColumnLayout
                     title={project.title}>
@@ -296,14 +254,14 @@ const Project = () => {
                             <SectionTitle title="Collaborators"></SectionTitle>
                             <Collaborators>
                                 {
-                                    author != undefined &&
+                                    author !== undefined &&
                                     <Author
                                         name={author.fullName}>
                                     </Author>
                                 }
 
                                 {
-                                    (collaborations != undefined && collaborations.length >= 0) &&
+                                    (collaborations !== undefined && collaborations.length >= 0) &&
                                     collaborations.map(c => <div key={c.id}>
                                         <Collaborator
                                             avatar={avatar}
@@ -316,7 +274,7 @@ const Project = () => {
                             </Collaborators>
 
                             {
-                                (collaborations == undefined || collaborations.length == 0) &&
+                                (collaborations === undefined || collaborations.length === 0) &&
                                 <>
                                     <p>There are no other collaborators on this project.&nbsp;
                                         {
@@ -345,7 +303,7 @@ const Project = () => {
                             project.authored &&
                             <div className='absolute top-8 right-0 flex flex-row space-x-8'>
                                 <Link to="edit">
-                                    <BorderlessButtonWithIcon
+                                    <BorderlessButton
                                         text="Edit"
                                         icon={
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -353,18 +311,18 @@ const Project = () => {
                                             </svg>
                                         }
                                         onClick={() => { }}>
-                                    </BorderlessButtonWithIcon>
+                                    </BorderlessButton>
                                 </Link>
 
-                                <BorderlessButtonWithIcon
+                                <BorderlessButton
                                     text="Delete"
                                     icon={
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                         </svg>
                                     }
-                                    onClick={onDeleteProject}>
-                                </BorderlessButtonWithIcon>
+                                    onClick={handleDeleteProjectRequested}>
+                                </BorderlessButton>
                             </div>
                         }
                     </div>
@@ -374,7 +332,7 @@ const Project = () => {
                         <div className='absolute bottom-16 right-0'>
                             <PrimaryButton
                                 text="Apply"
-                                onClick={onSubmitApplication}
+                                onClick={handleSubmitApplication}
                                 disabled={!applyingEnabled}>
                             </PrimaryButton>
                         </div>

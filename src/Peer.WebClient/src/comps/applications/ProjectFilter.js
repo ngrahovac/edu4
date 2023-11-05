@@ -5,10 +5,11 @@ const ProjectFilter = (props) => {
     const {
         projects,
         onProjectSelected,
-        onProjectDeselected,
+        selectedProjectId = undefined
     } = props;
 
-    const [selectedProject, setSelectedProject] = useState(undefined);
+    const [selectedProject, setSelectedProject] = useState(selectedProjectId ?
+        projects.find(p => p.id === selectedProjectId) : undefined);
 
     const handleSelectedProject = (e) => {
         const selectedProjectId = e.target.value;
@@ -19,11 +20,7 @@ const ProjectFilter = (props) => {
     };
 
     useEffect(() => {
-        if (selectedProject == undefined) {
-            onProjectDeselected();
-        } else {
-            onProjectSelected(selectedProject);
-        }
+        onProjectSelected(selectedProject);
     }, [selectedProject])
 
 

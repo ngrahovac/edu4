@@ -6,9 +6,9 @@ import {
   Route
 } from 'react-router-dom'
 import TopNavbar from './comps/nav/TopNavbar';
-import Homepage from './pages/Homepage';
+import Welcome from './pages/Welcome';
 import Signup from './pages/Signup';
-import Welcome from './pages/Welcome'
+import Landing from './pages/Landing'
 import Publish from './pages/Publish';
 import Discover from './pages/Discover';
 import { Auth0Provider } from "@auth0/auth0-react"
@@ -29,21 +29,22 @@ root.render(
     domain={domain}
     clientId={clientId}
     redirectUri={window.location.origin}
-    audience={audience}>
+    audience={audience}
+    cacheLocation='localstorage'>
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
           { /* pages without the top navbar */}
-          <Route path='/' element={<Welcome></Welcome>}></Route>
+          <Route path='/' element={<Landing></Landing>}></Route>
           <Route path="/signup" element={<Signup></Signup>}></Route>
 
           {/* navbar layout route + top-level pages as children */}
           <Route element={<TopNavbar></TopNavbar>}>
-            <Route path='/homepage' element={<Homepage></Homepage>}></Route>
+            <Route path='/welcome' element={<Welcome></Welcome>}></Route>
             <Route path='/publish' element={<Publish></Publish>}></Route>
             <Route path='/discover' element={<Discover></Discover>}></Route>
             <Route path='/projects/:projectId' element={<Project></Project>}></Route>
-            <Route path='/edit' element={<EditProject></EditProject>}></Route>
+            <Route path='/projects/:projectId/edit' element={<EditProject></EditProject>}></Route>
             <Route path='/contributors/:contributorId' element={<Contributor></Contributor>}></Route>
             <Route path='/applications' element={<Applications></Applications>}></Route>
           </Route>

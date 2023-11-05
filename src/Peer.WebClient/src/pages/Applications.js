@@ -12,25 +12,34 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ReceivedApplications from '../comps/applications/ReceivedApplications'
 
 const Applications = () => {
-
     const applicationType = {
         sent: "Sent",
         received: "Received"
     };
 
+    const { getAccessTokenSilently } = useAuth0();
+
     const [selectedApplicationType, setSelectedApplicationType] = useState(applicationType.sent);
+
     const [sentApplications, setSentApplications] = useState(undefined);
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
     const [sort, setSort] = useState(undefined);
 
     const [receivedApplications, setReceivedApplications] = useState(undefined);
 
-    const { getAccessTokenWithPopup } = useAuth0();
+    useEffect(() => {
+        if (selectedApplicationType == applicationType.sent) {
+            getSentApplications();
+        } else {
+            getReceivedApplications();
+        }
+    }, [selectedApplicationType, sort, projectIdFilter])
+
 
     function getSentApplications() {
         (async () => {
             try {
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -68,7 +77,7 @@ const Applications = () => {
         (async () => {
             try {
                 {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
@@ -101,14 +110,6 @@ const Applications = () => {
             }
         })();
     }
-
-    useEffect(() => {
-        if (selectedApplicationType == applicationType.sent) {
-            getSentApplications();
-        } else {
-            getReceivedApplications();
-        }
-    }, [projectIdFilter, sort, selectedApplicationType])
 
     return (
         <SingleColumnLayout

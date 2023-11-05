@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import HatForm from '../comps/hat-forms/HatForm';
 import AddedPosition from '../comps/publish/AddedPosition';
 import { DoubleColumnLayout } from '../layout/DoubleColumnLayout'
 import { SectionTitle } from '../layout/SectionTitle'
@@ -8,300 +7,285 @@ import SubsectionTitle from '../layout/SubsectionTitle';
 import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
 import { addPositions, closePosition, removePosition, reopenPosition, updateDetails } from '../services/ProjectsService';
-import { getById, remove } from '../services/ProjectsService'
-
+import { getById } from '../services/ProjectsService'
+import _ from 'lodash';
 import {
     successResult,
     failureResult,
     errorResult
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react'
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import ProjectPositions from '../comps/project/ProjectPositions';
 import PositionForm from '../comps/publish/PositionForm';
 import DangerButton from '../comps/buttons/DangerButton';
-
+import { BeatLoader } from 'react-spinners';
+import SpinnerLayout from '../layout/SpinnerLayout';
+import { useRef } from 'react';
+import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
 
 const EditProject = () => {
 
     const { projectId } = useParams();
 
+    const removePositionConfirmationDialogRef = useRef(null);
+
     const [originalProject, setOriginalProject] = useState(undefined);
     const [project, setProject] = useState(undefined);
-    const [position, setPosition] = useState({});
+    const [position, setPosition] = useState(undefined);
 
-    const [validPosition, setValidPosition] = useState(false);
-    const [validBasicInfo, setValidBasicInfo] = useState(false);
+    const validPosition = position;
+    const validBasicInfo = project && project.title && project.description;
 
     const [newPositions, setNewPositions] = useState([]);
-
     const [selectedPosition, setSelectedPosition] = useState(undefined);
 
-    const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
+    const [pageLoading, setPageLoading] = useState(true);
 
-    function fetchProject() {
-        (async () => {
-            try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
+    const [startShowingValidationErrors, setStartShowingValidationErrors] = useState(false);
 
-                let result = await getById(projectId, token);
+    const { getAccessTokenSilently } = useAuth0();
 
-                if (result.outcome === successResult) {
-                    var project = result.payload;
-
-                    // sort positions by recommended first
-                    const recommendedPositionSorter = (a, b) => {
-                        if (a.recommended && !b.recommended) return -1;
-                        if (!a.recommended && b.recommended) return +1;
-                        return 0;
-                    };
-
-                    project.positions.sort(recommendedPositionSorter);
-
-                    setProject(project);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
-                } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
-                } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+    useEffect(() => {
+        const fetchProject = () => {
+            (async () => {
+                setPageLoading(true);
+    
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+    
+                    let result = await getById(projectId, token);
+                    setPageLoading(false);
+    
+                    if (result.outcome === successResult) {
+                        var project = result.payload;
+    
+                        // sort positions by recommended first
+                        const recommendedPositionSorter = (a, b) => {
+                            if (a.recommended && !b.recommended) return -1;
+                            if (!a.recommended && b.recommended) return +1;
+                            return 0;
+                        };
+    
+                        project.positions.sort(recommendedPositionSorter);
+    
+                        setOriginalProject(project);
+                        setProject(project);
+                    } else if (result.outcome === failureResult) {
+                        console.log("failure");
+                    } else if (result.outcome === errorResult) {
+                        console.log("error");
+                    }
+                } catch (ex) {
+                    console.log("exception", ex);
                 }
-            } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
-            }
-        })();
-    }
-
-    useEffect(() => {
+            })();
+        }
+        
         fetchProject();
-    }, [projectId]);
+    }, [projectId, getAccessTokenSilently]);
 
-    useEffect(() => {
-        setOriginalProject(project);
-    }, [project])
-
-    function removeNewPosition(positionToRemove) {
-        let filteredPositions = newPositions.filter(p => p != positionToRemove);
+    function handleNewPositionRemoved(positionToRemove) {
+        let filteredPositions = newPositions.filter(p => p !== positionToRemove);
         setNewPositions(filteredPositions);
     }
 
-    function onAddPositions() {
+    function handleAddPositions() {
         (async () => {
+            setPageLoading(true);
+
             try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
                 let result = await addPositions(project.id, newPositions, token);
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
                     console.log("success");
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                    // TODO: reload
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
                 } else if (result.outcome === errorResult) {
-                    console.log("network error");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log("error");
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
+            } finally {
+                setPageLoading(false);
             }
         })();
     }
 
-    function onUpdateDetails() {
+    function handleUpdateDetails() {
         (async () => {
+            setPageLoading(true);
+
             try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
                 let result = await updateDetails(project.id, project.title, project.description, token);
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
                     console.log("success");
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
                     console.log("failure");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
                 } else if (result.outcome === errorResult) {
-                    console.log("network error");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log("error");
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
+            } finally {
+                setPageLoading(false);
             }
         })();
     }
 
-    function onPositionClosed() {
+    function handleClosePosition() {
         (async () => {
+            setPageLoading(true);
+
             try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
                 let result = await closePosition(project.id, selectedPosition.id, token)
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
-                    setSelectedPosition({ ...selectedPosition, open: false });
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                    let closedPosition = { ...selectedPosition, open: false };
+
+                    setProject({
+                        ...project,
+                        positions: [
+                            ...project.positions.filter(p => !_.eq(p, selectedPosition)),
+                            closedPosition
+                        ]
+                    });
+
+                    setSelectedPosition(closedPosition);
                 } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("failure");
                 } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
+            } finally {
+                setPageLoading(false);
             }
         })();
     }
 
-    function onPositionReopened() {
+    function handleReopenPosition() {
         (async () => {
+            setPageLoading(true);
+
             try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
                 let result = await reopenPosition(project.id, selectedPosition.id, token)
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
-                    setSelectedPosition({ ...selectedPosition, open: true });
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
+                    let reopenedPosition = {...selectedPosition, open: true };
+
+                    setProject({
+                        ...project,
+                        positions: [
+                            ...project.positions.filter(p => !_.eq(p, selectedPosition)),
+                            reopenedPosition
+                        ]
+                    });
+
+                    setSelectedPosition(reopenedPosition);
                 } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("failure");
                 } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
+            } finally {
+                setPageLoading(false);
             }
         })();
     }
 
-    function onExistingPositionRemoved() {
+    function handleRemoveExistingPositionConfirmed() {
         (async () => {
+            setPageLoading(true);
+
             try {
-                {/* add validation */ }
-                let token = await getAccessTokenWithPopup({
+                let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
                 let result = await removePosition(project.id, selectedPosition.id, token)
+                setPageLoading(false);
 
                 if (result.outcome === successResult) {
-                    setProject({ ...project, positions: project.positions.filter(p => p.id != selectedPosition.id) })
+                    setProject({ ...project, positions: project.positions.filter(p => p.id !== selectedPosition.id) })
                     setSelectedPosition(undefined);
-                    // document.getElementById('user-action-success-toast').show();
-                    // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
-                    console.log("neuspjesan status code");
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("failure");
                 } else if (result.outcome === errorResult) {
-                    console.log("nesto je do mreze", result);
-                    // document.getElementById('user-action-fail-toast').show();
-                    // setTimeout(() => {
-                    //     document.getElementById('user-action-fail-toast').close();
-                    // }, 3000);
+                    console.log("error");
                 }
             } catch (ex) {
-                console.log(ex);
-                // document.getElementById('user-action-fail-toast').show();
-                // setTimeout(() => {
-                //     document.getElementById('user-action-fail-toast').close();
-                // }, 3000);
+                console.log("exception", ex);
+            } finally {
+                setPageLoading(false);
             }
         })();
     }
 
-    const left = (
+    function handleRemoveExistingPositionRequested() {
+        removePositionConfirmationDialogRef.current.showModal();
+    }
+
+    const children = (
         project &&
         <>
+            <dialog ref={removePositionConfirmationDialogRef}>
+                <ConfirmationDialog
+                    question="Are you sure you want to remove this position?"
+                    description="It will no longer be visible on the project page and other collaborators will not be able to apply. You cannot undo this action."
+                    onConfirm={handleRemoveExistingPositionConfirmed}
+                    onCancel={() => removePositionConfirmationDialogRef.current.close()}>
+                </ConfirmationDialog>
+            </dialog>
+
             <div className='relative pb-16'>
                 <div className='mb-8'>
                     <SectionTitle title="Basic info"></SectionTitle>
                     <p className='h-8'></p>
                 </div>
                 <BasicInfoForm
-                    basicInfo={{ title: project.title, description: project.description }}
+                    initialBasicInfo={{ title: project.title, description: project.description }}
                     onValidChange={basicInfo => {
                         setProject({ ...project, ...basicInfo });
-                        setValidBasicInfo(true);
+                        if (!startShowingValidationErrors) {
+                            setStartShowingValidationErrors(true);
+                        }
                     }}
-                    onInvalidChange={() => setValidBasicInfo(false)}>
+                    onInvalidChange={() => {
+                        setProject({ ...project, title: '', description: '' });
+                        if (!startShowingValidationErrors) {
+                            setStartShowingValidationErrors(true);
+                        }
+                    }}
+                    startShowingValidationErrors={startShowingValidationErrors}>
                 </BasicInfoForm>
 
 
@@ -313,137 +297,148 @@ const EditProject = () => {
 
                     <PrimaryButton
                         text="Update details"
-                        onClick={onUpdateDetails}
+                        onClick={handleUpdateDetails}
                         disabled={!(validBasicInfo)}>
                     </PrimaryButton>
                 </div>
             </div>
-        </>
-    );
 
-    const right = (
-        project &&
-        <div className='relative pb-32'>
-            <div className="mb-12">
-                <SectionTitle title="Positions"></SectionTitle>
-                <p>Describe the profiles of people you're looking to find and collaborate with</p>
-            </div>
-
-            {/* manage existing positions */}
-            <div className='relative mb-12 pb-16'>
-                <div className='mb-8'>
-                    <SubsectionTitle title="Manage existing positions"></SubsectionTitle>
+            <div className='relative pb-32'>
+                <div className="mb-12">
+                    <SectionTitle title="Positions"></SectionTitle>
+                    <p>Describe the profiles of people you're looking to find and collaborate with</p>
                 </div>
-                {
-                    project.positions.length == 0 &&
-                    <p className='text-gray-500'>Currently there are no added positions.</p>
-                }
-                {
-                    project.positions.length > 0 &&
-                    <div className="mt-4">
-                        <ProjectPositions
-                            positions={project.positions}
-                            selectionEnabled={true}
-                            onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
-                        </ProjectPositions>
+
+                {/* manage existing positions */}
+                <div className='relative mb-12 pb-16'>
+                    <div className='mb-8'>
+                        <SubsectionTitle title="Manage existing positions"></SubsectionTitle>
                     </div>
-                }
+                    {
+                        project.positions.length === 0 &&
+                        <p className='text-gray-500'>Currently there are no added positions.</p>
+                    }
+                    {
+                        project.positions.length > 0 &&
+                        <div className="mt-4">
+                            <ProjectPositions
+                                positions={project.positions}
+                                selectionEnabled={true}
+                                onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
+                            </ProjectPositions>
+                        </div>
+                    }
 
-                {
-                    project.positions.length > 0 &&
-                    <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
-                        <DangerButton
-                            text="Close"
-                            disabled={!selectedPosition || !selectedPosition.open}
-                            onClick={onPositionClosed}>
-                        </DangerButton>
+                    {
+                        project.positions.length > 0 &&
+                        <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
+                            <DangerButton
+                                text="Close"
+                                disabled={!selectedPosition || !selectedPosition.open}
+                                onClick={handleClosePosition}>
+                            </DangerButton>
 
+                            <NeutralButton
+                                text="Reopen"
+                                disabled={!selectedPosition || selectedPosition.open}
+                                onClick={handleReopenPosition}>
+                            </NeutralButton>
+
+                            <DangerButton
+                                text="Remove"
+                                disabled={!selectedPosition}
+                                onClick={handleRemoveExistingPositionRequested}>
+                            </DangerButton>
+                        </div>
+                    }
+                </div>
+
+                {/* add a new position */}
+                <div className='relative mb-8 pb-16'>
+                    <div className='mb-4'>
+                        <SubsectionTitle title="Add a new position"></SubsectionTitle>
+                    </div>
+                    <PositionForm
+                        onValidChange={position => {
+                            setPosition(position);
+                            if (!startShowingValidationErrors) {
+                                setStartShowingValidationErrors(true);
+                            }
+                        }}
+                        onInvalidChange={() => {
+                            setPosition(undefined);
+                            if (!startShowingValidationErrors) {
+                                setStartShowingValidationErrors(true);
+                            }
+                        }}
+                        startShowingValidationErrors={startShowingValidationErrors}>
+                    </PositionForm>
+
+                    <div className='absolute bottom-0 right-0'>
                         <NeutralButton
-                            text="Reopen"
-                            disabled={!selectedPosition || selectedPosition.open}
-                            onClick={onPositionReopened}>
+                            disabled={!validPosition}
+                            text="Add"
+                            onClick={() => {
+                                if (validPosition)
+                                    setNewPositions([...newPositions, position])
+                            }}>
+                        </NeutralButton>
+                    </div>
+                </div>
+
+                {/* new positions */}
+                <div>
+                    <div className='mb-4 mt-12'>
+                        <SubsectionTitle title="New positions"></SubsectionTitle>
+                    </div>
+                    {
+                        newPositions.length === 0 &&
+                        <p className='text-gray-500'>Currently there are no added positions.</p>
+                    }
+                    {
+                        newPositions.map(p => (
+                            <div key={Math.random() * 1000}>
+                                <div className='mb-2'>
+                                    {/*  <Position position={p}></Position> */}
+                                    <AddedPosition
+                                        position={p}
+                                        onRemoved={() => handleNewPositionRemoved(p)}>
+                                    </AddedPosition>
+                                </div>
+                            </div>)
+                        )
+                    }
+
+                    <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
+                        <NeutralButton
+                            text="Cancel"
+                            onClick={() => { setNewPositions([]) }}>
                         </NeutralButton>
 
-                        <DangerButton
-                            text="Remove"
-                            disabled={!selectedPosition}
-                            onClick={onExistingPositionRemoved}>
-                        </DangerButton>
+                        <PrimaryButton
+                            text="Update positions"
+                            onClick={handleAddPositions}
+                            disabled={newPositions.length < 1}>
+                        </PrimaryButton>
                     </div>
-                }
-            </div>
-
-            {/* add a new position */}
-            <div className='relative mb-8 pb-16'>
-                <div className='mb-4'>
-                    <SubsectionTitle title="Add a new position"></SubsectionTitle>
-                </div>
-                <PositionForm
-                    onValidChange={position => {
-                        setPosition(position);
-                        setValidPosition(true);
-                    }}
-                    onInvalidChange={() => setValidPosition(false)}>
-                </PositionForm>
-
-                <div className='absolute bottom-0 right-0'>
-                    <NeutralButton
-                        disabled={!validPosition}
-                        text="Add"
-                        onClick={() => {
-                            if (validPosition)
-                                setNewPositions([...newPositions, position])
-                        }}>
-                    </NeutralButton>
                 </div>
             </div>
+        </>
 
-            {/* new positions */}
-            <div>
-                <div className='mb-4 mt-12'>
-                    <SubsectionTitle title="New positions"></SubsectionTitle>
-                </div>
-                {
-                    newPositions.length == 0 &&
-                    <p className='text-gray-500'>Currently there are no added positions.</p>
-                }
-                {
-                    newPositions.map(p => (
-                        <div key={Math.random() * 1000}>
-                            <div className='mb-2'>
-                                {/*  <Position position={p}></Position> */}
-                                <AddedPosition
-                                    position={p}
-                                    onRemoved={() => removeNewPosition(p)}>
-                                </AddedPosition>
-                            </div>
-                        </div>)
-                    )
-                }
-
-                <div className='flex flex-row shrink-0 absolute bottom-2 right-0 space-x-2'>
-                    <NeutralButton
-                        text="Cancel"
-                        onClick={() => { setNewPositions([]) }}>
-                    </NeutralButton>
-
-                    <PrimaryButton
-                        text="Update positions"
-                        onClick={onAddPositions}
-                        disabled={newPositions.length < 1}>
-                    </PrimaryButton>
-                </div>
-            </div>
-        </div>
     );
 
+    if (pageLoading) {
+        return <SpinnerLayout>
+            <BeatLoader></BeatLoader>
+        </SpinnerLayout>
+    }
+
     return (
-        project &&
+        originalProject !== undefined &&
         <DoubleColumnLayout
             title="Edit project"
-            description=""
-            left={left}
-            right={right}>
+            description="">
+            {children}
         </DoubleColumnLayout>
     );
 }

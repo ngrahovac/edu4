@@ -47,9 +47,9 @@ const DiscoveryParametersSidebar = (props) => {
   }
 
   function onFormChange(e) {
-    if (e.target.name == "keyword") {
+    if (e.target.name === "keyword") {
       setKeyword(e.target.value);
-    } else if (e.target.name == "sort") {
+    } else if (e.target.name === "sort") {
       selectSort(e.target.value);
     }
   }
@@ -72,15 +72,16 @@ const DiscoveryParametersSidebar = (props) => {
           {/* search */}
           <label>
             <div className='flex flex-row shrink-0 items-center content-center mb-2'>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 mr-1">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
               <p className='text-md font-semibold'>Search</p>
             </div>
             <input
               type="text"
               name="keyword"
-              value={discoveryParameters.keyword == undefined ? "" : discoveryParameters.keyword}
+              value={discoveryParameters.keyword === undefined ? "" : discoveryParameters.keyword}
+              onChange={onFormChange}
               className="w-full mt-1 block rounded-full border-gray-300 focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10"></input>
             <ClearSearchFilter onClick={clearSearchKeyword}></ClearSearchFilter>
           </label>
@@ -100,7 +101,8 @@ const DiscoveryParametersSidebar = (props) => {
                   type="radio"
                   name="sort"
                   value="asc"
-                  checked={discoveryParameters.sort == "asc"}
+                  checked={discoveryParameters.sort === "asc"}
+                  onChange={onFormChange}
                   className="mr-2">
                 </input>
                 Oldest first
@@ -111,7 +113,8 @@ const DiscoveryParametersSidebar = (props) => {
                   type="radio"
                   name="sort"
                   value="desc"
-                  checked={discoveryParameters.sort == "desc"}
+                  checked={discoveryParameters.sort === "desc"}
+                  onChange={onFormChange}
                   className="mr-2">
                 </input>
                 Newest first
