@@ -171,11 +171,14 @@ const SentApplications = (props) => {
             <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8'>
                 <ProjectFilter
                     projects={submittedApplicationsProjects}
+                    selectedProjectId={projectIdFilter}
                     onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
-                    onProjectDeselected={() => setProjectIdFilter(undefined)}>
+                    onProjectDeselected={() => { }}>
                 </ProjectFilter>
 
-                <ApplicationsSorter onSortSelected={(sort) => setSort(sort)}>
+                <ApplicationsSorter
+                    sort={sort}
+                    onSortSelected={(sort) => setSort(sort)}>
                 </ApplicationsSorter>
             </div>
 
