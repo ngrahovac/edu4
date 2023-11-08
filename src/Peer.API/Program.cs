@@ -60,7 +60,7 @@ builder.Services.AddAuthorization(configure => configure.AddPolicy(
 
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddSingleton<IAccountIdExtractionService, TestAccountIdExtractionService>();
+    builder.Services.AddSingleton<IAccountIdExtractionService, AccountIdExtractionService>();
 }
 else
 {
