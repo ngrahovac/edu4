@@ -31,7 +31,7 @@ public class MongoDBSetupUtils
             cm.AutoMap();
             cm.MapProperty(sh => sh.StudyField);
             cm.MapProperty(sh => sh.AcademicDegree)
-            .SetSerializer(new EnumSerializer<AcademicDegree>(BsonType.String));
+                .SetSerializer(new EnumSerializer<AcademicDegree>(BsonType.String));
         });
 
         BsonClassMap.RegisterClassMap<AcademicHat>(cm =>
@@ -75,10 +75,10 @@ public class MongoDBSetupUtils
             cm.MapCreator(
                 p =>
                     new Project(
-                p.Title,
-                p.Description,
-                p.AuthorId,
-                p.DatePosted,
+                        p.Title,
+                        p.Description,
+                        p.AuthorId,
+                        p.DatePosted,
                         p.Positions.ToList()
                     )
             );
@@ -103,7 +103,7 @@ public class MongoDBSetupUtils
             cm.MapProperty(cm => cm.PositionId);
             cm.MapProperty(cm => cm.DateSubmitted);
             cm.MapProperty(cm => cm.Status)
-            .SetSerializer(new EnumSerializer<ApplicationStatus>(BsonType.String));
+                .SetSerializer(new EnumSerializer<ApplicationStatus>(BsonType.String));
         });
 
         BsonClassMap.RegisterClassMap<Collaboration>(cm =>
@@ -119,6 +119,7 @@ public class MongoDBSetupUtils
         {
             cm.AutoMap();
             cm.MapProperty(ade => ade.Processed);
+            cm.MapProperty(ade => ade.TimeRaised);
         });
 
         BsonClassMap.RegisterClassMap<ApplicationAccepted>(cm =>
