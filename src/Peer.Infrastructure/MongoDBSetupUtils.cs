@@ -10,6 +10,7 @@ using Peer.Domain.Applications;
 using Peer.Domain.Notifications;
 
 namespace Peer.Infrastructure;
+
 public class MongoDBSetupUtils
 {
     public static void RegisterClassMaps()
@@ -53,11 +54,9 @@ public class MongoDBSetupUtils
 
             cm.MapProperty(u => u.Removed);
 
-            cm.MapCreator(u => new Contributor(
-                u.AccountId,
-                u.FullName,
-                u.ContactEmail,
-                u.Hats.ToList()));
+            cm.MapCreator(
+                u => new Contributor(u.AccountId, u.FullName, u.ContactEmail, u.Hats.ToList())
+            );
         });
 
         BsonClassMap.RegisterClassMap<Project>(cm =>
@@ -73,12 +72,16 @@ public class MongoDBSetupUtils
 
             cm.MapProperty(p => p.Removed);
 
-            cm.MapCreator(p => new Project(
+            cm.MapCreator(
+                p =>
+                    new Project(
                 p.Title,
                 p.Description,
                 p.AuthorId,
                 p.DatePosted,
-                p.Positions.ToList()));
+                        p.Positions.ToList()
+                    )
+            );
         });
 
         BsonClassMap.RegisterClassMap<Position>(cm =>
