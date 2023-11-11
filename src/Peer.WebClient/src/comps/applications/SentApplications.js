@@ -9,6 +9,11 @@ import ProjectFilter from './ProjectFilter'
 import ApplicationsSorter from './SentApplicationsSorter';
 import { BeatLoader } from 'react-spinners';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
+import Table from '../shared/table/Table';
+import TableRow from '../shared/table/TableRow';
+import TableCell from '../shared/table/TableCell';
+import SubmittedApplicationStatus from './SubmittedApplicationStatus';
+import { Link } from 'react-router-dom';
 
 const SentApplications = (props) => {
 
@@ -207,48 +212,42 @@ const SentApplications = (props) => {
                     </ApplicationsSorter>
                 </div>
 
-
-                <div className='overflow-x-auto'>
-                    <table className='text-left w-full'>
-                        <thead>
-                            <tr className=''>
-                                <th className='py-4 px-2 pl-4 w-1/3 truncate'>Project</th>
-                                <th className='py-4 px-2 w-1/4 truncate'>Position</th>
-                                <th className='py-4 px-2 truncate'>Date submitted</th>
-                                <th className='py-4 px-2 truncate'>Status</th>
-                                <th className='py-4 px-2 pr-4 truncate'></th>
-                            </tr>
-
-                        </thead>
-                        <tbody>
-                            {
-                                displayedApplications.map(a => <Fragment key={a.id}>
-                                    <SentApplication
-                                        application={a}
-                                        projectTitle={displayedApplicationsProjects.find(p => p.id == a.projectId) ? displayedApplicationsProjects.find(p => p.id == a.projectId).title : "nema"}
-                                        positionName={displayedApplicationsProjects.find(p => p.id == a.projectId) ? displayedApplicationsProjects.find(p => p.id == a.projectId).positions.find(p => p.id == a.positionId).name : "nema"}
-                                        onApplicationSelected={applicationSelected}
-                                        onApplicationDeselected={applicationDeselected}>
-                                    </SentApplication>
-                                </Fragment>)
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td className='text-left pl-4 h-12 uppercase tracking-wide'>
-                                    {
-                                        selectedApplicationIds.length > 0 &&
-                                        <p>{`Selected: ${selectedApplicationIds.length}`}</p>
-                                    }
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                <Table
+                    columns={["Project", "Position", "Date submitted", "Status", ""]}
+                    widths={{ "Project": "w-1/3", "Position": "w-1/4" }}
+                    selectedCount={selectedApplicationIds.length}>
+                    {
+                        displayedApplications.map(application => <>
+                            <TableRow selected={selectedApplicationIds.find(id => id == application.id)}>
+                                <TableCell>
+                                    <div className='hover:underline'>
+                                    <Link to={application.projectUrl}>
+                                        {displayedApplicationsProjects.find(p => p.id == application.projectId) ?
+                                            displayedApplicationsProjects.find(p => p.id == application.projectId).title :
+                                            "nema"}
+                                    </Link>
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    {displayedApplicationsProjects.find(p => p.id == application.projectId) ?
+                                        displayedApplicationsProjects.find(p => p.id == application.projectId).positions.find(p => p.id == application.positionId).name :
+                                        "nema"}
+                                </TableCell>
+                                <TableCell>{application.dateSubmitted}</TableCell>
+                                <TableCell><SubmittedApplicationStatus></SubmittedApplicationStatus></TableCell>
+                                <TableCell>
+                                    <form onChange={() => { }}>
+                                        <input
+                                            type='checkbox'
+                                            checked={selectedApplicationIds.find(id => id == application.id)}
+                                            onChange={() => selectedApplicationIds.find(id => id == application.id) ?
+                                                applicationDeselected(application.id) :
+                                                applicationSelected(application.id)}></input>
+                                    </form></TableCell>
+                            </TableRow>
+                        </>)
+                    }
+                </Table>
 
                 <div className='absolute bottom-0 right-0 flex flex-row space-x-8'>
                     <PrimaryButton
@@ -256,7 +255,7 @@ const SentApplications = (props) => {
                         onClick={handleRevokeApplicationsRequested}
                         text="Revoke"></PrimaryButton>
                 </div>
-            </div>
+            </div >
         </>
     )
 }
