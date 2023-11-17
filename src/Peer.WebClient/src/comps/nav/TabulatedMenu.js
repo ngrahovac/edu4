@@ -18,7 +18,7 @@ const TabulatedMenu = (props) => {
     
 
     return (
-        <div className='w-full border-b-2 border-gray-200 flex flex-row gap-x-8'>
+        <div className='w-full flex flex-row gap-x-8'>
             {
                 items.map(i => <>
                     <TabulatedMenuItem
