@@ -122,13 +122,13 @@ const Discover = () => {
         ownHats &&
         <SingleColumnLayout
             title="Discover projects"
-            description="Something encouraging here">
+            description="Explore projects and find opportunities to contribute to">
 
-            {/* refine button and selected discovery parameters */}
+            <div className='flex flex-col gap-y-8'>
+                {/* refine button and selected discovery parameters 
             <div className='flex flex-col mt-16'>
                 <RefineButton onClick={() => setDiscoveryParametersSidebarVisibility(true)}></RefineButton>
 
-                {/* selected discovery parameters */}
                 <SelectedDiscoveryParameters>
                     {
                         keyword !== undefined &&
@@ -153,9 +153,8 @@ const Discover = () => {
                     }
                 </SelectedDiscoveryParameters>
             </div>
+            */}
 
-            { /* discovery results */}
-            <div className='mt-16'>
                 {discoveryResults}
             </div>
 
