@@ -19,7 +19,11 @@ public class ProjectsController : ControllerBase
     private readonly ContributorsService _contributors;
     private readonly IAccountIdExtractionService _accountIdExtractionService;
 
-    public ProjectsController(ProjectsService projects, ContributorsService users, IAccountIdExtractionService accountIdExtractionService)
+    public ProjectsController(
+        ProjectsService projects,
+        ContributorsService users,
+        IAccountIdExtractionService accountIdExtractionService
+    )
     {
         _projects = projects;
         _contributors = users;
@@ -54,7 +58,8 @@ public class ProjectsController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<ProjectDisplayModel>>> DiscoverAsync(
         [FromQuery] string? keyword = null,
         [FromQuery] ProjectsSortOption? sort = ProjectsSortOption.Unspecified,
-        [FromQuery] string? hatType = null)
+        [FromQuery] string? hatType = null
+    )
     {
         if (!ProjectDiscoveryRequestValidator.RequestIsValid(Request.Query))
         {
@@ -63,38 +68,52 @@ public class ProjectsController : ControllerBase
 
         var hatTypeEnum = HatParametersExtractor.GetHatTypeFromQueryString(Request.Query);
 
-        var hatParameters = hatTypeEnum is null ?
-            null :
-            HatParametersExtractor.ExtractHatParametersFromQueryString((HatType)hatTypeEnum, Request.Query);
+        var hatParameters = hatTypeEnum is null
+            ? null
+            : HatParametersExtractor.ExtractHatParametersFromQueryString(
+                (HatType)hatTypeEnum,
+                Request.Query
+            );
 
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
         var requester = await _contributors.GetByIdAsync(requesterId);
 
-        var hat = hatTypeEnum is null ?
-            null :
-            HatDTO.ToHat(new HatDTO(hatType switch
+        var hat = hatTypeEnum is null
+            ? null
+            : HatDTO.ToHat(
+                new HatDTO(
+                    hatType switch
             {
                 "Student" => HatType.Student,
                 "Academic" => HatType.Academic,
-                _ => throw new NotImplementedException("Discovering projects by specifying hat parameters of the given type is not yet implemented"),
-            }, hatParameters!));
+                        _
+                            => throw new NotImplementedException(
+                                "Discovering projects by specifying hat parameters of the given type is not yet implemented"
+                            ),
+                    },
+                    hatParameters!
+                )
+            );
 
         var projects = await _projects.DiscoverAsync(
             keyword,
             sort is null ? ProjectsSortOption.Unspecified : (ProjectsSortOption)sort,
-            hat);
+            hat
+        );
 
-        return projects.Select(p => new ProjectDisplayModel(p, requester))
-            .ToList();
+        return projects.Select(p => new ProjectDisplayModel(p, requester)).ToList();
     }
-
 
     [HttpGet("{projectId}")]
     [Authorize(Policy = "Contributor")]
     public async Task<ActionResult<ProjectDisplayModel>> GetByIdAsync(Guid projectId)
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
         var requester = await _contributors.GetByIdAsync(requesterId);
 
@@ -107,7 +126,9 @@ public class ProjectsController : ControllerBase
     [Authorize(Policy = "Contributor")]
     public async Task<ActionResult<List<ProjectDisplayModel>>> GetAuthoredAsync()
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
         var requester = await _contributors.GetByIdAsync(requesterId);
 
@@ -116,12 +137,16 @@ public class ProjectsController : ControllerBase
         return projects.Select(p => new ProjectDisplayModel(p, requester)).ToList();
     }
 
-
     [HttpPost("{projectId}/positions")]
     [Authorize(Policy = "Contributor")]
-    public async Task<ActionResult> AddPositionsAsync(Guid projectId, IReadOnlyList<PositionInputModel> positions)
+    public async Task<ActionResult> AddPositionsAsync(
+        Guid projectId,
+        IReadOnlyList<PositionInputModel> positions
+    )
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         foreach (var positionModel in positions)
@@ -131,35 +156,38 @@ public class ProjectsController : ControllerBase
                 requesterId,
                 positionModel.Name,
                 positionModel.Description,
-                new HatDTO(positionModel.Requirements.Type, positionModel.Requirements.Parameters));
+                new HatDTO(positionModel.Requirements.Type, positionModel.Requirements.Parameters)
+            );
         }
 
         return Ok();
     }
 
-
     [HttpPut("{projectId}/details")]
     [Authorize(Policy = "Contributor")]
-    public async Task<ActionResult> UpdateDetailsAsync(Guid projectId, string title, string description)
+    public async Task<ActionResult> UpdateDetailsAsync(
+        Guid projectId,
+        string title,
+        string description
+    )
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
-        await _projects.UpdateDetailsAsync(
-            projectId,
-            requesterId,
-            title,
-            description);
+        await _projects.UpdateDetailsAsync(projectId, requesterId, title, description);
 
         return Ok();
     }
-
 
     [HttpDelete("{projectId}")]
     [Authorize(Policy = "Contributor")]
     public async Task<ActionResult> RemoveAsync(Guid projectId)
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         await _projects.RemoveAsync(projectId, requesterId);
@@ -169,24 +197,33 @@ public class ProjectsController : ControllerBase
 
     [HttpPut("{projectId}/positions/{positionId}")]
     [Authorize(Policy = "Contributor")]
-    public async Task<ActionResult> CloseOrReopenPositionAsync(Guid projectId, Guid positionId, [FromBody] ClosingOrReopeningPositionInputModel model)
+    public async Task<ActionResult> CloseOrReopenPositionAsync(
+        Guid projectId,
+        Guid positionId,
+        [FromBody] ClosingOrReopeningPositionInputModel model
+    )
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
-        await (model.Open ?
-            _projects.ReopenPositionAsync(requesterId, projectId, positionId) :
-            _projects.ClosePositionAsync(requesterId, projectId, positionId));
+        await (
+            model.Open
+                ? _projects.ReopenPositionAsync(requesterId, projectId, positionId)
+                : _projects.ClosePositionAsync(requesterId, projectId, positionId)
+        );
 
         return Ok();
     }
-
 
     [HttpDelete("{projectId}/positions/{positionId}")]
     [Authorize(Policy = "Contributor")]
     public async Task<ActionResult> RemovePositionAsync(Guid projectId, Guid positionId)
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         await _projects.RemovePositionAsync(requesterId, projectId, positionId);
