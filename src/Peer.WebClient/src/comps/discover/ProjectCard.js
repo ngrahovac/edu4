@@ -60,9 +60,12 @@ const ProjectCard = (props) => {
                             </ProjectDescriptor>
                         </div>
 
-                        <div className='flex flex-end'>
-                            <RecommendedFlair></RecommendedFlair>
-                        </div>
+                        {
+                            project.recommended &&
+                            <div className='flex flex-end'>
+                                <RecommendedFlair></RecommendedFlair>
+                            </div>
+                        }
 
                     </div>
                 </div>
