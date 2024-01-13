@@ -11,6 +11,8 @@ public class ProjectsFactory
     private List<Position> _positions = new();
     private bool _removed;
     private DateTime _datePosted = DateTime.UtcNow.Date;
+    private DateTime _startDate = DateTime.UtcNow.AddDays(1);
+    private DateTime _endDate = DateTime.UtcNow.AddDays(3);
 
     public ProjectsFactory WithTitle(string title)
     {
@@ -55,7 +57,10 @@ public class ProjectsFactory
             _description,
             _authorId,
             _datePosted,
-            _positions);
+            _startDate,
+            _endDate,
+            _positions
+        );
 
         if (_removed)
         {
@@ -67,10 +72,14 @@ public class ProjectsFactory
 
     private void MakeRemovedViaReflection(Project project)
     {
-        var removedProp = typeof(Project).GetProperty(
-            nameof(Project.Removed),
-            BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public) ??
-            throw new InvalidOperationException("Error making the project removed via reflection");
+        var removedProp =
+            typeof(Project).GetProperty(
+                nameof(Project.Removed),
+                BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public
+            )
+            ?? throw new InvalidOperationException(
+                "Error making the project removed via reflection"
+            );
 
         removedProp.SetValue(project, true);
     }

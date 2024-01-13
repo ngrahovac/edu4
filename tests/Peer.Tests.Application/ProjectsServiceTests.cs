@@ -20,18 +20,17 @@ public class ProjectsServiceTests
     public async void Publishes_the_project_if_valid_data_is_provided()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        var author = await new ContributorsSeeder(config).WithHats(
-            new List<Hat>()
-            {
-                HatsFactory.OfType(HatType.Student)
-                .WithStudyField("Computer Science")
-                .Build()
-            })
+        var author = await new ContributorsSeeder(config)
+            .WithHats(
+                new List<Hat>()
+                {
+                    HatsFactory.OfType(HatType.Student).WithStudyField("Computer Science").Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -40,24 +39,28 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var positions = new List<PositionDTO>()
         {
             new(
                 string.Empty,
                 string.Empty,
-                new(HatType.Student, new(){ { "StudyField", "Computer Science"} })),
-
+                new(HatType.Student, new() { { "StudyField", "Computer Science" } })
+            ),
             new(
                 string.Empty,
                 string.Empty,
-                new(HatType.Academic, new(){ { "ResearchField", "Computer Science"} }))
+                new(HatType.Academic, new() { { "ResearchField", "Computer Science" } })
+            )
         };
 
         var title = "foo";
         var description = "bar";
         var datePosted = DateTime.UtcNow.Date;
+        var startDate = DateTime.UtcNow.AddDays(1).Date;
+        var endDate = DateTime.UtcNow.AddDays(3).Date;
 
         // ACT
         var publishedProject = await sut.PublishProjectAsync(
@@ -65,7 +68,10 @@ public class ProjectsServiceTests
             description,
             author.Id,
             datePosted,
-            positions);
+            startDate,
+            endDate,
+            positions
+        );
 
         // ASSERT
         publishedProject.Id.Should().NotBe(Guid.Empty);
@@ -76,6 +82,8 @@ public class ProjectsServiceTests
         retrievedProject.Description.Should().Be(description);
         retrievedProject.AuthorId.Should().Be(author.Id);
         retrievedProject.DatePosted.Should().Be(datePosted);
+        retrievedProject.Duration?.StartDate.Should().Be(startDate);
+        retrievedProject.Duration?.EndDate.Should().Be(endDate);
         retrievedProject.Positions.Count.Should().Be(positions.Count);
     }
 
@@ -83,22 +91,26 @@ public class ProjectsServiceTests
     public async Task Project_author_cant_add_a_new_position_to_an_existing_project_with_the_same_name_and_requirements_as_an_existing_position()
     {
         //  ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var existingPositionName = "test";
-        var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
+        var existingPositionRequirements = new StudentHat(
+            "Software Engineering",
+            AcademicDegree.Masters
+        );
 
-        var existingProject = await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName(existingPositionName)
-                .WithRequirements(existingPositionRequirements)
-                .Build()
-            })
+        var existingProject = await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName(existingPositionName)
+                        .WithRequirements(existingPositionRequirements)
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -108,15 +120,18 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var addingNewPosition = async () => await sut.AddPositionAsync(
-            existingProject.Id,
-            existingProject.AuthorId,
-            existingPositionName,
-            "Position description",
-            HatDTO.FromHat(existingPositionRequirements));
+        var addingNewPosition = async () =>
+            await sut.AddPositionAsync(
+                existingProject.Id,
+                existingProject.AuthorId,
+                existingPositionName,
+                "Position description",
+                HatDTO.FromHat(existingPositionRequirements)
+            );
 
         // ASSERT
         await addingNewPosition.Should().ThrowAsync<InvalidOperationException>();
@@ -126,22 +141,26 @@ public class ProjectsServiceTests
     public async Task Project_author_can_add_a_new_position_to_an_existing_project_with_name_different_from_all_existing_positions()
     {
         //  ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var existingPositionName = "test";
-        var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
+        var existingPositionRequirements = new StudentHat(
+            "Software Engineering",
+            AcademicDegree.Masters
+        );
 
-        var existingProject = await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName(existingPositionName)
-                .WithRequirements(existingPositionRequirements)
-                .Build()
-            })
+        var existingProject = await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName(existingPositionName)
+                        .WithRequirements(existingPositionRequirements)
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -151,15 +170,18 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var addingNewPosition = async () => await sut.AddPositionAsync(
-            existingProject.Id,
-            existingProject.AuthorId,
-            "test2",
-            "Position description",
-            HatDTO.FromHat(existingPositionRequirements));
+        var addingNewPosition = async () =>
+            await sut.AddPositionAsync(
+                existingProject.Id,
+                existingProject.AuthorId,
+                "test2",
+                "Position description",
+                HatDTO.FromHat(existingPositionRequirements)
+            );
 
         // ASSERT
         await addingNewPosition.Should().NotThrowAsync<InvalidOperationException>();
@@ -172,22 +194,26 @@ public class ProjectsServiceTests
     public async Task Project_author_can_add_a_new_position_to_an_existing_project_with_requirements_different_from_all_existing_positions()
     {
         //  ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var existingPositionName = "test";
-        var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
+        var existingPositionRequirements = new StudentHat(
+            "Software Engineering",
+            AcademicDegree.Masters
+        );
 
-        var existingProject = await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName(existingPositionName)
-                .WithRequirements(existingPositionRequirements)
-                .Build()
-            })
+        var existingProject = await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName(existingPositionName)
+                        .WithRequirements(existingPositionRequirements)
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -197,15 +223,18 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var addingNewPosition = async () => await sut.AddPositionAsync(
-            existingProject.Id,
-            existingProject.AuthorId,
-            existingPositionName,
-            "Position description",
-            HatDTO.FromHat(new AcademicHat("Computer Science")));
+        var addingNewPosition = async () =>
+            await sut.AddPositionAsync(
+                existingProject.Id,
+                existingProject.AuthorId,
+                existingPositionName,
+                "Position description",
+                HatDTO.FromHat(new AcademicHat("Computer Science"))
+            );
 
         // ASSERT
         await addingNewPosition.Should().NotThrowAsync<InvalidOperationException>();
@@ -218,22 +247,26 @@ public class ProjectsServiceTests
     public async Task Only_the_project_author_can_add_positions_to_an_existing_project()
     {
         //  ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var existingPositionName = "test";
-        var existingPositionRequirements = new StudentHat("Software Engineering", AcademicDegree.Masters);
+        var existingPositionRequirements = new StudentHat(
+            "Software Engineering",
+            AcademicDegree.Masters
+        );
 
-        var existingProject = await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName(existingPositionName)
-                .WithRequirements(existingPositionRequirements)
-                .Build()
-            })
+        var existingProject = await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName(existingPositionName)
+                        .WithRequirements(existingPositionRequirements)
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -243,15 +276,18 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var addingNewPosition = async () => await sut.AddPositionAsync(
-            existingProject.Id,
-            Guid.NewGuid(),
-            existingPositionName,
-            "Position description",
-            HatDTO.FromHat(new AcademicHat("Computer Science")));
+        var addingNewPosition = async () =>
+            await sut.AddPositionAsync(
+                existingProject.Id,
+                Guid.NewGuid(),
+                existingPositionName,
+                "Position description",
+                HatDTO.FromHat(new AcademicHat("Computer Science"))
+            );
 
         // ASSERT
         await addingNewPosition.Should().ThrowAsync<InvalidOperationException>();
@@ -261,33 +297,33 @@ public class ProjectsServiceTests
     public async void Discovering_projects_by_keyword_should_include_projects_with_the_keyword_in_title_only()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var keyword = "test";
 
-        await new ProjectsSeeder(config).WithTitle(keyword)
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -297,7 +333,8 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(keyword);
@@ -315,33 +352,33 @@ public class ProjectsServiceTests
     public async void Discovering_projects_by_keyword_should_include_projects_with_the_keyword_in_description_only()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var keyword = "test";
 
-        await new ProjectsSeeder(config).WithDescription(keyword)
+        await new ProjectsSeeder(config)
+            .WithDescription(keyword)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -351,7 +388,8 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(keyword);
@@ -369,30 +407,27 @@ public class ProjectsServiceTests
     public async void Discovering_projects_by_keyword_should_include_projects_with_the_keyword_in_position_name_only()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var keyword = "test";
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName(keyword)
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>() { new PositionsFactory().WithName(keyword).Build() }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -402,7 +437,8 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(keyword);
@@ -420,30 +456,27 @@ public class ProjectsServiceTests
     public async void Discovering_projects_by_keyword_should_include_projects_with_the_keyword_in_position_description_only()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var keyword = "test";
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithDescription(keyword)
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>() { new PositionsFactory().WithDescription(keyword).Build() }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -453,7 +486,8 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(keyword);
@@ -471,66 +505,69 @@ public class ProjectsServiceTests
     public async void Discovering_projects_by_keyword_should_return_projects_with_the_keyword_in_title_or_description_or_in_any_position_name_or_description()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var keyword = "test";
 
-        await new ProjectsSeeder(config).WithTitle(keyword)
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithDescription(keyword)
+        await new ProjectsSeeder(config)
+            .WithDescription(keyword)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName(keyword)
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName(keyword)
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithDescription(keyword)
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithDescription(keyword)
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -540,7 +577,8 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(keyword);
@@ -552,13 +590,17 @@ public class ProjectsServiceTests
         {
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
-            var hasAPositionWithTheKeywordInTitleOrDescription =
-                project.Positions.Any(
-                    p => p.Name.Contains(keyword) ||
-                    p.Description.Contains(keyword));
+            var hasAPositionWithTheKeywordInTitleOrDescription = project.Positions.Any(
+                p => p.Name.Contains(keyword) || p.Description.Contains(keyword)
+            );
 
-            (titleContainsKeyword || descriptionContainsKeyword || hasAPositionWithTheKeywordInTitleOrDescription)
-                .Should().BeTrue();
+            (
+                titleContainsKeyword
+                || descriptionContainsKeyword
+                || hasAPositionWithTheKeywordInTitleOrDescription
+            )
+                .Should()
+                .BeTrue();
         }
     }
 
@@ -566,43 +608,44 @@ public class ProjectsServiceTests
     public async Task Discovering_projects_without_specifying_search_refinements_should_return_all_projects()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        await new ProjectsSeeder(config).WithTitle("foo")
+        await new ProjectsSeeder(config)
+            .WithTitle("foo")
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithDescription("bar")
+        await new ProjectsSeeder(config)
+            .WithDescription("bar")
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName("baz")
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName("baz")
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -612,7 +655,8 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync();
@@ -625,40 +669,41 @@ public class ProjectsServiceTests
     public async Task Discovering_projects_and_requesting_sorting_by_oldest_first_should_return_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Academic).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -668,54 +713,61 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedAsc);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderBy(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderBy(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async Task Discovering_projects_and_requesting_sorting_by_newest_first_should_return_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Academic).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -725,49 +777,55 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedDesc);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async Task Discovering_projects_by_keyword_and_requesting_sorting_by_oldest_first_posted_should_return_projects_containing_the_keyword_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var keyword = "test";
 
-        await new ProjectsSeeder(config).WithTitle(keyword)
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithTitle(keyword)
-             .WithPositions(
-             new List<Position>()
-             {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-             })
-             .SeedAsync();
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
+            .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
         var users = new MongoDbContributorsRepository(config);
@@ -776,25 +834,38 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.ByDatePostedAsc);
+        var discoveredProjects = await sut.DiscoverAsync(
+            keyword,
+            ProjectsSortOption.ByDatePostedAsc
+        );
 
         // ASSERT
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderBy(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderBy(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
 
         foreach (var project in discoveredProjects)
         {
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
-            var hasAPositionWithTheKeywordInTitleOrDescription =
-                project.Positions.Any(
-                    p => p.Name.Contains(keyword) ||
-                    p.Description.Contains(keyword));
+            var hasAPositionWithTheKeywordInTitleOrDescription = project.Positions.Any(
+                p => p.Name.Contains(keyword) || p.Description.Contains(keyword)
+            );
 
-            (titleContainsKeyword || descriptionContainsKeyword || hasAPositionWithTheKeywordInTitleOrDescription)
-                .Should().BeTrue();
+            (
+                titleContainsKeyword
+                || descriptionContainsKeyword
+                || hasAPositionWithTheKeywordInTitleOrDescription
+            )
+                .Should()
+                .BeTrue();
         }
     }
 
@@ -802,35 +873,35 @@ public class ProjectsServiceTests
     public async Task Discovering_projects_by_keyword_and_requesting_sorting_by_newest_first_should_return_projects_containing_the_keyword_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var keyword = "test";
 
-        await new ProjectsSeeder(config).WithTitle(keyword)
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithTitle(keyword)
-             .WithPositions(
-             new List<Position>()
-             {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-             })
-             .SeedAsync();
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
+            .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
         var users = new MongoDbContributorsRepository(config);
@@ -839,25 +910,38 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.ByDatePostedDesc);
+        var discoveredProjects = await sut.DiscoverAsync(
+            keyword,
+            ProjectsSortOption.ByDatePostedDesc
+        );
 
         // ASSERT
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
 
         foreach (var project in discoveredProjects)
         {
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
-            var hasAPositionWithTheKeywordInTitleOrDescription =
-                project.Positions.Any(
-                    p => p.Name.Contains(keyword) ||
-                    p.Description.Contains(keyword));
+            var hasAPositionWithTheKeywordInTitleOrDescription = project.Positions.Any(
+                p => p.Name.Contains(keyword) || p.Description.Contains(keyword)
+            );
 
-            (titleContainsKeyword || descriptionContainsKeyword || hasAPositionWithTheKeywordInTitleOrDescription)
-                .Should().BeTrue();
+            (
+                titleContainsKeyword
+                || descriptionContainsKeyword
+                || hasAPositionWithTheKeywordInTitleOrDescription
+            )
+                .Should()
+                .BeTrue();
         }
     }
 
@@ -865,91 +949,117 @@ public class ProjectsServiceTests
     public async Task Discovering_projects_by_specifying_users_student_hat_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var studentHat = new StudentHat("Electronics Engineering", AcademicDegree.Masters);
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Bachelors)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Bachelors)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName("Recommended position 1")
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithName("Recommended position 2")
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName("Recommended position 1")
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithName("Recommended position 2")
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Doctorate)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Doctorate)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Software Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Software Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Academic).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -959,10 +1069,15 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Unspecified, studentHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            null,
+            ProjectsSortOption.Unspecified,
+            studentHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -977,50 +1092,61 @@ public class ProjectsServiceTests
     public async Task Discovering_projects_by_specifying_users_academic_hat_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var academicHat = new AcademicHat("Computer Science");
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Electronics Engineering")
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Electronics Engineering")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -1030,17 +1156,25 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.Unspecified, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            null,
+            ProjectsSortOption.Unspecified,
+            academicHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
 
         foreach (var discoveredProject in discoveredProjects)
         {
-            discoveredProject.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
+            discoveredProject.Positions
+                .Any(p => academicHat.Fits(p.Requirements))
+                .Should()
+                .BeTrue();
         }
     }
 
@@ -1048,152 +1182,200 @@ public class ProjectsServiceTests
     public async Task Discovering_projects_by_keyword_and_a_student_hat_returns_projects_containing_the_keyword_with_min_one_position_with_requirements_that_the_hat_fits()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var studentHat = new StudentHat("Electronics Engineering", AcademicDegree.Masters);
         var keyword = "keyword";
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Bachelors)
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName("Recommended position 1")
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithName("Recommended position 2")
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Doctorate)
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Software Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithTitle(keyword)
+        await new ProjectsSeeder(config)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Bachelors)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Bachelors)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithDescription(keyword)
+        await new ProjectsSeeder(config)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName(keyword)
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithName("Recommended position 2")
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName("Recommended position 1")
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithName("Recommended position 2")
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithDescription(keyword)
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Electronics Engineering")
-                    .WithAcademicDegree(AcademicDegree.Doctorate)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Doctorate)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Software Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Academic).Build())
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Bachelors)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithDescription(keyword)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName(keyword)
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithName("Recommended position 2")
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithDescription(keyword)
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Electronics Engineering")
+                                .WithAcademicDegree(AcademicDegree.Doctorate)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -1203,10 +1385,15 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Unspecified, studentHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            keyword,
+            ProjectsSortOption.Unspecified,
+            studentHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -1217,10 +1404,9 @@ public class ProjectsServiceTests
 
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
-            var hasAPositionWithTheKeywordInTitleOrDescription =
-                project.Positions.Any(
-                    p => p.Name.Contains(keyword) ||
-                    p.Description.Contains(keyword));
+            var hasAPositionWithTheKeywordInTitleOrDescription = project.Positions.Any(
+                p => p.Name.Contains(keyword) || p.Description.Contains(keyword)
+            );
         }
     }
 
@@ -1228,106 +1414,139 @@ public class ProjectsServiceTests
     public async Task Discovering_projects_by_keyword_and_specifying_users_academic_hat_returns_projects_containing_the_keyword_with_min_one_position_with_requirements_that_the_hat_fits()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var academicHat = new AcademicHat("Computer Science");
         var keyword = "keyword";
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Electronics Engineering")
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithTitle(keyword)
+        await new ProjectsSeeder(config)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithDescription(keyword)
+        await new ProjectsSeeder(config)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Electronics Engineering")
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Electronics Engineering")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-             new List<Position>()
-             {
-                new PositionsFactory().WithName(keyword)
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-             })
-             .SeedAsync();
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
+            .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-             new List<Position>()
-             {
-                new PositionsFactory().WithDescription(keyword)
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-             })
-             .SeedAsync();
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithDescription(keyword)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Electronics Engineering")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName(keyword)
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithDescription(keyword)
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
         var users = new MongoDbContributorsRepository(config);
@@ -1336,10 +1555,15 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.Unspecified, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            keyword,
+            ProjectsSortOption.Unspecified,
+            academicHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(4);
@@ -1350,10 +1574,9 @@ public class ProjectsServiceTests
 
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
-            var hasAPositionWithTheKeywordInTitleOrDescription =
-                project.Positions.Any(
-                    p => p.Name.Contains(keyword) ||
-                    p.Description.Contains(keyword));
+            var hasAPositionWithTheKeywordInTitleOrDescription = project.Positions.Any(
+                p => p.Name.Contains(keyword) || p.Description.Contains(keyword)
+            );
         }
     }
 
@@ -1361,50 +1584,61 @@ public class ProjectsServiceTests
     public async Task Discovering_projects_by_specifying_users_academic_hat_and_requesting_sorting_from_oldest_first_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var academicHat = new AcademicHat("Computer Science");
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Electronics Engineering")
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Electronics Engineering")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -1414,70 +1648,94 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedAsc, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            null,
+            ProjectsSortOption.ByDatePostedAsc,
+            academicHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
 
         foreach (var discoveredProject in discoveredProjects)
         {
-            discoveredProject.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
+            discoveredProject.Positions
+                .Any(p => academicHat.Fits(p.Requirements))
+                .Should()
+                .BeTrue();
         }
 
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderBy(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderBy(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async Task Discovering_projects_by_specifying_users_academic_hat_and_requesting_sorting_by_newest_first_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var academicHat = new AcademicHat("Computer Science");
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Electronics Engineering")
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Electronics Engineering")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -1487,73 +1745,101 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedDesc, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            null,
+            ProjectsSortOption.ByDatePostedDesc,
+            academicHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
 
         foreach (var discoveredProject in discoveredProjects)
         {
-            discoveredProject.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
+            discoveredProject.Positions
+                .Any(p => academicHat.Fits(p.Requirements))
+                .Should()
+                .BeTrue();
         }
 
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async Task Discovering_projects_by_specifying_users_student_hat_and_requesting_sorting_from_oldest_first_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var studentHat = new StudentHat("Computer Science", AcademicDegree.Masters);
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Computer Science")
-                    .WithAcademicDegree(AcademicDegree.Bachelors)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Computer Science")
+                                .WithAcademicDegree(AcademicDegree.Bachelors)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Computer Science")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Computer Science")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithAcademicDegree(AcademicDegree.Doctorate)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithAcademicDegree(AcademicDegree.Doctorate)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -1563,10 +1849,15 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedAsc, studentHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            null,
+            ProjectsSortOption.ByDatePostedAsc,
+            studentHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
@@ -1576,60 +1867,80 @@ public class ProjectsServiceTests
             project.Positions.Any(p => studentHat.Fits(p.Requirements)).Should().BeTrue();
         }
 
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderBy(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderBy(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async Task Discovering_projects_by_specifying_users_student_hat_and_requesting_sorting_by_newest_first_returns_projects_with_min_one_position_with_requirements_that_the_hat_fits_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var studentHat = new StudentHat("Computer Science", AcademicDegree.Masters);
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Computer Science")
-                    .WithAcademicDegree(AcademicDegree.Bachelors)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Computer Science")
+                                .WithAcademicDegree(AcademicDegree.Bachelors)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithStudyField("Computer Science")
-                    .WithAcademicDegree(AcademicDegree.Masters)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithStudyField("Computer Science")
+                                .WithAcademicDegree(AcademicDegree.Masters)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .WithAcademicDegree(AcademicDegree.Doctorate)
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Student)
+                                .WithAcademicDegree(AcademicDegree.Doctorate)
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -1639,10 +1950,15 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedDesc, studentHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            null,
+            ProjectsSortOption.ByDatePostedDesc,
+            studentHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(2);
@@ -1652,112 +1968,150 @@ public class ProjectsServiceTests
             project.Positions.Any(p => studentHat.Fits(p.Requirements)).Should().BeTrue();
         }
 
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async Task Discovering_projects_by_keyword_and_specifying_users_academic_hat_and_requesting_sorting_by_newest_first_returns_projects_containing_the_keyword_with_min_one_position_with_requirements_that_the_hat_fits_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
         var academicHat = new AcademicHat("Computer Science");
         var keyword = "keyword";
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Electronics Engineering")
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Student)
-                    .Build())
-                .Build()
-            })
-            .SeedAsync();
-
-        await new ProjectsSeeder(config).WithTitle(keyword)
+        await new ProjectsSeeder(config)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithDescription(keyword)
+        await new ProjectsSeeder(config)
             .WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build(),
-
-                new PositionsFactory().WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Electronics Engineering")
-                    .Build())
-                .Build()
-            })
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Electronics Engineering")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithName(keyword)
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(HatsFactory.OfType(HatType.Student).Build())
+                        .Build()
+                }
+            )
             .SeedAsync();
 
-        await new ProjectsSeeder(config).WithPositions(
-            new List<Position>()
-            {
-                new PositionsFactory().WithDescription(keyword)
-                .WithRequirements(
-                    HatsFactory.OfType(HatType.Academic)
-                    .WithResearchField("Computer Science")
-                    .Build())
-                .Build()
-            })
+        await new ProjectsSeeder(config)
+            .WithTitle(keyword)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithDescription(keyword)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build(),
+                    new PositionsFactory()
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Electronics Engineering")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithName(keyword)
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
+            .SeedAsync();
+
+        await new ProjectsSeeder(config)
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory()
+                        .WithDescription(keyword)
+                        .WithRequirements(
+                            HatsFactory
+                                .OfType(HatType.Academic)
+                                .WithResearchField("Computer Science")
+                                .Build()
+                        )
+                        .Build()
+                }
+            )
             .SeedAsync();
 
         var projects = new MongoDBProjectsRepository(config);
@@ -1767,10 +2121,15 @@ public class ProjectsServiceTests
             projects,
             users,
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword, ProjectsSortOption.ByDatePostedDesc, academicHat);
+        var discoveredProjects = await sut.DiscoverAsync(
+            keyword,
+            ProjectsSortOption.ByDatePostedDesc,
+            academicHat
+        );
 
         // ASSERT
         discoveredProjects.Count.Should().Be(4);
@@ -1781,24 +2140,32 @@ public class ProjectsServiceTests
 
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
-            var hasAPositionWithTheKeywordInTitleOrDescription =
-                project.Positions.Any(
-                    p => p.Name.Contains(keyword) ||
-                    p.Description.Contains(keyword));
+            var hasAPositionWithTheKeywordInTitleOrDescription = project.Positions.Any(
+                p => p.Name.Contains(keyword) || p.Description.Contains(keyword)
+            );
 
-            (titleContainsKeyword || descriptionContainsKeyword || hasAPositionWithTheKeywordInTitleOrDescription)
-                .Should().BeTrue();
+            (
+                titleContainsKeyword
+                || descriptionContainsKeyword
+                || hasAPositionWithTheKeywordInTitleOrDescription
+            )
+                .Should()
+                .BeTrue();
         }
 
-        discoveredProjects.Should().BeEquivalentTo(discoveredProjects.OrderByDescending(p => p.DatePosted), options => options.WithStrictOrdering());
+        discoveredProjects
+            .Should()
+            .BeEquivalentTo(
+                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                options => options.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async Task Project_author_can_close_a_position()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1809,16 +2176,14 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             domainEvents,
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build()
-            })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         // ACT
@@ -1837,8 +2202,7 @@ public class ProjectsServiceTests
     public async Task Positions_of_a_published_project_are_open_by_default()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1848,7 +2212,8 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
@@ -1863,7 +2228,12 @@ public class ProjectsServiceTests
             "test",
             author.Id,
             DateTime.UtcNow,
-            positions.Select(p => new PositionDTO(p.Name, p.Description, HatDTO.FromHat(p.Requirements))).ToList());
+            DateTime.UtcNow,
+            DateTime.UtcNow,
+            positions
+                .Select(p => new PositionDTO(p.Name, p.Description, HatDTO.FromHat(p.Requirements)))
+                .ToList()
+        );
 
         // ASSERT
         var retrievedProject = await projects.GetByIdAsync(publishedProject.Id);
@@ -1875,8 +2245,7 @@ public class ProjectsServiceTests
     public async Task Collaborator_that_is_not_the_project_author_cannot_close_a_position()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1886,36 +2255,37 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build()
-            })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         var requester = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
-        var closingAPositionByACollaboratorThatIsNotTheProjectAuthor = async () => await sut.ClosePositionAsync(
-            requester.Id,
-            project.Id,
-            project.Positions.ElementAt(0).Id);
+        var closingAPositionByACollaboratorThatIsNotTheProjectAuthor = async () =>
+            await sut.ClosePositionAsync(
+                requester.Id,
+                project.Id,
+                project.Positions.ElementAt(0).Id
+            );
 
         // ASSERT
-        await closingAPositionByACollaboratorThatIsNotTheProjectAuthor.Should().ThrowAsync<InvalidOperationException>();
+        await closingAPositionByACollaboratorThatIsNotTheProjectAuthor
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
     public async Task A_non_existing_user_cannot_close_a_project_position()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1925,31 +2295,32 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var project = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build()
-            })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         // ACT
-        var nonExistingContributorClosingAPosition = async () => await sut.ClosePositionAsync(
-            Guid.NewGuid(),
-            project.Id,
-            project.Positions.ElementAt(0).Id);
+        var nonExistingContributorClosingAPosition = async () =>
+            await sut.ClosePositionAsync(
+                Guid.NewGuid(),
+                project.Id,
+                project.Positions.ElementAt(0).Id
+            );
 
         // ASSERT
-        await nonExistingContributorClosingAPosition.Should().ThrowAsync<InvalidOperationException>();
+        await nonExistingContributorClosingAPosition
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
     public async Task A_position_cannot_be_closed_on_a_non_existing_project()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1959,18 +2330,19 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var requester = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
-        var closingAPositionOnANonExistingProject = async () => await sut.ClosePositionAsync(
-            requester.Id,
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var closingAPositionOnANonExistingProject = async () =>
+            await sut.ClosePositionAsync(requester.Id, Guid.NewGuid(), Guid.NewGuid());
 
         // ASSERT
-        await closingAPositionOnANonExistingProject.Should().ThrowAsync<InvalidOperationException>();
+        await closingAPositionOnANonExistingProject
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
     }
 
     // TODO: consider testing the domain invariant
@@ -1978,8 +2350,7 @@ public class ProjectsServiceTests
     public async Task Author_cannot_close_a_position_on_own_project_that_doesnt_exist()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1989,23 +2360,19 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build()
-            })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         // ACT
-        var authorClosingANonExistingPosition = async () => await sut.ClosePositionAsync(
-            author.Id,
-            project.Id,
-            Guid.NewGuid());
+        var authorClosingANonExistingPosition = async () =>
+            await sut.ClosePositionAsync(author.Id, project.Id, Guid.NewGuid());
 
         // ASSERT
         await authorClosingANonExistingPosition.Should().ThrowAsync<InvalidOperationException>();
@@ -2015,8 +2382,7 @@ public class ProjectsServiceTests
     public async Task Project_author_can_reopen_a_closed_position()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -2026,18 +2392,14 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory()
-                .WithOpen(false)
-                .Build()
-            })
+            .WithPositions(new List<Position>() { new PositionsFactory().WithOpen(false).Build() })
             .SeedAsync();
 
         // ACT
@@ -2052,8 +2414,7 @@ public class ProjectsServiceTests
     public async Task Project_author_can_remove_a_position()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -2064,23 +2425,18 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             domainEvents,
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build()
-            })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         // ACT
-        await sut.RemovePositionAsync(
-            author.Id,
-            project.Id,
-            project.Positions.ElementAt(0).Id);
+        await sut.RemovePositionAsync(author.Id, project.Id, project.Positions.ElementAt(0).Id);
 
         // ASSERT
         var retrievedProject = await projects.GetByIdAsync(project.Id);
@@ -2095,8 +2451,7 @@ public class ProjectsServiceTests
     public async Task Project_author_can_remove_a_project()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -2107,22 +2462,18 @@ public class ProjectsServiceTests
             projects,
             new MongoDbContributorsRepository(config),
             domainEvents,
-            new NullLogger<ProjectsService>());
+            new NullLogger<ProjectsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build()
-            })
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
             .SeedAsync();
 
         // ACT
-        await sut.RemoveAsync(
-            project.Id,
-            author.Id);
+        await sut.RemoveAsync(project.Id, author.Id);
 
         // ASSERT
         var retrievedProject = await projects.GetByIdAsync(project.Id);

@@ -14,5 +14,9 @@ public class ProjectInputModel
     [Required]
     [MinLength(1)]
     public List<PositionInputModel> Positions { get; set; }
+
+    [Required]
+    public DateTime StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
 }
 #nullable restore

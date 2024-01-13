@@ -43,15 +43,22 @@ public class ProjectsController : ControllerBase
             model.Description,
             authorId,
             currentDate,
-            model.Positions.Select(m => new PositionDTO(
-                m.Name,
-                m.Description,
-                new HatDTO(m.Requirements.Type, m.Requirements.Parameters)))
-            .ToList());
+            model.StartDate,
+            model.EndDate,
+            model.Positions
+                .Select(
+                    m =>
+                        new PositionDTO(
+                            m.Name,
+                            m.Description,
+                            new HatDTO(m.Requirements.Type, m.Requirements.Parameters)
+                        )
+                )
+                .ToList()
+        );
 
         return Ok(); // TODO: replace with Created
     }
-
 
     [HttpGet]
     [Authorize(Policy = "Contributor")]
@@ -86,9 +93,9 @@ public class ProjectsController : ControllerBase
             : HatDTO.ToHat(
                 new HatDTO(
                     hatType switch
-            {
-                "Student" => HatType.Student,
-                "Academic" => HatType.Academic,
+                    {
+                        "Student" => HatType.Student,
+                        "Academic" => HatType.Academic,
                         _
                             => throw new NotImplementedException(
                                 "Discovering projects by specifying hat parameters of the given type is not yet implemented"

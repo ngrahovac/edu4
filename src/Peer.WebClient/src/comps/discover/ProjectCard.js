@@ -80,7 +80,7 @@ const ProjectCard = (props) => {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                 </svg>
                             }
-                            value={<p>starts <span className='font-black'>oct '24</span></p>}>
+                            value={<p>starts <span className='font-black'>{project.duration.startDate}</span></p>}>
                         </ProjectDescriptor>
 
                         <ProjectDescriptor
@@ -89,7 +89,7 @@ const ProjectCard = (props) => {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                 </svg>
                             }
-                            value={<p><span className='font-black'>2</span> open positions</p>}>
+                            value={<p><span className='font-black'>{project.positions.length}</span> open positions</p>}>
                         </ProjectDescriptor>
 
                         <ProjectDescriptor
@@ -98,7 +98,7 @@ const ProjectCard = (props) => {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                 </svg>
                             }
-                            value={<p><span className='font-black'>7</span> collaborators</p>}>
+                            value={<p><span className='font-black'>?</span> collaborators</p>}>
                         </ProjectDescriptor>
                     </div>
                 </div>

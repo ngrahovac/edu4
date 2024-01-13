@@ -18,6 +18,8 @@ public class ProjectDisplayModel
 
     public string CollaborationsUrl { get; set; }
 
+    public DurationDisplayModel Duration { get; set; }
+
     public ProjectDisplayModel(Project project, Contributor requester)
     {
         Id = project.Id;
@@ -33,5 +35,6 @@ public class ProjectDisplayModel
             .Select(pp => new PositionDisplayModel(project, pp, requester))
             .ToList();
         CollaborationsUrl = ResourceUrlBuilder.BuildProjectCollaborationsUrl(project.Id);
+        Duration = new(project.Duration);
     }
 }

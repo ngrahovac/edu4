@@ -38,7 +38,10 @@ public class ProjectsService
         string description,
         Guid authorId,
         DateTime datePosted,
-        List<PositionDTO> positionData)
+        DateTime startDate,
+        DateTime? endDate,
+        List<PositionDTO> positionData
+    )
     {
         var author = await _users.GetByIdAsync(authorId);
 
@@ -58,8 +61,12 @@ public class ProjectsService
             description,
             authorId,
             datePosted,
-            positionData.Select(
-                p => new Position(p.Name, p.Description, HatDTO.ToHat(p.Requirements))).ToList());
+            startDate,
+            endDate,
+            positionData
+                .Select(p => new Position(p.Name, p.Description, HatDTO.ToHat(p.Requirements)))
+                .ToList()
+        );
 
         await _projects.AddAsync(project);
 
