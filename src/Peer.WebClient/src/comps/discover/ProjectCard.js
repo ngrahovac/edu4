@@ -41,7 +41,7 @@ const ProjectCard = (props) => {
         author !== undefined &&
 
         <div className='border-4 border-pink-500'>
-            <div className="flex flex-col gap-y-8 px-20 py-8">
+            <div className="flex flex-col gap-y-6 px-20 py-8">
                 <div>
                     <div className='flex justify-between items-center flex-wrap gap-y-2'>
                         <div className='flex gap-x-4'>
