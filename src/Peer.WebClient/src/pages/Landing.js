@@ -109,7 +109,7 @@ const Landing = () => {
 
                 <PrimaryButton
                     text="Enter"
-                    onClick={() => loginWithRedirect({ prompt: 'login' })}>
+                    onClick={() => loginWithRedirect()}>
                 </PrimaryButton>
             </LandingNavbar>
 

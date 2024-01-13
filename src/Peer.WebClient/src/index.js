@@ -17,7 +17,6 @@ import Project from './pages/Project';
 import EditProject from './pages/EditProject';
 import Contributor from './pages/Contributor';
 import Applications from './pages/Applications';
-import MyContributions from './pages/MyContributions';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -48,8 +47,6 @@ root.render(
             <Route path='/projects/:projectId/edit' element={<EditProject></EditProject>}></Route>
             <Route path='/contributors/:contributorId' element={<Contributor></Contributor>}></Route>
             <Route path='/applications' element={<Applications></Applications>}></Route>
-
-            <Route path='/contributions' element={<MyContributions></MyContributions>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

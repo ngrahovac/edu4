@@ -1,16 +1,9 @@
 namespace Peer.Domain.Common;
-
 public class AbstractDomainEvent : AbstractEntity
 {
-    public DateTime TimeRaised { get; private set; }
-
     public bool Processed { get; private set; }
 
-    public AbstractDomainEvent(DateTime timeRaised)
-    {
-        TimeRaised = timeRaised;
-        Processed = false;
-    }
+    public AbstractDomainEvent() => Processed = false;
 
     public void Process()
     {
@@ -19,6 +12,6 @@ public class AbstractDomainEvent : AbstractEntity
             throw new InvalidOperationException("The domain event has already been processed");
         }
 
-        Processed = true;
+        Processed = false;
     }
 }

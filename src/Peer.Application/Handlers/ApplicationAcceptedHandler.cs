@@ -3,7 +3,6 @@ using Peer.Domain.Collaborations;
 using Peer.Domain.Notifications;
 
 namespace Peer.Application.Handlers;
-
 public class ApplicationAcceptedHandler
 {
     private readonly IApplicationsRepository _applications;
@@ -15,8 +14,7 @@ public class ApplicationAcceptedHandler
         IApplicationsRepository applications,
         ICollaborationsRepository collaborations,
         IContributorsRepository contributors,
-        INotificationsRepository notifications
-    )
+        INotificationsRepository notifications)
     {
         _applications = applications;
         _collaborations = collaborations;
@@ -31,8 +29,7 @@ public class ApplicationAcceptedHandler
         var collaboration = new Collaboration(
             acceptedApplication.ApplicantId,
             acceptedApplication.ProjectId,
-            acceptedApplication.PositionId
-        );
+            acceptedApplication.PositionId);
 
         await _collaborations.AddAsync(collaboration);
     }

@@ -7,9 +7,9 @@ const ContextMenu = (props) => {
 
     return (
         <div 
-            className={`${hidden ? 'invisible' : ''} flex shrink-0`}>
+            className={`${hidden ? 'invisible' : ''}`}>
             <div
-                className="flex flex-col bg-white rounded-lg rounded-tr-none p-4 divide-y divide-solid drop-shadow-md">
+                className="flex flex-col bg-white rounded-lg rounded-tr-none p-4 divide-y divide-solid shadow-md">
                 {children}
             </div>
         </div>

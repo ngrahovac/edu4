@@ -10,7 +10,6 @@ import {
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react';
 import ReceivedApplications from '../comps/applications/ReceivedApplications'
-import TabulatedMenu from '../comps/nav/TabulatedMenu'
 
 const Applications = () => {
     const applicationType = {
@@ -117,12 +116,20 @@ const Applications = () => {
             title="Applications"
             description="Manage sent and received project applications">
 
-            <div className='mt-16 w-full'>
-                <TabulatedMenu
-                    items={["Sent", "Received"]}
-                    onSelectionChange={(item) =>
-                        setSelectedApplicationType(item)}>
-                </TabulatedMenu>
+            <div className='mt-16'>
+                {/* sent/received menu */}
+                <div className='flex flex-row space-x-8 border-b-2 pb-2'>
+                    <p
+                        onClick={() => setSelectedApplicationType(applicationType.sent)}
+                        className={`font-semibold ${selectedApplicationType == applicationType.sent ? "text-blue-500" : "text-gray-700"} cursor-pointer hover:text-blue-300`}>
+                        {applicationType.sent}
+                    </p>
+                    <p
+                        onClick={() => setSelectedApplicationType(applicationType.received)}
+                        className={`font-semibold ${selectedApplicationType == applicationType.received ? "text-blue-500" : "text-gray-700"} cursor-pointer hover:text-blue-300`}>
+                        {applicationType.received}
+                    </p>
+                </div>
 
                 {/* applications */}
                 <div className='mt-16'>

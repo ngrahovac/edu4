@@ -19,10 +19,7 @@ public static class DependencyInjectionExtensions
         // token is fetched from the service using it
         services.AddScoped<IAccountManagementService, Auth0AccountManagementService>();
 
-        services.AddHttpClient<
-            IAccountManagementService,
-            Auth0AccountManagementService
-        >(async client =>
+        services.AddHttpClient<IAccountManagementService, Auth0AccountManagementService>(async client =>
         {
             client.BaseAddress = new Uri($"https://{config["Auth0:Domain"]}/api/v2/");
 
