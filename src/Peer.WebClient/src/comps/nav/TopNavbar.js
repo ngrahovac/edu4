@@ -6,9 +6,12 @@ import BorderlessButton from '../buttons/BorderlessButton'
 import { Link } from 'react-router-dom'
 import AccentButton from '../buttons/AccentButton'
 import TopNavbarContextMenu from './TopNavbarContextMenu'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const TopNavbar = () => {
     const [topNavbarContextMenuHidden, setTopNavbarContextMenuHidden] = useState(true);
+
+    const { user, isAuthenticated } = useAuth0();
 
     function toggleTopNavbarContextMenuVisibility() {
         setTopNavbarContextMenuHidden(!topNavbarContextMenuHidden);
@@ -20,7 +23,7 @@ const TopNavbar = () => {
         </TopNavbarContextMenu>
     </div>);
 
-    return (
+    return (isAuthenticated &&
         <>
             <>
                 {topNavbarContextMenu}
@@ -73,7 +76,9 @@ const TopNavbar = () => {
                     </BorderlessButton>
 
                     <div onClick={toggleTopNavbarContextMenuVisibility}>
-                        <Avatar></Avatar>
+                        {
+                            <img src={user.picture} width={36} height={36} className='rounded-full antialiased' referrerPolicy='no-referrer'></img>
+                        }
                     </div>
                 </div>
             </div>

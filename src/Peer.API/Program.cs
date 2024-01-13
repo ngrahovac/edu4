@@ -35,45 +35,62 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization(configure => configure.AddPolicy(
-        "NonContributor",
-        policy => policy.RequireAssertion(context =>
-        !context.User.HasClaim(c => c.Type == "permissions") ||
-        context.User.Claims.FirstOrDefault(c => c.Type == "permissions")?.Value == string.Empty)
-        ));
+builder.Services.AddAuthorization(
+    configure =>
+        configure.AddPolicy(
+            "NonContributor",
+            policy =>
+                policy.RequireAssertion(
+                    context =>
+                        !context.User.HasClaim(c => c.Type == "permissions")
+                        || context.User.Claims.FirstOrDefault(c => c.Type == "permissions")?.Value
+                            == string.Empty
+                )
+        )
+);
 
-builder.Services.AddAuthorization(configure => configure.AddPolicy(
-        "Contributor",
-        policy =>
-        {
-            if (builder.Environment.IsDevelopment())
+builder.Services.AddAuthorization(
+    configure =>
+        configure.AddPolicy(
+            "Contributor",
+            policy =>
             {
-                policy.RequireAssertion(_ => true);
+                if (builder.Environment.IsDevelopment())
+                {
+                    policy.RequireAssertion(_ => true);
+                }
+                else
+                {
+                    policy.RequireAssertion(
+                        context =>
+                            context.User.HasClaim(c => c.Type == "permissions")
+                            && context.User.Claims
+                                .First(c => c.Type == "permissions")
+                                .Value.Contains("contribute")
+                    );
+                }
             }
-            else
-            {
-                policy.RequireAssertion(context =>
-                        context.User.HasClaim(c => c.Type == "permissions") &&
-                        context.User.Claims.First(c => c.Type == "permissions").Value.Contains("contribute"));
-            }
-        }));
+        )
+);
 
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddSingleton<IAccountIdExtractionService, TestAccountIdExtractionService>();
+    builder.Services.AddSingleton<IAccountIdExtractionService, AccountIdExtractionService>();
 }
 else
 {
     builder.Services.AddSingleton<IAccountIdExtractionService, AccountIdExtractionService>();
 }
 
-builder.Services.AddCors(builder =>
-    builder.AddDefaultPolicy(policyBuilder =>
-    {
-        policyBuilder.AllowAnyHeader();
-        policyBuilder.AllowAnyMethod();
-        policyBuilder.AllowAnyOrigin();
-    }));
+builder.Services.AddCors(
+    builder =>
+        builder.AddDefaultPolicy(policyBuilder =>
+        {
+            policyBuilder.AllowAnyHeader();
+            policyBuilder.AllowAnyMethod();
+            policyBuilder.AllowAnyOrigin();
+        })
+);
 
 var app = builder.Build();
 
