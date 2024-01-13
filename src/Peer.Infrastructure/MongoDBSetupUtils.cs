@@ -10,6 +10,7 @@ using Peer.Domain.Applications;
 using Peer.Domain.Notifications;
 
 namespace Peer.Infrastructure;
+
 public class MongoDBSetupUtils
 {
     public static void RegisterClassMaps()
@@ -30,7 +31,7 @@ public class MongoDBSetupUtils
             cm.AutoMap();
             cm.MapProperty(sh => sh.StudyField);
             cm.MapProperty(sh => sh.AcademicDegree)
-            .SetSerializer(new EnumSerializer<AcademicDegree>(BsonType.String));
+                .SetSerializer(new EnumSerializer<AcademicDegree>(BsonType.String));
         });
 
         BsonClassMap.RegisterClassMap<AcademicHat>(cm =>
@@ -53,11 +54,9 @@ public class MongoDBSetupUtils
 
             cm.MapProperty(u => u.Removed);
 
-            cm.MapCreator(u => new Contributor(
-                u.AccountId,
-                u.FullName,
-                u.ContactEmail,
-                u.Hats.ToList()));
+            cm.MapCreator(
+                u => new Contributor(u.AccountId, u.FullName, u.ContactEmail, u.Hats.ToList())
+            );
         });
 
         BsonClassMap.RegisterClassMap<Project>(cm =>
@@ -73,12 +72,16 @@ public class MongoDBSetupUtils
 
             cm.MapProperty(p => p.Removed);
 
-            cm.MapCreator(p => new Project(
-                p.Title,
-                p.Description,
-                p.AuthorId,
-                p.DatePosted,
-                p.Positions.ToList()));
+            cm.MapCreator(
+                p =>
+                    new Project(
+                        p.Title,
+                        p.Description,
+                        p.AuthorId,
+                        p.DatePosted,
+                        p.Positions.ToList()
+                    )
+            );
         });
 
         BsonClassMap.RegisterClassMap<Position>(cm =>
@@ -100,7 +103,7 @@ public class MongoDBSetupUtils
             cm.MapProperty(cm => cm.PositionId);
             cm.MapProperty(cm => cm.DateSubmitted);
             cm.MapProperty(cm => cm.Status)
-            .SetSerializer(new EnumSerializer<ApplicationStatus>(BsonType.String));
+                .SetSerializer(new EnumSerializer<ApplicationStatus>(BsonType.String));
         });
 
         BsonClassMap.RegisterClassMap<Collaboration>(cm =>
@@ -116,6 +119,7 @@ public class MongoDBSetupUtils
         {
             cm.AutoMap();
             cm.MapProperty(ade => ade.Processed);
+            cm.MapProperty(ade => ade.TimeRaised);
         });
 
         BsonClassMap.RegisterClassMap<ApplicationAccepted>(cm =>

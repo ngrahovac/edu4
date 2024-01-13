@@ -9,7 +9,7 @@ const ContextMenuItem = (props) => {
   return (
     <div 
         onClick={onClick}
-        className='text-md font-medium px-8 py-1 cursor-pointer'>
+        className='text-md font-medium px-4 py-1 cursor-pointer'>
         {children}
     </div>
   )
