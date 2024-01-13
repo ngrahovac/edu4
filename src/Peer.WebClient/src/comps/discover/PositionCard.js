@@ -1,27 +1,30 @@
 import React from 'react'
-import StudentPosition from '../hats2/StudentPosition';
-import AcademicPosition from '../hats2/AcademicPosition';
+import StudentHat from '../hats2/StudentHat';
+import AcademicHat from '../hats2/AcademicHat';
 
 const PositionCard = (props) => {
     const {
         position
     } = props;
 
-    let positionComponent = (
+    let hat = (
         function () {
             switch (position.requirements.type) {
                 case "Student":
-                    return <StudentPosition position={position}></StudentPosition>
+                    return <StudentHat hat={position.requirements}></StudentHat>
                 case "Academic":
-                    return <AcademicPosition position={position}></AcademicPosition>
+                    return <AcademicHat hat={position.requirements}></AcademicHat>
                 default:
                     return;
             }
         }.call(this));
 
     return (
-        <div className='px-8 py-6 border border-gray-300 rounded-lg'>
-            {positionComponent}
+        <div className='px-8 py-4 border-4 border-lime-300 flex flex-col gap-y-2'>
+            {hat}
+
+            <p className='font-semibold text-xl text-indigo-500'>{position.name}</p>
+            <p className='text-justify text-gray-500 h-max-24 overflow-clip'>{position.description}</p>
         </div>
     )
 }
