@@ -11,7 +11,7 @@ const SingleColumnLayout = (props) => {
     } = props;
 
     return (
-        <div className='w-1/2 mx-auto relative pb-48 pt-36'>
+        <div className='w-5/6 lg:w-1/2 mx-auto relative pb-48 pt-36'>
             <div className='flex flex-col gap-y-2'>
                 <PageTitle title={title}></PageTitle>
                 <PageDescription description={description}></PageDescription>
