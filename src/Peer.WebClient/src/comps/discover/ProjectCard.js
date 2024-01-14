@@ -1,4 +1,3 @@
-import React, { } from 'react'
 import SubsectionTitle from '../../layout/SubsectionTitle';
 import PositionCard from './PositionCard';
 import ProjectDescriptor from './ProjectDescriptor';
@@ -12,8 +11,24 @@ const ProjectCard = (props) => {
         project,
     } = props;
 
+    const maxPositionsShown = 2;
+
     let timeDifference = Date.now() - new Date(project.datePosted);
     let daysSince = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+    let notShownPositionsCount = 0;
+
+    if (project.recommended) {
+        let recommendedPositionsCount = project.positions.filter(p => p.recommended).length;
+        if (recommendedPositionsCount > maxPositionsShown) {
+            notShownPositionsCount = recommendedPositionsCount - maxPositionsShown;
+        }
+    } else {
+        let positionsCount = project.positions.length;
+        if (positionsCount > maxPositionsShown) {
+            notShownPositionsCount = positionsCount - maxPositionsShown;
+        }
+    }
 
     return (
         <div className='border-4 border-pink-500 cursor-pointer'>
@@ -86,7 +101,7 @@ const ProjectCard = (props) => {
                         {
                             project.recommended &&
 
-                            project.positions.filter(p => p.recommended).map((p, index) => <div key={index}>
+                            project.positions.filter(p => p.recommended).slice(0, maxPositionsShown).map((p, index) => <div key={index}>
                                 <PositionCard position={p}></PositionCard>
                             </div>)
                         }
@@ -94,7 +109,7 @@ const ProjectCard = (props) => {
                         {
                             !project.recommended &&
 
-                            project.positions.map((p, index) => <div key={index}>
+                            project.positions.slice(0, maxPositionsShown).map((p, index) => <div key={index}>
                                 <PositionCard position={p}></PositionCard>
                             </div>)
                         }
@@ -102,9 +117,12 @@ const ProjectCard = (props) => {
                 </div>
 
                 <div className='flex items-start'>
-                    <ProjectDescriptor
-                        value={<p>... and <span className='font-black'>3</span> more</p>}>
-                    </ProjectDescriptor>
+                    {
+                        notShownPositionsCount > 0 &&
+                        <ProjectDescriptor
+                            value={<p>... and <span className='font-black'>{notShownPositionsCount}</span> more</p>}>
+                        </ProjectDescriptor>
+                    }
                 </div>
 
                 <div className='flex flex-row-reverse'>
