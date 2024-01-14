@@ -86,58 +86,103 @@ async function updateDetails(projectId, title, description, accessToken) {
     }
 }
 
+function AppendQueryString(baseUri, keyword, sort, hat) {
+    var searchRefinemets = [];
+
+    if (keyword != undefined)
+        searchRefinemets["keyword"] = keyword;
+
+    if (sort == "asc") {
+        searchRefinemets["sort"] = "byDatePostedAsc";
+    } else if (sort == "desc") {
+        searchRefinemets["sort"] = "byDatePostedDesc";
+    }
+
+
+    if (hat != undefined) {
+        searchRefinemets["hatType"] = hat.type;
+
+        Object.keys(hat.parameters).forEach(k => searchRefinemets[k] = hat.parameters[k]);
+    }
+
+    if (Object.keys(searchRefinemets).length > 0) {
+        baseUri += "?";
+
+        for (let parameter in searchRefinemets)
+            if (searchRefinemets[parameter] != undefined)
+                baseUri += `${parameter}=${encodeURI(searchRefinemets[parameter])}&`
+
+        baseUri = baseUri.slice(0, -1);
+    }
+}
+
 async function discover(keyword, sort, hat, accessToken) {
+    let projectModels = [];
+
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
-        var requestUri = `${apiRootUri}/projects`;
+        let projectsUri = `${apiRootUri}/projects`;
+        AppendQueryString(projectsUri, keyword, sort, hat);
 
-        var searchRefinemets = [];
+        let fetchProjectsResponse = await getAsync(projectsUri, accessToken);
 
-        if (keyword != undefined)
-            searchRefinemets["keyword"] = keyword;
-
-        if (sort == "asc") {
-            searchRefinemets["sort"] = "byDatePostedAsc";
-        } else if (sort == "desc") {
-            searchRefinemets["sort"] = "byDatePostedDesc";
-        }
-
-
-        if (hat != undefined) {
-            searchRefinemets["hatType"] = hat.type;
-
-            Object.keys(hat.parameters).forEach(k => searchRefinemets[k] = hat.parameters[k]);
-        }
-
-        if (Object.keys(searchRefinemets).length > 0) {
-            requestUri += "?";
-
-            for (let parameter in searchRefinemets)
-                if (searchRefinemets[parameter] != undefined)
-                    requestUri += `${parameter}=${encodeURI(searchRefinemets[parameter])}&`
-
-            requestUri = requestUri.slice(0, -1);
-        }
-
-        var response = await getAsync(requestUri, accessToken);
-
-        if (response.ok) {
-            var body = await response.json();
-
-            return {
-                outcome: successResult,
-                message: "Signup successfully completed!",
-                payload: body
-            };
-        } else {
-            var responseMessage = await response.text();
-
+        if (!fetchProjectsResponse.ok) {
             return {
                 outcome: failureResult,
-                message: responseMessage
+                message: "Error fetching projects"
             };
         }
+
+        let discoveredProjects = await fetchProjectsResponse.json();
+
+        let projectAuthors = [];
+        let uniqueAuthorUris = [... new Set(discoveredProjects.map(p => p.authorUrl))];
+
+        for (let i = 0; i < uniqueAuthorUris.length; ++i) {
+            let fetchAuthorResponse = await getAsync(`${apiRootUri}/${uniqueAuthorUris[i]}`, accessToken);
+
+            if (!fetchAuthorResponse.ok) {
+                return {
+                    outcome: failureResult,
+                    message: "Error fetching project authors",
+                };
+            }
+
+            let projectAuthor = await fetchAuthorResponse.json();
+            projectAuthors = [...projectAuthors, projectAuthor];
+        }
+
+        let projectCollaborations = [];
+
+        for (let i = 0; i < discoveredProjects.length; ++i) {
+            let fetchCollaborationsResponse = await getAsync(`${apiRootUri}/${discoveredProjects[i].collaborationsUrl}`, accessToken);
+
+            if (!fetchCollaborationsResponse.ok) {
+                return {
+                    outcome: failureResult,
+                    message: "Error fetching project collaborations",
+                };
+            }
+
+            let collaboration = await fetchCollaborationsResponse.json();
+            projectCollaborations = [...projectCollaborations, collaboration];
+        } 
+
+        
+        for (let i = 0; i < discoveredProjects.length; ++i) {
+            projectModels = [...projectModels, 
+            {
+                ...discoveredProjects[i],
+                author: projectAuthors.filter(a => discoveredProjects[i].authorUrl.includes(a.id))[0],
+                collaborations: projectCollaborations.filter(c => c.some(c => c.projectId == discoveredProjects[i].id))[0] ?? []
+            }]
+        }
+
+        return {
+            outcome: successResult,
+            payload: projectModels
+        };
     } catch (ex) {
         return {
             outcome: errorResult,

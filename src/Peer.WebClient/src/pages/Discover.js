@@ -1,8 +1,5 @@
 import React from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
-import RefineButton from '../comps/discover/RefineButton';
-import SelectedDiscoveryParameter from '../comps/discover/SearchFilter';
-import SelectedDiscoveryParameters from '../comps/discover/SearchFilters';
 import { useState, useEffect } from 'react';
 import ProjectCard from '../comps/discover/ProjectCard';
 import DiscoveryParametersSidebar from '../comps/discover/DiscoveryRefinementSidebar';
@@ -108,15 +105,15 @@ const Discover = () => {
 
     const discoveryResults = projectsLoading ?
         <BeatLoader></BeatLoader> :
-        !discoveredProjects.length ?
-            <p>There are currently no projects satisfying the criteria.</p> :
+        discoveredProjects && discoveredProjects.length ?
             <div className='flex flex-col space-y-8'>
                 {
                     discoveredProjects.map((p, index) => <div key={index}>
                         <ProjectCard project={p}></ProjectCard>
                     </div>)
                 }
-            </div>;
+            </div> :
+            <p>There are currently no projects satisfying the criteria.</p>;
 
     return (
         ownHats &&

@@ -15,9 +15,7 @@ public class ProjectDisplayModel
     public bool Authored { get; set; }
     public bool Recommended { get; set; }
     public IReadOnlyCollection<PositionDisplayModel> Positions { get; set; }
-
     public string CollaborationsUrl { get; set; }
-
     public DurationDisplayModel Duration { get; set; }
 
     public ProjectDisplayModel(Project project, Contributor requester)
