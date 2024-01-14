@@ -1,4 +1,4 @@
-import React, {  } from 'react'
+import React, { } from 'react'
 import SubsectionTitle from '../../layout/SubsectionTitle';
 import PositionCard from './PositionCard';
 import ProjectDescriptor from './ProjectDescriptor';
@@ -12,8 +12,11 @@ const ProjectCard = (props) => {
         project,
     } = props;
 
+    let timeDifference = Date.now() - new Date(project.datePosted);
+    let daysSince = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
     return (
-    <div className='border-4 border-pink-500 cursor-pointer'>
+        <div className='border-4 border-pink-500 cursor-pointer'>
             <div className="flex flex-col gap-y-6 px-20 py-8">
                 <div>
                     <div className='flex justify-between items-center flex-wrap gap-y-2'>
@@ -29,7 +32,7 @@ const ProjectCard = (props) => {
                             </ProjectDescriptor>
 
                             <ProjectDescriptor
-                                value={<p><span className='font-black'>7</span> days ago</p>}>
+                                value={<p>{daysSince} days ago</p>}>
                             </ProjectDescriptor>
                         </div>
 
