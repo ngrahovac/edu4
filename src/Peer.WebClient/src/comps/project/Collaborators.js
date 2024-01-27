@@ -6,7 +6,7 @@ const Collaborators = (props) => {
     } = props;
 
   return (
-    <div className='flex flex-row flex-wrap space-x-12'>
+    <div className='flex flex-wrap gap-x-12 gap-y-2'>
         {children}
     </div>
   )

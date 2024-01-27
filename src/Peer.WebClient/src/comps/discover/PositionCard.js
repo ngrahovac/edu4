@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import StudentHat from '../hats2/StudentHat';
 import AcademicHat from '../hats2/AcademicHat';
 

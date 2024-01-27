@@ -57,7 +57,6 @@ const ProjectCard = (props) => {
                                 <RecommendedFlair></RecommendedFlair>
                             </div>
                         }
-
                     </div>
                 </div>
 
