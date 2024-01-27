@@ -6,10 +6,10 @@ namespace Peer.API.Models.Display;
 public class CollaborationDisplayModel
 {
     public Guid Id { get; set; }
-
     public Guid ProjectId { get; set; }
     public string ProjectUrl { get; set; }
     public Guid PositionId { get; set; }
+    public Guid CollaboratorId { get; set; }
     public string Status { get; set; }
 
     public CollaborationDisplayModel(Collaboration collaboration)
@@ -18,6 +18,7 @@ public class CollaborationDisplayModel
         ProjectId = collaboration.ProjectId;
         ProjectUrl = ResourceUrlBuilder.BuildProjectUrl(collaboration.ProjectId);
         PositionId = collaboration.PositionId;
+        CollaboratorId = collaboration.CollaboratorId;
         Status = collaboration.Status.ToString();
     }
 }
