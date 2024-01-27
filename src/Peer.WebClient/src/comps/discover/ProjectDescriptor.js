@@ -8,9 +8,9 @@ const ProjectDescriptor = (props) => {
   } = props;
 
   return (
-    <div className={`flex flex-row shrink-0 items-center`}>
-      <div className='mr-1'>{icon}</div>
-      <p className={`${link ? "text-blue-500 underline hover:text-blue-900" : ""}`}>{value}</p>
+    <div className="flex items-center shrink-0 gap-x-2">
+      {icon}
+      <div className='font-semibold text-sm uppercase tracking-wide text-gray-400'>{value}</div>
     </div>
   )
 }

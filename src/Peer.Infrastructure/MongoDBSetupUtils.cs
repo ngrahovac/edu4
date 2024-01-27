@@ -59,6 +59,12 @@ public class MongoDBSetupUtils
             );
         });
 
+        BsonClassMap.RegisterClassMap<ProjectDuration>(cm =>
+        {
+            cm.MapProperty(d => d.StartDate);
+            cm.MapProperty(d => d.EndDate);
+        });
+
         BsonClassMap.RegisterClassMap<Project>(cm =>
         {
             cm.MapProperty(p => p.Title);
@@ -71,6 +77,7 @@ public class MongoDBSetupUtils
             cm.MapField("_positions").SetElementName("_positions");
 
             cm.MapProperty(p => p.Removed);
+            cm.MapProperty(p => p.Duration);
 
             cm.MapCreator(
                 p =>
@@ -79,6 +86,8 @@ public class MongoDBSetupUtils
                         p.Description,
                         p.AuthorId,
                         p.DatePosted,
+                        p.Duration.StartDate,
+                        p.Duration.EndDate,
                         p.Positions.ToList()
                     )
             );

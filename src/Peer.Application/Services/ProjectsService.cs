@@ -5,6 +5,7 @@ using Peer.Application.Models;
 using Peer.Domain.Contributors;
 
 namespace Peer.Application.Services;
+
 public class ProjectsService
 {
     private readonly IProjectsRepository _projects;
@@ -16,7 +17,8 @@ public class ProjectsService
         IProjectsRepository projects,
         IContributorsRepository users,
         IDomainEventsRepository domainEvents,
-        ILogger<ProjectsService> logger)
+        ILogger<ProjectsService> logger
+    )
     {
         _projects = projects;
         _users = users;
@@ -36,14 +38,22 @@ public class ProjectsService
         string description,
         Guid authorId,
         DateTime datePosted,
-        List<PositionDTO> positionData)
+        DateTime startDate,
+        DateTime? endDate,
+        List<PositionDTO> positionData
+    )
     {
         var author = await _users.GetByIdAsync(authorId);
 
         if (author is null)
         {
-            _logger.LogError("Error publishing project: author with id {AuthorId} does not exist", authorId);
-            throw new NotImplementedException($"Error publishing project: author with id {authorId} does not exist");
+            _logger.LogError(
+                "Error publishing project: author with id {AuthorId} does not exist",
+                authorId
+            );
+            throw new NotImplementedException(
+                $"Error publishing project: author with id {authorId} does not exist"
+            );
         }
 
         var project = new Project(
@@ -51,8 +61,12 @@ public class ProjectsService
             description,
             authorId,
             datePosted,
-            positionData.Select(
-                p => new Position(p.Name, p.Description, HatDTO.ToHat(p.Requirements))).ToList());
+            startDate,
+            endDate,
+            positionData
+                .Select(p => new Position(p.Name, p.Description, HatDTO.ToHat(p.Requirements)))
+                .ToList()
+        );
 
         await _projects.AddAsync(project);
 
@@ -64,20 +78,19 @@ public class ProjectsService
     public async Task<IReadOnlyList<Project>> DiscoverAsync(
         string? keyword = null,
         ProjectsSortOption sortOption = ProjectsSortOption.Unspecified,
-        Hat? usersHat = null)
+        Hat? usersHat = null
+    )
     {
-        var discoveredProjects = await _projects.DiscoverAsync(
-            keyword,
-            sortOption,
-            usersHat);
+        var discoveredProjects = await _projects.DiscoverAsync(keyword, sortOption, usersHat);
 
         return discoveredProjects;
     }
 
     public async Task<Project> GetByIdAsync(Guid projectId)
     {
-        var project = await _projects.GetByIdAsync(projectId) ??
-            throw new InvalidOperationException("The project with the given Id does not exist");
+        var project =
+            await _projects.GetByIdAsync(projectId)
+            ?? throw new InvalidOperationException("The project with the given Id does not exist");
 
         return project;
     }
@@ -94,14 +107,18 @@ public class ProjectsService
         Guid requesterId,
         string positionName,
         string positionDescription,
-        HatDTO positionRequirements)
+        HatDTO positionRequirements
+    )
     {
-        var project = await _projects.GetByIdAsync(projectId) ??
-            throw new InvalidOperationException("The project with the given Id does not exist");
+        var project =
+            await _projects.GetByIdAsync(projectId)
+            ?? throw new InvalidOperationException("The project with the given Id does not exist");
 
         if (project.AuthorId != requesterId)
         {
-            throw new InvalidOperationException("The requester doesn't have permission to update the project");
+            throw new InvalidOperationException(
+                "The requester doesn't have permission to update the project"
+            );
         }
 
         project.AddPosition(positionName, positionDescription, HatDTO.ToHat(positionRequirements));
@@ -109,14 +126,22 @@ public class ProjectsService
         await _projects.UpdateAsync(project);
     }
 
-    public async Task UpdateDetailsAsync(Guid projectId, Guid requesterId, string title, string description)
+    public async Task UpdateDetailsAsync(
+        Guid projectId,
+        Guid requesterId,
+        string title,
+        string description
+    )
     {
-        var project = await _projects.GetByIdAsync(projectId) ??
-            throw new InvalidOperationException("The project with the given Id does not exist");
+        var project =
+            await _projects.GetByIdAsync(projectId)
+            ?? throw new InvalidOperationException("The project with the given Id does not exist");
 
         if (project.AuthorId != requesterId)
         {
-            throw new InvalidCastException("The requester doesn't have permission to update the project");
+            throw new InvalidCastException(
+                "The requester doesn't have permission to update the project"
+            );
         }
 
         project.UpdateDetails(title, description);
@@ -126,12 +151,15 @@ public class ProjectsService
 
     public async Task RemoveAsync(Guid projectId, Guid requesterId)
     {
-        var project = await _projects.GetByIdAsync(projectId) ??
-            throw new InvalidOperationException("The project with the given Id does not exist");
+        var project =
+            await _projects.GetByIdAsync(projectId)
+            ?? throw new InvalidOperationException("The project with the given Id does not exist");
 
         if (project.AuthorId != requesterId)
         {
-            throw new InvalidOperationException("The requester doesn't have permission to update the project");
+            throw new InvalidOperationException(
+                "The requester doesn't have permission to update the project"
+            );
         }
 
         project.Remove();
@@ -143,15 +171,21 @@ public class ProjectsService
 
     public async Task ClosePositionAsync(Guid requesterId, Guid projectId, Guid positionId)
     {
-        var requester = await _users.GetByIdAsync(requesterId) ??
-            throw new InvalidOperationException("The contributor with the given id doesn't exist");
+        var requester =
+            await _users.GetByIdAsync(requesterId)
+            ?? throw new InvalidOperationException(
+                "The contributor with the given id doesn't exist"
+            );
 
-        var project = await _projects.GetByIdAsync(projectId) ??
-            throw new InvalidOperationException("The project with the given id doesn't exist");
+        var project =
+            await _projects.GetByIdAsync(projectId)
+            ?? throw new InvalidOperationException("The project with the given id doesn't exist");
 
         if (requester!.Id != project.AuthorId)
         {
-            throw new InvalidOperationException("Only the project author can close a project position");
+            throw new InvalidOperationException(
+                "Only the project author can close a project position"
+            );
         }
 
         project.ClosePosition(positionId);
@@ -163,15 +197,21 @@ public class ProjectsService
 
     public async Task ReopenPositionAsync(Guid requesterId, Guid projectId, Guid positionId)
     {
-        var requester = await _users.GetByIdAsync(requesterId) ??
-            throw new InvalidOperationException("The contributor with the given id doesn't exist");
+        var requester =
+            await _users.GetByIdAsync(requesterId)
+            ?? throw new InvalidOperationException(
+                "The contributor with the given id doesn't exist"
+            );
 
-        var project = await _projects.GetByIdAsync(projectId) ??
-            throw new InvalidOperationException("The project with the given id doesn't exist");
+        var project =
+            await _projects.GetByIdAsync(projectId)
+            ?? throw new InvalidOperationException("The project with the given id doesn't exist");
 
         if (requester!.Id != project.AuthorId)
         {
-            throw new InvalidOperationException("Only the project author can reopen a project position");
+            throw new InvalidOperationException(
+                "Only the project author can reopen a project position"
+            );
         }
 
         project.ReopenPosition(positionId);
@@ -181,15 +221,21 @@ public class ProjectsService
 
     public async Task RemovePositionAsync(Guid requesterId, Guid projectId, Guid positionId)
     {
-        var requester = await _users.GetByIdAsync(requesterId) ??
-            throw new InvalidOperationException("The contributor with the given id doesn't exist");
+        var requester =
+            await _users.GetByIdAsync(requesterId)
+            ?? throw new InvalidOperationException(
+                "The contributor with the given id doesn't exist"
+            );
 
-        var project = await _projects.GetByIdAsync(projectId) ??
-            throw new InvalidOperationException("The project with the given id doesn't exist");
+        var project =
+            await _projects.GetByIdAsync(projectId)
+            ?? throw new InvalidOperationException("The project with the given id doesn't exist");
 
         if (requester!.Id != project.AuthorId)
         {
-            throw new InvalidOperationException("Only the project author can remove a project position");
+            throw new InvalidOperationException(
+                "Only the project author can remove a project position"
+            );
         }
 
         project.RemovePosition(positionId);

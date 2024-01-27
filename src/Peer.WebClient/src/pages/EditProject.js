@@ -17,7 +17,6 @@ import {
 import { useAuth0 } from '@auth0/auth0-react'
 import { useParams } from 'react-router-dom';
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
-import ProjectPositions from '../comps/project/ProjectPositions';
 import PositionForm from '../comps/publish/PositionForm';
 import DangerButton from '../comps/buttons/DangerButton';
 import { BeatLoader } from 'react-spinners';
@@ -319,14 +318,7 @@ const EditProject = () => {
                         <p className='text-gray-500'>Currently there are no added positions.</p>
                     }
                     {
-                        project.positions.length > 0 &&
-                        <div className="mt-4">
-                            <ProjectPositions
-                                positions={project.positions}
-                                selectionEnabled={true}
-                                onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
-                            </ProjectPositions>
-                        </div>
+                        
                     }
 
                     {

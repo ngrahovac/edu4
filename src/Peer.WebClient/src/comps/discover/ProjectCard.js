@@ -1,112 +1,136 @@
-import React, { useState, useEffect } from 'react'
-import { successResult } from '../../services/RequestResult';
 import SubsectionTitle from '../../layout/SubsectionTitle';
 import PositionCard from './PositionCard';
 import ProjectDescriptor from './ProjectDescriptor';
-import { getContributor } from '../../services/UsersService';
-import { useAuth0 } from '@auth0/auth0-react';
 import RecommendedFlair from './RecommendedFlair';
 import { Link } from 'react-router-dom';
-import BorderlessButton from '../buttons/BorderlessButton';
+import ProjectTitle from './ProjectTitle';
 
-const ProjectCard = ({ project }) => {
-    const [author, setAuthor] = useState(undefined);
+const ProjectCard = (props) => {
 
-    const { getAccessTokenSilently } = useAuth0();
+    const {
+        project,
+    } = props;
 
-    useEffect(() => {
-        function fetchAuthor() {
-            (async () => {
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-    
-                var result = await getContributor(token, project.authorUrl);
-    
-                if (result.outcome === successResult) {
-                    setAuthor(result.payload);
-                }
-            })();
+    const maxPositionsShown = 2;
+
+    let timeDifference = Date.now() - new Date(project.datePosted);
+    let daysSince = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+    let notShownPositionsCount = 0;
+
+    if (project.recommended) {
+        let recommendedPositionsCount = project.positions.filter(p => p.recommended).length;
+        if (recommendedPositionsCount > maxPositionsShown) {
+            notShownPositionsCount = recommendedPositionsCount - maxPositionsShown;
         }
-
-        fetchAuthor();
-    }, [getAccessTokenSilently, project])
+    } else {
+        let positionsCount = project.positions.length;
+        if (positionsCount > maxPositionsShown) {
+            notShownPositionsCount = positionsCount - maxPositionsShown;
+        }
+    }
 
     return (
-        author !== undefined &&
-
-        <div className='relative'>
-            <div
-                className={`flex flex-col space-y-8 w-full rounded-2xl border ${project.recommended ? "border-lime-500" : "border-gray-300"} px-20 py-16 pb-32 relative hover:bg-gray-50/50`}>
-
-                {/* project descriptors */}
-                <div className='flex flex-row flex-wrap space-x-6'>
-                    <Link to={project.authorUrl}>
-                        <ProjectDescriptor
-                            link={true}
-                            value={author.fullName}
-                            icon={
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                            }>
-                        </ProjectDescriptor>
-                    </Link>
-
-                    <ProjectDescriptor
-                        value={project.datePosted}
-                        icon={
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
-                            </svg>
-                        }>
-                    </ProjectDescriptor>
-                </div>
-
-                <div className='flex flex-col space-y-1'>
-                    <p className='text-3xl font-semibold'>{project.title}</p>
-                    <p>{project.description}</p>
-                </div>
-
+        <div className='border-4 border-pink-500 cursor-pointer'>
+            <div className="flex flex-col gap-y-6 px-20 py-8">
                 <div>
+                    <div className='flex justify-between items-center flex-wrap gap-y-2'>
+                        <div className='flex gap-x-4'>
+                            <ProjectDescriptor
+                                link={true}
+                                value={project.author.fullName}
+                                icon={
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="gray" className="w-12 h-12">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                }>
+                            </ProjectDescriptor>
+
+                            <ProjectDescriptor
+                                value={<p>{daysSince} days ago</p>}>
+                            </ProjectDescriptor>
+                        </div>
+
+                        {
+                            project.recommended &&
+                            <div className='flex flex-end'>
+                                <RecommendedFlair></RecommendedFlair>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+                <div className='flex flex-col gap-y-2'>
+                    <ProjectTitle>{project.title}</ProjectTitle>
+
+                    <div className='flex gap-x-4 justify-between flex-wrap gap-y-2'>
+                        <ProjectDescriptor
+                            icon={
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="lightgray" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                                </svg>
+                            }
+                            value={<p>starts <span className='font-black'>{project.duration.startDate}</span></p>}>
+                        </ProjectDescriptor>
+
+                        <ProjectDescriptor
+                            icon={
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="lightgray" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+                                </svg>
+                            }
+                            value={<p><span className='font-black'>{project.positions.length}</span> open positions</p>}>
+                        </ProjectDescriptor>
+
+                        <ProjectDescriptor
+                            icon={
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="lightgray" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>
+                            }
+                            value={<p><span className='font-black'>{project.collaborations.length}</span> collaborators</p>}>
+                        </ProjectDescriptor>
+                    </div>
+                </div>
+
+                <div className='flex flex-col gap-y-4'>
                     <SubsectionTitle title={`${project.recommended ? "Recommended positions" : "Positions"}`}></SubsectionTitle>
+
+                    <div className='flex flex-col space-y-2'>
+                        {
+                            project.recommended &&
+
+                            project.positions.filter(p => p.recommended).slice(0, maxPositionsShown).map((p, index) => <div key={index}>
+                                <PositionCard position={p}></PositionCard>
+                            </div>)
+                        }
+
+                        {
+                            !project.recommended &&
+
+                            project.positions.slice(0, maxPositionsShown).map((p, index) => <div key={index}>
+                                <PositionCard position={p}></PositionCard>
+                            </div>)
+                        }
+                    </div>
                 </div>
 
-
-                <div className='flex flex-col space-y-2'>
+                <div className='flex items-start'>
                     {
-                        project.recommended &&
-
-                        project.positions.filter(p => p.recommended).map((p, index) => <div key={index}>
-                            <PositionCard position={p}></PositionCard>
-                        </div>)
-                    }
-
-                    {
-                        !project.recommended &&
-
-                        project.positions.map((p, index) => <div key={index}>
-                            <PositionCard position={p}></PositionCard>
-                        </div>)
+                        notShownPositionsCount > 0 &&
+                        <ProjectDescriptor
+                            value={<p>... and <span className='font-black'>{notShownPositionsCount}</span> more</p>}>
+                        </ProjectDescriptor>
                     }
                 </div>
 
-                <div className='absolute bottom-8 right-20'>
+                <div className='flex flex-row-reverse'>
                     <Link to={project.projectUrl}>
-                        <BorderlessButton
-                            text="Learn more ➜"
-                            onClick={() => { }}>
-                        </BorderlessButton>
+                        <p className='font-semibold text-indigo-500'>Learn more</p>
                     </Link>
                 </div>
             </div>
-
-            {
-                project.recommended &&
-                <div className='absolute top-0 right-0'>
-                    <RecommendedFlair></RecommendedFlair>
-                </div>
-            }
         </div>
     )
 }

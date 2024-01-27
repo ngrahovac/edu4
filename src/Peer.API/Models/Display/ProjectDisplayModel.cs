@@ -15,8 +15,8 @@ public class ProjectDisplayModel
     public bool Authored { get; set; }
     public bool Recommended { get; set; }
     public IReadOnlyCollection<PositionDisplayModel> Positions { get; set; }
-
     public string CollaborationsUrl { get; set; }
+    public DurationDisplayModel Duration { get; set; }
 
     public ProjectDisplayModel(Project project, Contributor requester)
     {
@@ -33,5 +33,6 @@ public class ProjectDisplayModel
             .Select(pp => new PositionDisplayModel(project, pp, requester))
             .ToList();
         CollaborationsUrl = ResourceUrlBuilder.BuildProjectCollaborationsUrl(project.Id);
+        Duration = new(project.Duration);
     }
 }

@@ -17,7 +17,6 @@ import { Link, useParams } from 'react-router-dom';
 import { getContributor } from '../services/UsersService';
 import { getCollaborations } from '../services/CollaboratorsService';
 import PrimaryButton from '../comps/buttons/PrimaryButton'
-import ProjectPositions from '../comps/project/ProjectPositions';
 import { submitApplication } from '../services/ApplicationsService';
 import SpinnerLayout from '../layout/SpinnerLayout';
 import { BeatLoader } from 'react-spinners';
@@ -291,11 +290,7 @@ const Project = () => {
                         <div className='mt-4'>
                             <div>
                                 <SectionTitle title="Open positions"></SectionTitle>
-                                <ProjectPositions
-                                    selectionEnabled={!project.authored}
-                                    positions={project.positions}
-                                    onSelectedPositionChanged={(position) => { setSelectedPosition(position); }}>
-                                </ProjectPositions>
+                                
                             </div>
                         </div>
 
