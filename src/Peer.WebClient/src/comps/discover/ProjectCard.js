@@ -127,7 +127,7 @@ const ProjectCard = (props) => {
 
                 <div className='flex flex-row-reverse'>
                     <Link to={project.projectUrl}>
-                        <p className='uppercase tracking-wide font-semibold text-indigo-500'>Learn more</p>
+                        <p className='font-semibold text-indigo-500'>Learn more</p>
                     </Link>
                 </div>
             </div>
