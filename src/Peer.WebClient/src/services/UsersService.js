@@ -39,7 +39,7 @@ async function getContributor(accessToken, contributorUrl) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
-        var response = await getAsync(`${apiRootUri}${contributorUrl}`, accessToken);
+        var response = await getAsync(`${apiRootUri}/${contributorUrl}`, accessToken);
 
         if (response.ok) {
             var body = await response.json();
