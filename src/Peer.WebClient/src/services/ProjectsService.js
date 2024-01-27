@@ -167,11 +167,11 @@ async function discover(keyword, sort, hat, accessToken) {
 
             let collaboration = await fetchCollaborationsResponse.json();
             projectCollaborations = [...projectCollaborations, collaboration];
-        } 
+        }
 
-        
+
         for (let i = 0; i < discoveredProjects.length; ++i) {
-            projectModels = [...projectModels, 
+            projectModels = [...projectModels,
             {
                 ...discoveredProjects[i],
                 author: projectAuthors.filter(a => discoveredProjects[i].authorUrl.includes(a.id))[0],
@@ -194,27 +194,53 @@ async function discover(keyword, sort, hat, accessToken) {
 async function getById(projectId, accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
+        let fetchProjectRequestUri = `${apiRootUri}/projects/${projectId}`;
+        let fetchProjectResponse = await getAsync(fetchProjectRequestUri, accessToken);
 
-        var requestUri = `${apiRootUri}/projects/${projectId}`;
-
-        var response = await getAsync(requestUri, accessToken);
-
-        if (response.ok) {
-            var body = await response.json();
-
-            return {
-                outcome: successResult,
-                message: "Project successfully retrieved!",
-                payload: body
-            };
-        } else {
-            var responseMessage = await response.text();
+        if (!fetchProjectResponse.ok) {
+            let message = await fetchProjectResponse.text();
 
             return {
                 outcome: failureResult,
-                message: responseMessage
+                message: message
             };
         }
+
+        let project = await fetchProjectResponse.json();
+
+        let fetchAuthorRequestUri = `${apiRootUri}/${project.authorUrl}`;
+        let fetchAuthorResponse = await getAsync(fetchAuthorRequestUri, accessToken);
+
+        if (!fetchAuthorResponse.ok) {
+            return {
+                outcome: failureResult,
+                message: "Error fetching project author"
+            };
+        }
+
+        let author = await fetchAuthorResponse.json();
+
+        let fetchCollaborationsUri = `${apiRootUri}/${project.collaborationsUrl}`;
+        let fetchCollaborationsResponse = await getAsync(fetchCollaborationsUri, accessToken);
+
+        if (!fetchCollaborationsResponse.ok) {
+            return {
+                outcome: failureResult,
+                message: "Error fetching project collaborations"
+            };
+        }
+
+        let collaborations = await fetchCollaborationsResponse.json();
+
+        return {
+            outcome: successResult,
+            payload: {
+                ...project,
+                author: author,
+                collaborations: collaborations
+            }
+        };
+
     } catch (ex) {
         return {
             outcome: errorResult,
