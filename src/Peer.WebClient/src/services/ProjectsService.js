@@ -232,6 +232,23 @@ async function getById(projectId, accessToken) {
 
         let collaborations = await fetchCollaborationsResponse.json();
 
+        for (let c of collaborations) {
+            let fetchCollaboratorUri = `${apiRootUri}/${c.collaboratorUrl}`;
+
+            let fetchCollaboratorResponse = await getAsync(fetchCollaboratorUri, accessToken);
+
+            if (!fetchCollaboratorResponse.ok) {
+                return {
+                    outcome: failureResult,
+                    message: "Error fetching project collaborations"
+                };
+            }
+
+            debugger;
+            let collaborator = await fetchCollaboratorResponse.json();
+            c.collaborator = collaborator;
+        }
+
         return {
             outcome: successResult,
             payload: {
