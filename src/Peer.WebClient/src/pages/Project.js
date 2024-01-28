@@ -30,12 +30,8 @@ const Project = () => {
 
     // interactive state
     const [selectedPosition, setSelectedPosition] = useState(undefined);
-    const applyingEnabled = selectedPosition !== undefined;
-    const deleteConfirmationDialogRef = useRef(null);
     const submitApplicationConfirmationDialogRef = useRef(null);
     const revokeApplicationConfirmationDialogRef = useRef(null);
-    const closeApplicationConfirmationDialogRef = useRef(null);
-    const reopenApplicationConfirmationDialogRef = useRef(null);
     const removePositionConfirmationDialogRef = useRef(null);
 
     useEffect(() => {
@@ -72,37 +68,6 @@ const Project = () => {
         fetchProject();
         setPageLoading(false);
     }, [getAccessTokenSilently, projectId, fetchUpdatedDataSwitch]);
-
-    function handleDeleteProjectRequested() {
-        deleteConfirmationDialogRef.current.showModal();
-    }
-
-    function handleDeleteProjectConfirmed() {
-        (async () => {
-            setPageLoading(true);
-
-            try {
-                let token = await getAccessTokenSilently({
-                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-                });
-
-                let result = await remove(project.id, token);
-                setPageLoading(false);
-
-                if (result.outcome === successResult) {
-                    console.log("success");
-                } else if (result.outcome === failureResult) {
-                    console.log("failure");
-                } else if (result.outcome === errorResult) {
-                    console.log("error");
-                }
-            } catch (ex) {
-                console.log("exception", ex);
-            } finally {
-                setPageLoading(false);
-            }
-        })();
-    }
 
     function handleSubmitApplicationRequested() {
         submitApplicationConfirmationDialogRef.current.showModal();
