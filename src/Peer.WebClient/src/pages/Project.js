@@ -338,7 +338,7 @@ const Project = () => {
                                 </Author>
 
                                 {
-                                    project.collaborations.length &&
+                                    project.collaborations.length > 0 &&
                                     project.collaborations.map(c => <div key={c.id}>
                                         <Collaborator
                                             name={c.collaborator.fullName}
@@ -350,7 +350,7 @@ const Project = () => {
                             </Collaborators>
 
                             {
-                                !project.collaborations.length &&
+                                !project.collaborations.length > 0 &&
                                 <p>There are no other collaborators on this project.&nbsp;
                                     {
                                         !project.authored &&
