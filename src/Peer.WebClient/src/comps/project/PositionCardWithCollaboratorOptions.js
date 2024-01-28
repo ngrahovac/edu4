@@ -2,11 +2,13 @@ import React from 'react'
 import StudentHat from '../hats2/StudentHat';
 import AcademicHat from '../hats2/AcademicHat';
 import DangerTertiaryButton from '../buttons/DangerTertiaryButton';
+import TertiaryButton from '../buttons/TertiaryButton';
 
-const PositionCardWithRevokeOption = (props) => {
+const PositionCardWithCollaboratorOptions = (props) => {
     const {
         position,
-        onRevoke = () => { }
+        onApply = () => { },
+        onRevoke = () => { },
     } = props;
 
     let hat = (
@@ -31,10 +33,17 @@ const PositionCardWithRevokeOption = (props) => {
             <p className='text-justify text-gray-500 h-max-24 overflow-clip'>{position.description}</p>
 
             <div className='flex flex-row-reverse'>
-                <DangerTertiaryButton onClick={onRevoke} text="Revoke application"></DangerTertiaryButton>
+                {
+                    !position.applied &&
+                    <TertiaryButton onClick={onApply} text="Apply"></TertiaryButton>
+                }
+                {
+                    position.applied &&
+                    <DangerTertiaryButton onClick={onRevoke} text="Revoke application"></DangerTertiaryButton>
+                }
             </div>
         </div>
     )
 }
 
-export default PositionCardWithRevokeOption
+export default PositionCardWithCollaboratorOptions

@@ -3,7 +3,7 @@ import SingleColumnLayout from '../layout/SingleColumnLayout'
 import Collaborators from '../comps/project/Collaborators';
 import Author from '../comps/project/Author';
 import Collaborator from '../comps/project/Collaborator';
-import { getById, remove } from '../services/ProjectsService'
+import { closePosition, getById, remove, removePosition, reopenPosition } from '../services/ProjectsService'
 import { useAuth0 } from '@auth0/auth0-react';
 import {
     successResult,
@@ -16,9 +16,8 @@ import SpinnerLayout from '../layout/SpinnerLayout';
 import { BeatLoader } from 'react-spinners';
 import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
 import SubsectionTitle from '../layout/SubsectionTitle';
-import PositionCard from '../comps/discover/PositionCard';
-import PositionCardWithApplyOption from '../comps/project/PositionCardWithApplyOption';
-import PositionCardWithRevokeOption from '../comps/project/PositionCardWithRevokeOption';
+import PositionCardWithAuthorOptions from '../comps/project/PositionCardWithAuthorOptions';
+import PositionCardWithCollaboratorOptions from '../comps/project/PositionCardWithCollaboratorOptions';
 
 const Project = () => {
     const { projectId } = useParams();
@@ -35,7 +34,9 @@ const Project = () => {
     const deleteConfirmationDialogRef = useRef(null);
     const submitApplicationConfirmationDialogRef = useRef(null);
     const revokeApplicationConfirmationDialogRef = useRef(null);
-
+    const closeApplicationConfirmationDialogRef = useRef(null);
+    const reopenApplicationConfirmationDialogRef = useRef(null);
+    const removePositionConfirmationDialogRef = useRef(null);
 
     useEffect(() => {
         const fetchProject = () => {
@@ -161,6 +162,85 @@ const Project = () => {
         })();
     }
 
+    function handleClosePosition() {
+        (async () => {
+            try {
+                let token = await getAccessTokenSilently({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await closePosition(project.id, selectedPosition.id, token);
+
+                if (result.outcome === successResult) {
+                    console.log("success");
+                    setFetchUpdatedDataSwitch(!fetchUpdatedDataSwitch);
+                    setSelectedPosition(undefined);
+                    removePositionConfirmationDialogRef.current.close();
+                } else if (result.outcome === failureResult) {
+                    console.log("failure");
+                } else if (result.outcome === errorResult) {
+                    console.log("error");
+                }
+            } catch (ex) {
+                console.log("exception", ex);
+            }
+        })();
+    }
+
+    function handleReopenPosition() {
+        (async () => {
+            try {
+                let token = await getAccessTokenSilently({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await reopenPosition(project.id, selectedPosition.id, token);
+
+                if (result.outcome === successResult) {
+                    console.log("success");
+                    setFetchUpdatedDataSwitch(!fetchUpdatedDataSwitch);
+                    setSelectedPosition(undefined);
+                    removePositionConfirmationDialogRef.current.close();
+                } else if (result.outcome === failureResult) {
+                    console.log("failure");
+                } else if (result.outcome === errorResult) {
+                    console.log("error");
+                }
+            } catch (ex) {
+                console.log("exception", ex);
+            }
+        })();
+    }
+
+    function handleRemovePositionRequested() {
+        removePositionConfirmationDialogRef.current.showModal();
+    }
+
+    function handleRemovePosition() {
+        (async () => {
+            try {
+                let token = await getAccessTokenSilently({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await removePosition(project.id, selectedPosition.id, token);
+
+                if (result.outcome === successResult) {
+                    console.log("success");
+                    setFetchUpdatedDataSwitch(!fetchUpdatedDataSwitch);
+                    setSelectedPosition(undefined);
+                    removePositionConfirmationDialogRef.current.close();
+                } else if (result.outcome === failureResult) {
+                    console.log("failure");
+                } else if (result.outcome === errorResult) {
+                    console.log("error");
+                }
+            } catch (ex) {
+                console.log("exception", ex);
+            }
+        })();
+    }
+
     if (pageLoading) {
         return (
             <SpinnerLayout>
@@ -175,33 +255,52 @@ const Project = () => {
 
     const positions = <>
         {
-            project && project.recommended && (
+            project && project.authored && (
+                <div className='flex flex-col gap-y-4'>
+                    <SubsectionTitle title="Positions"></SubsectionTitle>
+                    <div className='flex flex-col space-y-2'>
+                        {
+                            project.positions.map((p, index) => <div key={index}>
+                                <PositionCardWithAuthorOptions
+                                    position={p}
+                                    onRemove={() => {
+                                        setSelectedPosition(p);
+                                        handleRemovePositionRequested();
+                                    }}
+                                    onClose={() => {
+                                        setSelectedPosition(p);
+                                        handleClosePosition();
+                                    }}
+                                    onReopen={() => {
+                                        setSelectedPosition(p);
+                                        handleReopenPosition();
+                                    }}>
+                                </PositionCardWithAuthorOptions>
+                            </div>)
+                        }
+                    </div>
+                </div>
+            )
+        }
+        {
+            project && !project.authored && project.recommended && (
                 <>
                     <div className='flex flex-col gap-y-4'>
                         <SubsectionTitle title="Recommended positions"></SubsectionTitle>
                         <div className='flex flex-col space-y-2'>
                             {
                                 project.positions.filter(p => p.recommended).map((p, index) => <div key={index}>
-                                    {
-                                        !p.applied &&
-                                        <PositionCardWithApplyOption
-                                            position={p}
-                                            onApply={() => {
-                                                setSelectedPosition(p);
-                                                handleSubmitApplicationRequested();
-                                            }}>
-                                        </PositionCardWithApplyOption>
-                                    }
-                                    {
-                                        p.applied &&
-                                        <PositionCardWithRevokeOption
-                                            position={p}
-                                            onRevoke={() => {
-                                                setSelectedPosition(p);
-                                                handleRevokeApplicationRequested();
-                                            }}>
-                                        </PositionCardWithRevokeOption>
-                                    }
+                                    <PositionCardWithCollaboratorOptions
+                                        position={p}
+                                        onApply={() => {
+                                            setSelectedPosition(p);
+                                            handleSubmitApplicationRequested();
+                                        }}
+                                        onRevoke={() => {
+                                            setSelectedPosition(p);
+                                            handleRevokeApplicationRequested();
+                                        }}>
+                                    </PositionCardWithCollaboratorOptions>
                                 </div>)
                             }
                         </div>
@@ -212,27 +311,17 @@ const Project = () => {
                         <div className='flex flex-col space-y-2'>
                             {
                                 project.positions.filter(p => !p.recommended).map((p, index) => <div key={index}>
-                                    {
-                                        !p.applied &&
-                                        <PositionCardWithApplyOption
-                                            position={p}
-                                            onApply={() => {
-                                                setSelectedPosition(p);
-                                                handleSubmitApplicationRequested();
-                                            }}>
-                                        </PositionCardWithApplyOption>
-                                    }
-
-                                    {
-                                        p.applied &&
-                                        <PositionCardWithRevokeOption
-                                            position={p}
-                                            onRevoke={() => {
-                                                setSelectedPosition(p);
-                                                handleRevokeApplicationRequested();
-                                            }}>
-                                        </PositionCardWithRevokeOption>
-                                    }
+                                    <PositionCardWithCollaboratorOptions
+                                        position={p}
+                                        onApply={() => {
+                                            setSelectedPosition(p);
+                                            handleSubmitApplicationRequested();
+                                        }}
+                                        onRevoke={() => {
+                                            setSelectedPosition(p);
+                                            handleRevokeApplicationRequested();
+                                        }}>
+                                    </PositionCardWithCollaboratorOptions>
                                 </div>)
                             }
                         </div>
@@ -240,9 +329,8 @@ const Project = () => {
                 </>
             )
         }
-
         {
-            project && !project.recommended && (
+            project && !project.authored && !project.recommended && (
                 <>
                     <div className='flex flex-col gap-y-4'>
                         <SubsectionTitle title="Positions"></SubsectionTitle>
@@ -250,24 +338,17 @@ const Project = () => {
                             {
                                 project.positions.map((p, index) => <div key={index}>
                                     {
-                                        !p.applied &&
-                                        <PositionCardWithApplyOption
+                                        <PositionCardWithCollaboratorOptions
                                             position={p}
                                             onApply={() => {
                                                 setSelectedPosition(p);
                                                 handleSubmitApplicationRequested();
-                                            }}>
-                                        </PositionCardWithApplyOption>
-                                    }
-                                    {
-                                        p.applied &&
-                                        <PositionCardWithRevokeOption
-                                            position={p}
+                                            }}
                                             onRevoke={() => {
                                                 setSelectedPosition(p);
                                                 handleRevokeApplicationRequested();
                                             }}>
-                                        </PositionCardWithRevokeOption>
+                                        </PositionCardWithCollaboratorOptions>
                                     }
                                 </div>)
                             }
@@ -280,15 +361,6 @@ const Project = () => {
 
     return (
         <>
-            <dialog ref={deleteConfirmationDialogRef}>
-                <ConfirmationDialog
-                    question="Are you sure you want to delete this project?"
-                    description="You cannot undo this action"
-                    onConfirm={handleDeleteProjectConfirmed}
-                    onCancel={() => deleteConfirmationDialogRef.current.close()}>
-                </ConfirmationDialog>
-            </dialog>
-
             <dialog ref={submitApplicationConfirmationDialogRef}>
                 <ConfirmationDialog
                     question="Submit application"
@@ -304,6 +376,15 @@ const Project = () => {
                     description="You cannot undo this action"
                     onCancel={() => revokeApplicationConfirmationDialogRef.current.close()}
                     onConfirm={handleRevokeApplication}>
+                </ConfirmationDialog>
+            </dialog>
+
+            <dialog ref={removePositionConfirmationDialogRef}>
+                <ConfirmationDialog
+                    question="Remove position"
+                    description="You cannot undo this action"
+                    onCancel={() => removePositionConfirmationDialogRef.current.close()}
+                    onConfirm={handleRemovePosition}>
                 </ConfirmationDialog>
             </dialog>
 

@@ -1,12 +1,15 @@
-import React from 'react';
+import React from 'react'
 import StudentHat from '../hats2/StudentHat';
 import AcademicHat from '../hats2/AcademicHat';
+import DangerTertiaryButton from '../buttons/DangerTertiaryButton';
 import TertiaryButton from '../buttons/TertiaryButton';
 
-const PositionCardWithApplyOption = (props) => {
+const PositionCardWithAuthorOptions = (props) => {
     const {
         position,
-        onApply = () => {}
+        onClose = () => { },
+        onReopen = () => { },
+        onRemove = () => { }
     } = props;
 
     let hat = (
@@ -21,7 +24,7 @@ const PositionCardWithApplyOption = (props) => {
             }
         }.call(this));
 
-    let borderColor = position.recommended ? "border-lime-300" : "border-indigo-100";
+    let borderColor = position.open ? "border-indigo-100" : "border-gray-300";
 
     return (
         <div className={`px-8 py-4 border-4 ${borderColor} flex flex-col gap-y-2`}>
@@ -31,10 +34,19 @@ const PositionCardWithApplyOption = (props) => {
             <p className='text-justify text-gray-500 h-max-24 overflow-clip'>{position.description}</p>
 
             <div className='flex flex-row-reverse'>
-                <TertiaryButton onClick={onApply} text="Apply"></TertiaryButton>
+                {
+                    !position.open &&
+                    <TertiaryButton onClick={onReopen} text="Reopen"></TertiaryButton>
+                }
+                {
+                    position.open &&
+                    <TertiaryButton onClick={onClose} text="Close"></TertiaryButton>
+                }
+
+                <DangerTertiaryButton onClick={onRemove} text="Delete"></DangerTertiaryButton>
             </div>
         </div>
     )
 }
 
-export default PositionCardWithApplyOption
+export default PositionCardWithAuthorOptions
