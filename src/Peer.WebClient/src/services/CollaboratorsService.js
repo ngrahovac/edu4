@@ -9,7 +9,7 @@ async function getCollaborations(collaborationsUrl, accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
-        var requestUri = `${apiRootUri}${collaborationsUrl}`;
+        var requestUri = `${apiRootUri}/${collaborationsUrl}`;
 
         var response = await getAsync(requestUri, accessToken);
 

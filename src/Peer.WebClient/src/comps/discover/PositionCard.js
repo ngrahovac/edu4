@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import StudentHat from '../hats2/StudentHat';
 import AcademicHat from '../hats2/AcademicHat';
 
@@ -19,8 +19,9 @@ const PositionCard = (props) => {
             }
         }.call(this));
 
+    let borderColor = position.recommended ? "border-lime-300" : "border-indigo-100";
     return (
-        <div className='px-8 py-4 border-4 border-lime-300 flex flex-col gap-y-2'>
+        <div className={`px-8 py-4 border-4 ${borderColor} flex flex-col gap-y-2`}>
             {hat}
 
             <p className='font-semibold text-xl text-indigo-500'>{position.name}</p>

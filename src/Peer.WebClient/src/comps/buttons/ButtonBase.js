@@ -11,7 +11,7 @@ const ButtonBase = (props) => {
         icon
     } = props;
 
-    const baseStyle = "py-2 px-4 rounded-full font-semibold w-fit flex flex-row items-center shrink-0"
+    const baseStyle = "py-2 px-4 rounded-full font-semibold w-fit flex flex-row items-center shrink-0 cursor-pointer"
     const enabledStyle = `${baseStyle} ${defaultStyle} ${hoverStyle ? `hover:${hoverStyle}` : ""}`  // works if hoverStyle is just one string, e.g. bg-red-500
     const disabledStyle = `${baseStyle} bg-gray-100 border border-gray-300 text-gray-300 cursor-not-allowed`
 

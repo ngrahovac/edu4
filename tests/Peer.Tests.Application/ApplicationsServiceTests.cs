@@ -19,9 +19,7 @@ public class ApplicationsServiceTests
     public async void A_contributor_can_apply_for_a_position_on_a_project()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -32,7 +30,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionsFactory().Build() })
@@ -44,12 +43,14 @@ public class ApplicationsServiceTests
         var application = await sut.SubmitAsync(
             contributorToApply.Id,
             project.Id,
-            project.Positions.ElementAt(0).Id);
+            project.Positions.ElementAt(0).Id
+        );
 
         // ASSERT
         var retrievedApplication = await applications.GetByApplicantAndPositionAsync(
             contributorToApply.Id,
-            project.Positions.ElementAt(0).Id);
+            project.Positions.ElementAt(0).Id
+        );
 
         retrievedApplication.Should().NotBeNull();
         retrievedApplication.Id.Should().Be(application.Id);
@@ -62,9 +63,7 @@ public class ApplicationsServiceTests
     public async void A_contributor_cant_apply_for_a_position_on_an_authored_project()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -74,7 +73,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
         var project = await new ProjectsSeeder(config)
@@ -83,10 +83,8 @@ public class ApplicationsServiceTests
             .SeedAsync();
 
         // ACT
-        var applyingForAPositionOnOwnProject = async () => await sut.SubmitAsync(
-            author.Id,
-            project.Id,
-            project.Positions.ElementAt(0).Id);
+        var applyingForAPositionOnOwnProject = async () =>
+            await sut.SubmitAsync(author.Id, project.Id, project.Positions.ElementAt(0).Id);
 
         // ASSERT
         await applyingForAPositionOnOwnProject.Should().ThrowAsync<InvalidOperationException>();
@@ -96,9 +94,7 @@ public class ApplicationsServiceTests
     public async void A_contributor_cant_apply_for_a_position_on_a_non_existing_project()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -108,27 +104,26 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var contributor = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
-        var applyingForAPositionOnANonExistantProject = async () => await sut.SubmitAsync(
-            contributor.Id,
-            Guid.NewGuid(),
-            Guid.NewGuid());
+        var applyingForAPositionOnANonExistantProject = async () =>
+            await sut.SubmitAsync(contributor.Id, Guid.NewGuid(), Guid.NewGuid());
 
         // ASSERT
-        await applyingForAPositionOnANonExistantProject.Should().ThrowAsync<InvalidOperationException>();
+        await applyingForAPositionOnANonExistantProject
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
     public async void A_contributor_cant_apply_for_a_non_existing_position()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -138,7 +133,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var contributor = await new ContributorsSeeder(config).SeedAsync();
 
@@ -147,10 +143,8 @@ public class ApplicationsServiceTests
             .SeedAsync();
 
         // ACT
-        var applyingForANonExistantPosition = async () => await sut.SubmitAsync(
-            contributor.Id,
-            project.Id,
-            Guid.NewGuid());
+        var applyingForANonExistantPosition = async () =>
+            await sut.SubmitAsync(contributor.Id, project.Id, Guid.NewGuid());
 
         // ASSERT
         await applyingForANonExistantPosition.Should().ThrowAsync<InvalidOperationException>();
@@ -160,9 +154,7 @@ public class ApplicationsServiceTests
     public async void A_contributor_cant_apply_for_a_position_they_already_applied_for()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -172,7 +164,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionsFactory().Build() })
@@ -181,28 +174,26 @@ public class ApplicationsServiceTests
         var contributor = await new ContributorsSeeder(config).SeedAsync();
 
         var application = await sut.SubmitAsync(
-           contributor.Id,
-           project.Id,
-           project.Positions.ElementAt(0).Id);
-
-        // ACT
-        var submittingApplicationForTheSamePositionForTheSecondTime = async () => await sut.SubmitAsync(
             contributor.Id,
             project.Id,
-            project.Positions.ElementAt(0).Id);
+            project.Positions.ElementAt(0).Id
+        );
 
+        // ACT
+        var submittingApplicationForTheSamePositionForTheSecondTime = async () =>
+            await sut.SubmitAsync(contributor.Id, project.Id, project.Positions.ElementAt(0).Id);
 
         // ASSERT
-        await submittingApplicationForTheSamePositionForTheSecondTime.Should().ThrowAsync<InvalidOperationException>();
+        await submittingApplicationForTheSamePositionForTheSecondTime
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
-    public async void An_applicant_can_revoke_own_submitted_application()
+    public async void A_contributor_can_reapply_for_a_position_after_revoking_the_first_application()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -212,7 +203,47 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
+
+        var project = await new ProjectsSeeder(config)
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
+            .SeedAsync();
+
+        var contributor = await new ContributorsSeeder(config).SeedAsync();
+
+        var submittedApplication = await sut.SubmitAsync(
+            contributor.Id,
+            project.Id,
+            project.Positions.ElementAt(0).Id
+        );
+
+        await sut.RevokeAsync(contributor.Id, submittedApplication.Id);
+
+        // ACT
+        var submittingApplicationForTheSamePositionForTheSecondTime = async () =>
+            await sut.SubmitAsync(contributor.Id, project.Id, project.Positions.ElementAt(0).Id);
+
+        // ASSERT
+        await submittingApplicationForTheSamePositionForTheSecondTime.Should().NotThrowAsync();
+    }
+
+    [Fact]
+    public async void An_applicant_can_revoke_own_submitted_application()
+    {
+        // ARRANGE
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
+
+        await new DbUtils(config).CleanDatabaseAsync();
+
+        var applications = new MongoDbApplicationsRepository(config);
+        var sut = new ApplicationsService(
+            applications,
+            new MongoDbContributorsRepository(config),
+            new MongoDBProjectsRepository(config),
+            new MongoDbDomainEventsRepository(config),
+            new NullLogger<ApplicationsService>()
+        );
 
         var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionsFactory().Build() })
@@ -221,13 +252,13 @@ public class ApplicationsServiceTests
         var applicant = await new ContributorsSeeder(config).SeedAsync();
 
         var submittedApplication = await sut.SubmitAsync(
-           applicant.Id,
-           project.Id,
-           project.Positions.ElementAt(0).Id);
+            applicant.Id,
+            project.Id,
+            project.Positions.ElementAt(0).Id
+        );
 
         // ACT
         await sut.RevokeAsync(applicant.Id, submittedApplication.Id);
-
 
         // ASSERT
         var retrievedApplication = await applications.GetByIdAsync(submittedApplication.Id);
@@ -238,9 +269,7 @@ public class ApplicationsServiceTests
     public async void A_contributor_cannot_revoke_an_application_submitted_by_another()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -250,7 +279,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionsFactory().Build() })
@@ -259,15 +289,16 @@ public class ApplicationsServiceTests
         var applicant = await new ContributorsSeeder(config).SeedAsync();
 
         var submittedApplication = await sut.SubmitAsync(
-           applicant.Id,
-           project.Id,
-           project.Positions.ElementAt(0).Id);
+            applicant.Id,
+            project.Id,
+            project.Positions.ElementAt(0).Id
+        );
 
         var requester = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
-        var revokingAnothersApplication = async () => await sut.RevokeAsync(requester.Id, submittedApplication.Id);
-
+        var revokingAnothersApplication = async () =>
+            await sut.RevokeAsync(requester.Id, submittedApplication.Id);
 
         // ASSERT
         await revokingAnothersApplication.Should().ThrowAsync<InvalidOperationException>();
@@ -277,9 +308,7 @@ public class ApplicationsServiceTests
     public async void An_applicant_cannot_revoke_own_application_twice()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -289,7 +318,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var project = await new ProjectsSeeder(config)
             .WithPositions(new List<Position>() { new PositionsFactory().Build() })
@@ -298,28 +328,28 @@ public class ApplicationsServiceTests
         var applicant = await new ContributorsSeeder(config).SeedAsync();
 
         var submittedApplication = await sut.SubmitAsync(
-           applicant.Id,
-           project.Id,
-           project.Positions.ElementAt(0).Id);
+            applicant.Id,
+            project.Id,
+            project.Positions.ElementAt(0).Id
+        );
 
         await sut.RevokeAsync(applicant.Id, submittedApplication.Id);
 
         // ACT
-        var revokingOwnApplicationForTheSecondTime = async () => await sut.RevokeAsync(
-            applicant.Id,
-            submittedApplication.Id);
+        var revokingOwnApplicationForTheSecondTime = async () =>
+            await sut.RevokeAsync(applicant.Id, submittedApplication.Id);
 
         // ASSERT
-        await revokingOwnApplicationForTheSecondTime.Should().ThrowAsync<InvalidOperationException>();
+        await revokingOwnApplicationForTheSecondTime
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
     public async void Project_author_can_accept_a_submitted_application()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -331,14 +361,15 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             domainEvents,
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
-           .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
-           .SeedAsync();
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
+            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
@@ -361,9 +392,7 @@ public class ApplicationsServiceTests
     public async void Application_cannot_be_accepted_by_a_contributor_that_is_not_the_project_author()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -375,14 +404,15 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             domainEvents,
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
-           .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
-           .SeedAsync();
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
+            .SeedAsync();
 
         var requester = await new ContributorsSeeder(config).SeedAsync();
 
@@ -392,10 +422,13 @@ public class ApplicationsServiceTests
             .SeedAsync();
 
         // ACT
-        var acceptingApplicationForAProjectAuthoredByAnother = async () => await sut.AcceptAsync(requester.Id, application.Id);
+        var acceptingApplicationForAProjectAuthoredByAnother = async () =>
+            await sut.AcceptAsync(requester.Id, application.Id);
 
         // ASSERT
-        await acceptingApplicationForAProjectAuthoredByAnother.Should().ThrowAsync<InvalidOperationException>();
+        await acceptingApplicationForAProjectAuthoredByAnother
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
 
         var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
         retrievedDomainEvents.Count.Should().Be(0);
@@ -405,9 +438,7 @@ public class ApplicationsServiceTests
     public async void Project_author_cannot_accept_the_same_application_twice()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -419,14 +450,15 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             domainEvents,
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
-           .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
-           .SeedAsync();
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
+            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
@@ -436,10 +468,13 @@ public class ApplicationsServiceTests
         await sut.AcceptAsync(project.AuthorId, application.Id);
 
         // ACT
-        var acceptingTheSameApplicationForTheSecondTime = async () => await sut.AcceptAsync(project.AuthorId, application.Id);
+        var acceptingTheSameApplicationForTheSecondTime = async () =>
+            await sut.AcceptAsync(project.AuthorId, application.Id);
 
         // ASSERT
-        await acceptingTheSameApplicationForTheSecondTime.Should().ThrowAsync<InvalidOperationException>();
+        await acceptingTheSameApplicationForTheSecondTime
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
 
         var retrievedDomainEvents = await domainEvents.GetUnprocessedBatchAsync(5);
         retrievedDomainEvents.Count.Should().Be(1);
@@ -449,9 +484,7 @@ public class ApplicationsServiceTests
     public async void Project_author_can_reject_a_submitted_application()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -461,14 +494,15 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
-           .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
-           .SeedAsync();
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
+            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
@@ -487,9 +521,7 @@ public class ApplicationsServiceTests
     public async void Application_cannot_be_rejected_by_a_contributor_that_is_not_the_project_author()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -499,14 +531,15 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
-           .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
-           .SeedAsync();
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
+            .SeedAsync();
 
         var requester = await new ContributorsSeeder(config).SeedAsync();
 
@@ -516,19 +549,20 @@ public class ApplicationsServiceTests
             .SeedAsync();
 
         // ACT
-        var rejectingApplicationForAProjectAuthoredByAnother = async () => await sut.RejectAsync(requester.Id, application.Id);
+        var rejectingApplicationForAProjectAuthoredByAnother = async () =>
+            await sut.RejectAsync(requester.Id, application.Id);
 
         // ASSERT
-        await rejectingApplicationForAProjectAuthoredByAnother.Should().ThrowAsync<InvalidOperationException>();
+        await rejectingApplicationForAProjectAuthoredByAnother
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
     public async void Project_author_cannot_reject_the_same_application_twice()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -538,14 +572,15 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
-           .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
-           .SeedAsync();
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
+            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
@@ -555,7 +590,8 @@ public class ApplicationsServiceTests
         await sut.RejectAsync(project.AuthorId, application.Id);
 
         // ACT
-        var rejectingTheSameApplicationTwice = async () => await sut.RejectAsync(project.AuthorId, application.Id);
+        var rejectingTheSameApplicationTwice = async () =>
+            await sut.RejectAsync(project.AuthorId, application.Id);
 
         // ASSERT
         await rejectingTheSameApplicationTwice.Should().ThrowAsync<InvalidOperationException>();
@@ -565,9 +601,7 @@ public class ApplicationsServiceTests
     public async void Project_author_cannot_reject_an_accepted_application()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -577,14 +611,15 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
 
         var project = await new ProjectsSeeder(config)
-           .WithAuthorId(author.Id)
-           .WithPositions(new List<Position>() { new PositionsFactory().Build() })
-           .SeedAsync();
+            .WithAuthorId(author.Id)
+            .WithPositions(new List<Position>() { new PositionsFactory().Build() })
+            .SeedAsync();
 
         var application = await new ApplicationsSeeder(config)
             .WithProjectId(project.Id)
@@ -594,7 +629,8 @@ public class ApplicationsServiceTests
         await sut.AcceptAsync(author.Id, application.Id);
 
         // ACT
-        var rejectingAnAcceptedApplication = async () => await sut.RejectAsync(project.AuthorId, application.Id);
+        var rejectingAnAcceptedApplication = async () =>
+            await sut.RejectAsync(project.AuthorId, application.Id);
 
         // ASSERT
         await rejectingAnAcceptedApplication.Should().ThrowAsync<InvalidOperationException>();
@@ -604,9 +640,7 @@ public class ApplicationsServiceTests
     public async void A_contributor_cannot_submit_an_application_for_a_closed_position()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -616,23 +650,22 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var project = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory()
-                .WithOpen(false)
-                .Build() })
+            .WithPositions(new List<Position>() { new PositionsFactory().WithOpen(false).Build() })
             .SeedAsync();
 
         var contributorToApply = await new ContributorsSeeder(config).SeedAsync();
 
         // ACT
-        var applyingForAClosedPosition = async () => await sut.SubmitAsync(
-            contributorToApply.Id,
-            project.Id,
-            project.Positions.ElementAt(0).Id);
+        var applyingForAClosedPosition = async () =>
+            await sut.SubmitAsync(
+                contributorToApply.Id,
+                project.Id,
+                project.Positions.ElementAt(0).Id
+            );
 
         // ASSERT
         await applyingForAClosedPosition.Should().ThrowAsync<InvalidOperationException>();
@@ -642,9 +675,7 @@ public class ApplicationsServiceTests
     public async void Retrieving_received_applications_without_specifying_search_refinements_should_return_all_submitted_applications_for_positions_on_authored_projects()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -655,7 +686,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
         var applicant1 = await new ContributorsSeeder(config).SeedAsync();
@@ -667,20 +699,24 @@ public class ApplicationsServiceTests
 
         var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var authoredProject2 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var submittedApplication1 = await new ApplicationsSeeder(config)
@@ -727,7 +763,8 @@ public class ApplicationsServiceTests
             author.Id,
             projectId: null,
             positionId: null,
-            applicationsSortOption: ApplicationsSortOption.Default);
+            applicationsSortOption: ApplicationsSortOption.Default
+        );
 
         // ASSERT
         receivedApplications.Count.Should().Be(3);
@@ -737,9 +774,7 @@ public class ApplicationsServiceTests
     public async void Retrieving_received_applications_for_selected_project_should_return_all_submitted_applications_for_that_project()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -750,7 +785,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
         var applicant1 = await new ContributorsSeeder(config).SeedAsync();
@@ -762,20 +798,24 @@ public class ApplicationsServiceTests
 
         var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var authoredProject2 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var submittedApplication1 = await new ApplicationsSeeder(config)
@@ -822,7 +862,8 @@ public class ApplicationsServiceTests
             author.Id,
             projectId: authoredProject1.Id,
             positionId: null,
-            applicationsSortOption: ApplicationsSortOption.Default);
+            applicationsSortOption: ApplicationsSortOption.Default
+        );
 
         // ASSERT
         receivedApplications.Count.Should().Be(2);
@@ -832,9 +873,7 @@ public class ApplicationsServiceTests
     public async void Retrieving_received_applications_for_selected_project_and_position_should_return_all_submitted_applications_for_that_project_position()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -845,7 +884,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
         var applicant1 = await new ContributorsSeeder(config).SeedAsync();
@@ -857,20 +897,24 @@ public class ApplicationsServiceTests
 
         var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var authoredProject2 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var submittedApplication1 = await new ApplicationsSeeder(config)
@@ -917,7 +961,8 @@ public class ApplicationsServiceTests
             author.Id,
             projectId: authoredProject1.Id,
             positionId: authoredProject1.Positions.ElementAt(1).Id,
-            applicationsSortOption: ApplicationsSortOption.Default);
+            applicationsSortOption: ApplicationsSortOption.Default
+        );
 
         // ASSERT
         receivedApplications.Count.Should().Be(1);
@@ -927,9 +972,7 @@ public class ApplicationsServiceTests
     public async void Retrieving_received_applications_for_selected_project_and_position_by_newest_first_should_return_all_submitted_applications_for_that_project_position_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -940,7 +983,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
         var applicant1 = await new ContributorsSeeder(config).SeedAsync();
@@ -952,11 +996,13 @@ public class ApplicationsServiceTests
 
         var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var submittedApplication1 = await new ApplicationsSeeder(config)
@@ -1003,28 +1049,30 @@ public class ApplicationsServiceTests
             author.Id,
             projectId: authoredProject1.Id,
             positionId: authoredProject1.Positions.ElementAt(0).Id,
-            applicationsSortOption: ApplicationsSortOption.NewestFirst);
+            applicationsSortOption: ApplicationsSortOption.NewestFirst
+        );
 
         // ASSERT
         receivedApplications.Count.Should().Be(2);
-        receivedApplications.Should().BeEquivalentTo(
-            new List<Domain.Applications.Application>()
-            {
-                submittedApplication1,
-                submittedApplication2
-            }
-            .OrderByDescending(a => a.DateSubmitted)
-            .ToList(),
-            b => b.WithStrictOrdering());
+        receivedApplications
+            .Should()
+            .BeEquivalentTo(
+                new List<Domain.Applications.Application>()
+                {
+                    submittedApplication1,
+                    submittedApplication2
+                }
+                    .OrderByDescending(a => a.DateSubmitted)
+                    .ToList(),
+                b => b.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async void Retrieving_received_applications_for_selected_project_and_position_by_oldest_first_should_return_all_submitted_applications_for_that_project_position_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1035,7 +1083,8 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var author = await new ContributorsSeeder(config).SeedAsync();
         var applicant1 = await new ContributorsSeeder(config).SeedAsync();
@@ -1047,11 +1096,13 @@ public class ApplicationsServiceTests
 
         var authoredProject1 = await new ProjectsSeeder(config)
             .WithAuthorId(author.Id)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var submittedApplication1 = await new ApplicationsSeeder(config)
@@ -1098,28 +1149,30 @@ public class ApplicationsServiceTests
             author.Id,
             projectId: authoredProject1.Id,
             positionId: authoredProject1.Positions.ElementAt(0).Id,
-            applicationsSortOption: ApplicationsSortOption.OldestFirst);
+            applicationsSortOption: ApplicationsSortOption.OldestFirst
+        );
 
         // ASSERT
         receivedApplications.Count.Should().Be(2);
-        receivedApplications.Should().BeEquivalentTo(
-            new List<Domain.Applications.Application>()
-            {
-                submittedApplication1,
-                submittedApplication2
-            }
-            .OrderBy(a => a.DateSubmitted)
-            .ToList(),
-            b => b.WithStrictOrdering());
+        receivedApplications
+            .Should()
+            .BeEquivalentTo(
+                new List<Domain.Applications.Application>()
+                {
+                    submittedApplication1,
+                    submittedApplication2
+                }
+                    .OrderBy(a => a.DateSubmitted)
+                    .ToList(),
+                b => b.WithStrictOrdering()
+            );
     }
 
     [Fact]
     public async void Retrieving_sent_applications_without_specifying_search_refinements_should_return_all_applications_submitted_by_the_applicant()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1130,24 +1183,29 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var applicant = await new ContributorsSeeder(config).SeedAsync();
 
         var project1 = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var project2 = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var submittedApplication1 = await new ApplicationsSeeder(config)
@@ -1194,7 +1252,8 @@ public class ApplicationsServiceTests
             applicant.Id,
             projectId: null,
             positionId: null,
-            applicationsSortOption: ApplicationsSortOption.Default);
+            applicationsSortOption: ApplicationsSortOption.Default
+        );
 
         // ASSERT
         receivedApplications.Count.Should().Be(3);
@@ -1204,9 +1263,7 @@ public class ApplicationsServiceTests
     public async void Retrieving_sent_applications_for_selected_project_by_oldest_first_should_return_all_submitted_applications_for_that_project_position_as_a_sorted_collection()
     {
         // ARRANGE
-        var config = new ConfigurationBuilder()
-            .AddUserSecrets(GetType().Assembly)
-            .Build();
+        var config = new ConfigurationBuilder().AddUserSecrets(GetType().Assembly).Build();
 
         await new DbUtils(config).CleanDatabaseAsync();
 
@@ -1217,24 +1274,29 @@ public class ApplicationsServiceTests
             new MongoDbContributorsRepository(config),
             new MongoDBProjectsRepository(config),
             new MongoDbDomainEventsRepository(config),
-            new NullLogger<ApplicationsService>());
+            new NullLogger<ApplicationsService>()
+        );
 
         var applicant = await new ContributorsSeeder(config).SeedAsync();
 
         var project1 = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var project2 = await new ProjectsSeeder(config)
-            .WithPositions(new List<Position>()
-            {
-                new PositionsFactory().Build(),
-                new PositionsFactory().Build()
-            })
+            .WithPositions(
+                new List<Position>()
+                {
+                    new PositionsFactory().Build(),
+                    new PositionsFactory().Build()
+                }
+            )
             .SeedAsync();
 
         var submittedApplication1 = await new ApplicationsSeeder(config)
@@ -1281,18 +1343,22 @@ public class ApplicationsServiceTests
             applicant.Id,
             projectId: project1.Id,
             positionId: null,
-            applicationsSortOption: ApplicationsSortOption.OldestFirst);
+            applicationsSortOption: ApplicationsSortOption.OldestFirst
+        );
 
         // ASSERT
         receivedApplications.Count.Should().Be(2);
-        receivedApplications.Should().BeEquivalentTo(
-            new List<Domain.Applications.Application>()
-            {
-                submittedApplication1,
-                submittedApplication3
-            }
-            .OrderBy(a => a.DateSubmitted)
-            .ToList(),
-            b => b.WithStrictOrdering());
+        receivedApplications
+            .Should()
+            .BeEquivalentTo(
+                new List<Domain.Applications.Application>()
+                {
+                    submittedApplication1,
+                    submittedApplication3
+                }
+                    .OrderBy(a => a.DateSubmitted)
+                    .ToList(),
+                b => b.WithStrictOrdering()
+            );
     }
 }

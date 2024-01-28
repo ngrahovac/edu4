@@ -57,7 +57,6 @@ const ProjectCard = (props) => {
                                 <RecommendedFlair></RecommendedFlair>
                             </div>
                         }
-
                     </div>
                 </div>
 
@@ -126,7 +125,7 @@ const ProjectCard = (props) => {
                 </div>
 
                 <div className='flex flex-row-reverse'>
-                    <Link to={project.projectUrl}>
+                    <Link to={`/${project.projectUrl}`}>
                         <p className='font-semibold text-indigo-500'>Learn more</p>
                     </Link>
                 </div>

@@ -7,6 +7,7 @@ using Peer.Application.Services;
 using Peer.Domain.Applications;
 
 namespace Peer.API.Controllers;
+
 [Route("api/[controller]")]
 [Authorize(Policy = "Contributor")]
 [ApiController]
@@ -19,7 +20,8 @@ public class ApplicationsController : ControllerBase
     public ApplicationsController(
         ApplicationsService applications,
         ContributorsService contributors,
-        IAccountIdExtractionService accountIdExtractionService)
+        IAccountIdExtractionService accountIdExtractionService
+    )
     {
         _applications = applications;
         _contributors = contributors;
@@ -30,16 +32,20 @@ public class ApplicationsController : ControllerBase
     public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetSentAsync(
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption? sort)
+        ApplicationsSortOption? sort
+    )
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         var applications = await _applications.GetSentAsync(
             requesterId,
             projectId,
             positionId,
-            sort ?? ApplicationsSortOption.Default);
+            sort ?? ApplicationsSortOption.Default
+        );
 
         return applications.Select(a => new ApplicationDisplayModel(a)).ToList();
     }
@@ -47,14 +53,17 @@ public class ApplicationsController : ControllerBase
     [HttpGet("sent/projects")]
     public async Task<ActionResult<ICollection<Guid>>> GetSubmittedApplicationsProjectsAsync()
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         var applications = await _applications.GetSentAsync(
             requesterId,
             null,
             null,
-            ApplicationsSortOption.Default);
+            ApplicationsSortOption.Default
+        );
 
         return applications.Select(a => a.ProjectId).Distinct().ToList();
     }
@@ -63,16 +72,20 @@ public class ApplicationsController : ControllerBase
     public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetReceivedAsync(
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption? sort)
+        ApplicationsSortOption? sort
+    )
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         var applications = await _applications.GetReceivedAsync(
             requesterId,
             projectId,
             positionId,
-            sort ?? ApplicationsSortOption.Default);
+            sort ?? ApplicationsSortOption.Default
+        );
 
         return applications.Select(a => new ApplicationDisplayModel(a)).ToList();
     }
@@ -80,7 +93,9 @@ public class ApplicationsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> SubmitAsync(ApplicationSubmissionInputModel model)
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         await _applications.SubmitAsync(requesterId, model.ProjectId, model.PositionId);
@@ -91,7 +106,9 @@ public class ApplicationsController : ControllerBase
     [HttpDelete("{applicationId}")]
     public async Task<ActionResult> RevokeOrRejectAsync(Guid applicationId)
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         await _applications.RevokeOrRejectAsync(requesterId, applicationId);
@@ -100,9 +117,14 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpPut("{applicationId}")]
-    public async Task<ActionResult> AcceptAsync(Guid applicationId, [FromBody] AcceptingApplicationInputModel model)
+    public async Task<ActionResult> AcceptAsync(
+        Guid applicationId,
+        [FromBody] AcceptingApplicationInputModel model
+    )
     {
-        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(Request);
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
 
         if (model.Status is not ApplicationStatus.Accepted)
