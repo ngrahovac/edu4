@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 import StudentHat from '../hats2/StudentHat';
 import AcademicHat from '../hats2/AcademicHat';
-import TertiaryButton from '../buttons/TertiaryButton';
+import DangerTertiaryButton from '../buttons/DangerTertiaryButton';
 
-const PositionCardWithApplyOption = (props) => {
+const PositionCardWithRevokeOption = (props) => {
     const {
         position,
-        onApply = () => {}
+        onRevoke = () => { }
     } = props;
 
     let hat = (
@@ -31,10 +31,10 @@ const PositionCardWithApplyOption = (props) => {
             <p className='text-justify text-gray-500 h-max-24 overflow-clip'>{position.description}</p>
 
             <div className='flex flex-row-reverse'>
-                <TertiaryButton onClick={onApply} text="Apply"></TertiaryButton>
+                <DangerTertiaryButton onClick={onRevoke} text="Revoke application"></DangerTertiaryButton>
             </div>
         </div>
     )
 }
 
-export default PositionCardWithApplyOption
+export default PositionCardWithRevokeOption

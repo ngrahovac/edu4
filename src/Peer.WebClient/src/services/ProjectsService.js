@@ -244,9 +244,29 @@ async function getById(projectId, accessToken) {
                 };
             }
 
-            debugger;
             let collaborator = await fetchCollaboratorResponse.json();
             c.collaborator = collaborator;
+        }
+
+        let fetchSubmittedApplicationsUri = `${apiRootUri}/applications/sent`;
+        let fetchSubmittedApplicationsResponse = await getAsync(fetchSubmittedApplicationsUri, accessToken);
+
+        if (!fetchSubmittedApplicationsResponse.ok) {
+            return {
+                outcome: failureResult,
+                message: "Error fetching sent applications"
+            };
+        }
+
+        let submittedApplications = await fetchSubmittedApplicationsResponse.json();
+
+        for (let p of project.positions) {
+            var submittedApplication = submittedApplications.find(a => a.projectId == project.id && a.positionId == p.id);
+            p.applied = submittedApplication;
+            
+            if (p.applied) {
+                p.applicationId = submittedApplication.id;
+            }
         }
 
         return {
