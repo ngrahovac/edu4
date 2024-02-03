@@ -9,6 +9,9 @@ import SingleColumnLayout from '../layout/SingleColumnLayout';
 import { me } from '../services/UsersService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
 import { discover } from '../services/ProjectsService';
+import RefineButton from '../comps/discover/RefineButton'
+import ProjectSearchParam from '../comps/search/ProjectSearchParam';
+import DiscoveryParametersSidebar from '../comps/discover/DiscoveryRefinementSidebar';
 
 const Search = () => {
 
@@ -20,16 +23,48 @@ const Search = () => {
     const [ownHats, setOwnHats] = useState(undefined);
     const [projects, setProjects] = useState(undefined);
 
+    const [searchRefinementsFormVisible, setSearchRefinementsFormVisible] = useState(false);
+
     const [pageLoading, setPageLoading] = useState(true);
     const [projectsLoading, setProjectsLoading] = useState(true);
 
     const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
+        console.log(search)
+        console.log(search.get('hat'))
         setKeyword(search.get('keyword'));
         setSort(search.get('sort'));
-        setHat(search.get('hat'));
+        setHat(search.get('hat') ? ownHats.find(h => h.type == search.get('hat')) : undefined);
     }, [search])
+
+    function setSearchParam(key, value) {
+        const newParams = new URLSearchParams();
+
+        search.forEach((value, k) => {
+            if (k !== key) {
+                newParams.append(k, value);
+            }
+        });
+
+        if (value !== undefined)
+            newParams.set(key, value);
+
+        setSearch(newParams);
+    }
+
+    function toggleSearchRefinementsFormVisibility() {
+        setSearchRefinementsFormVisible(!searchRefinementsFormVisible);
+    }
+
+    function handleDiscoveryRefinementsChange(keyword, sort, hat) {
+        const newParams = new URLSearchParams();
+        keyword && newParams.append('keyword', keyword);
+        sort && newParams.append('sort', sort);
+        hat && newParams.append('hat', hat.type);
+
+        setSearch(newParams);
+    }
 
     useEffect(() => {
         const fetchOwnHats = () => {
@@ -118,12 +153,57 @@ const Search = () => {
 
     return (
         ownHats &&
+
         <SingleColumnLayout
-            title={`Search results for ${keyword}`}>
+            title={`Search results ${keyword ? `for ${keyword}` : ''}`}>
             <div className='flex flex-col gap-y-8'>
+                <RefineButton
+                    onClick={toggleSearchRefinementsFormVisibility}>
+                </RefineButton>
+
+                <div className='flex gap-x-2'>
+                    {
+                        keyword &&
+                        <ProjectSearchParam
+                            onRemove={() => { setSearchParam('keyword', undefined) }}>
+                            contains "{keyword}"
+                        </ProjectSearchParam>
+                    }
+
+                    {
+                        sort &&
+                        <ProjectSearchParam
+                            onRemove={() => { setSearchParam('sort', undefined) }}>
+                            {`${sort === "asc" ? "oldest posted first" : "newest posted first"}`}
+                        </ProjectSearchParam>
+                    }
+
+                    {
+                        hat &&
+                        <ProjectSearchParam
+                            onRemove={() => { setSearchParam('hat', undefined) }}>
+                            for a {hat.type} like me
+                        </ProjectSearchParam>
+                    }
+                </div>
+
                 {searchResults}
+
+                {
+                    searchRefinementsFormVisible &&
+                    <div className='fixed left-0 top-0'>
+                        <DiscoveryParametersSidebar
+                            keyword={keyword}
+                            sort={sort}
+                            hat={hat}
+                            hats={ownHats}
+                            onModalClosed={() => setSearchRefinementsFormVisible(false)}
+                            onDiscoveryParametersChanged={handleDiscoveryRefinementsChange}>
+                        </DiscoveryParametersSidebar>
+                    </div>
+                }
             </div>
-        </SingleColumnLayout>
+        </SingleColumnLayout >
     )
 }
 
