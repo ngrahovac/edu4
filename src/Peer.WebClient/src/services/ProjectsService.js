@@ -98,7 +98,6 @@ function AppendQueryString(baseUri, keyword, sort, hat) {
         searchRefinemets["sort"] = "byDatePostedDesc";
     }
 
-
     if (hat != undefined) {
         searchRefinemets["hatType"] = hat.type;
 
@@ -114,6 +113,8 @@ function AppendQueryString(baseUri, keyword, sort, hat) {
 
         baseUri = baseUri.slice(0, -1);
     }
+
+    return baseUri;
 }
 
 async function discover(keyword, sort, hat, accessToken) {
@@ -123,9 +124,9 @@ async function discover(keyword, sort, hat, accessToken) {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
         let projectsUri = `${apiRootUri}/projects`;
-        AppendQueryString(projectsUri, keyword, sort, hat);
+        let queryParamsUri = AppendQueryString(projectsUri, keyword, sort, hat);
 
-        let fetchProjectsResponse = await getAsync(projectsUri, accessToken);
+        let fetchProjectsResponse = await getAsync(queryParamsUri, accessToken);
 
         if (!fetchProjectsResponse.ok) {
             return {

@@ -17,6 +17,7 @@ import Project from './pages/Project';
 import EditProject from './pages/EditProject';
 import Contributor from './pages/Contributor';
 import Applications from './pages/Applications';
+import Search from './pages/Search';
 import MyContributions from './pages/MyContributions';
 
 
@@ -48,6 +49,7 @@ root.render(
             <Route path='/projects/:projectId/edit' element={<EditProject></EditProject>}></Route>
             <Route path='/contributors/:contributorId' element={<Contributor></Contributor>}></Route>
             <Route path='/applications' element={<Applications></Applications>}></Route>
+            <Route path='/search' element={<Search></Search>}></Route>
 
             <Route path='/contributions' element={<MyContributions></MyContributions>}></Route>
           </Route>

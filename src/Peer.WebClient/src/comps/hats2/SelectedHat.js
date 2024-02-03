@@ -8,7 +8,7 @@ const SelectedHat = (props) => {
 
     return (
         <div
-            className='my-4 bg-stone-50 px-4 py-6 rounded-md w-full border border-lime-500 bg-lime-50 overflow-clip'>
+            className='px-4 py-4 border-4 border-lime-300'>
             {
                 (() => {
                     switch (hatType) {
