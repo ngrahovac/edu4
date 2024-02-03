@@ -15,6 +15,7 @@ const GlobalSearch = () => {
     function handleKeyDown(e) {
         if (e.key == "Enter") {
             navigate(`/search?keyword=${keyword}`)
+            setKeyword('');
         }
     }
 
