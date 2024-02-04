@@ -2,11 +2,7 @@ import React from 'react'
 
 const LogoIcon = () => {
     return (
-        <img
-            width={40}
-            height={40}
-            src='https://placehold.co/40x40?text=icon'>
-        </img>
+        <img width={36} height={36} src='assets/circle.png'></img>
     )
 }
 

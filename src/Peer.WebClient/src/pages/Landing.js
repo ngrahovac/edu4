@@ -10,7 +10,13 @@ import { SectionTitle } from '../layout/SectionTitle'
 import Lang from '../comps/landing/Lang';
 import Nudge from '../comps/landing/Nudge';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
-import GiantLogo from '../comps/landing/GiantLogo';
+import LogoIcon from '../comps/nav/LogoIcon'
+import TertiaryButton from '../comps/buttons/TertiaryButton'
+import CTA from '../comps/landing/CTA';
+import LandingFlair from '../comps/landing/LandingFlair';
+import PainPoints from './PainPoints';
+import LandingNavbarItem from '../comps/landing/LandingNavbarItem';
+import LandingNavbarSeparator from '../comps/landing/LandingNavbarSeparator';
 
 const Landing = () => {
     const {
@@ -92,90 +98,49 @@ const Landing = () => {
     return (
         <LandingLayout>
             <LandingNavbar>
-                <BorderlessButton
-                    text="Learn more">
-                </BorderlessButton>
+                <div>
+                    <LogoIcon></LogoIcon>
+                </div>
+                <div className='flex gap-x-8 align-middle items-center'>
+                    {/*
+                    <BorderlessButton
+                        text="Learn more">
+                    </BorderlessButton>
+    */}
+                    {/*
+                    <AccentButton
+                        text="Support"
+                        icon={
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                        }>
+                    </AccentButton>
+                    */}
 
-                <AccentButton
-                    text="Support"
-                    icon={
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                        </svg>
-                    }>
-                </AccentButton>
 
-                <Lang></Lang>
-
-                <PrimaryButton
-                    text="Enter"
-                    onClick={() => loginWithRedirect({ prompt: 'login' })}>
-                </PrimaryButton>
+                    <LandingNavbarItem>Learn more</LandingNavbarItem>
+                    <LandingNavbarItem>Ways to support</LandingNavbarItem>
+                    <TertiaryButton
+                        text="Enter"
+                        onClick={() => loginWithRedirect({ prompt: 'login' })}>
+                    </TertiaryButton>
+                </div>
             </LandingNavbar>
 
-            <div className='flex flex-col items-center space-y-16'>
-                {/* giant logo + slogan */}
-                <div className='w-full'>
-                    <div className='flex flex-col space-y-8'>
-                        <GiantLogo></GiantLogo>
+            <div className='flex flex-col pt-24 pb-8 gap-y-24 justify-start h-screen'>
+                <div className='flex flex-col gap-y-8 justify-start items-start justify-items-start'>
+                    <Slogan></Slogan>
 
-                        <Slogan></Slogan>
-                    </div>
+                    <p className='text-lg text-center w-full text-gray-600'>
+                        Whether you're a student, researcher, industry professional - or all of the above -
+                        <span className='font-bold'> peer </span>
+                        helps you find your people.&nbsp;
+                        <span className='text-indigo-500 hover:text-indigo-600 cursor-pointer font-medium'>Learn how.</span>
+                    </p>
                 </div>
 
-                {/* one-line description */}
-                <p className='text-xl text-center'>
-                    Whether you're a student, researcher, industry professional - or all of the above -
-                    <span className='font-bold'> peer </span>
-                    helps you find your people.
-                </p>
-
-                {/* pain points */}
-                <div className='flex flex-col items-center'>
-                    <div className='flex flex-row items-center text-lg mb-8 w-96'>
-                        <p className='w-32'>I am a...</p>
-                        <select
-                            onChange={e => setSelectedHatType(e.target.value)}
-                            value={selectedHatType}
-                            className="w-full rounded-full px-4 border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
-                            <option value={undefined}>Choose..</option>
-                            <option value="Student">Student</option>
-                            <option value="Researcher / Academic">Researcher / Academic</option>
-                        </select>
-                    </div>
-
-                    <div className='text-lg'>
-                        {
-                            selectedHatType == "Student" ?
-                                studentUseCases :
-                                selectedHatType == "Researcher / Academic" ?
-                                    academicUseCases :
-                                    null
-                        }
-                    </div>
-                </div>
-
-                {/* CTA */}
-                <div className='flex flex-col items-center space-y-4 absolute bottom-16'>
-                    <SectionTitle title="Join private beta"></SectionTitle>
-                    <label>
-                        <form
-                            onSubmit={e => e.preventDefault()}
-                            className='flex flex-row rounded-full border border-gray-400 justify-between px-4 py-2 w-full'>
-                            <input
-                                type="email"
-                                required={true}
-                                name="title"
-                                placeholder='Your email here..'
-                                className="border-none focus:outline-none focus:ring-none text-lg">
-                            </input>
-                            <button
-                                className='text-lg font-bold px-4 rounded-full'>
-                                Go
-                            </button>
-                        </form>
-                    </label>
-                </div>
+                <CTA></CTA>
             </div>
         </LandingLayout>
     )

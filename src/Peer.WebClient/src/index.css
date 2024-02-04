@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 body {
-    background-color: white;
     font-family: 'Figtree', sans-serif;
-    color: #1F0F3D;
+    
 }
 
 div {

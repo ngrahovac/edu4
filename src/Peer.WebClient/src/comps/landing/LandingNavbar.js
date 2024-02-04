@@ -7,7 +7,7 @@ const LandingNavbar = (props) => {
 
     return (
         <div
-            className='fixed w-full h-16 flex flex-row items-center justify-end px-96 top-0 left-0 space-x-4'>
+            className='fixed top-0 w-2/3 h-16 flex items-center justify-between bg-white'>
                 {children}
         </div>
     )
