@@ -128,19 +128,17 @@ const Landing = () => {
                 </div>
             </LandingNavbar>
 
-            <div className='flex flex-col pt-24 pb-8 gap-y-24 justify-start h-screen'>
-                <div className='flex flex-col gap-y-8 justify-start items-start justify-items-start'>
+            <div className='flex flex-col pt-20 pb-16 gap-y-20 h-full'>
+                <div className='flex flex-col gap-y-4 justify-start items-start justify-items-start'>
                     <Slogan></Slogan>
 
-                    <p className='text-lg text-center w-full text-gray-600'>
+                    <p className='text-lg text-left w-full text-gray-600'>
                         Whether you're a student, researcher, industry professional - or all of the above -
                         <span className='font-bold'> peer </span>
                         helps you find your people.&nbsp;
-                        <span className='text-indigo-500 hover:text-indigo-600 cursor-pointer font-medium'>Learn how.</span>
                     </p>
                 </div>
-
-                <CTA></CTA>
+             <CTA></CTA>
             </div>
         </LandingLayout>
     )
