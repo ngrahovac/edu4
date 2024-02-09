@@ -5,29 +5,33 @@ const Slogan = (props) => {
     const {
     } = props;
 
+    const changeInterval = 2000;
+
     return (
-        <span className='text-5xl font-semibold text-left text-slate-800'>
+        <span className='text-xl md:text-3xl lg:text-5xl font-semibold text-left text-gray-800'>
             Find amazing&nbsp;
-            <span className='font-black'>
+            <span className='font-black text-indigo-500'>
                 <TypeAnimation
                     preRenderFirstString={true}
                     sequence={[
-                        'people',
-                        2000,
                         'backend developers',
-                        2000,
+                        changeInterval,
+                        'backend developers',
+                        changeInterval,
                         'telco professionals',
-                        2000,
+                        changeInterval,
                         'mechanical engineers',
-                        2000,
+                        changeInterval,
                         'artists',
-                        2000,
+                        changeInterval,
                         'product designers',
-                        2000,
+                        changeInterval,
                         'math majors',
-                        2000,
+                        changeInterval,
                         'mentors',
-                        2000
+                        changeInterval,
+                        'volunteers',
+                        changeInterval,
                     ]}
                     wrapper="span"
                     speed={20}

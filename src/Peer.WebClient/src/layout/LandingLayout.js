@@ -6,7 +6,7 @@ const LandingLayout = (props) => {
     } = props;
 
     return (
-        <div className='relative px-96 pt-16 flex flex-col h-screen'>
+        <div className='w-5/6 mx-auto h-screen'>
             {children}
         </div>
     )
