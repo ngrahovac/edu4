@@ -6,7 +6,7 @@ const TertiaryButton = (props) => {
         <ButtonBase
             {...props}
             defaultStyle="text-indigo-500"
-            hoverStyle="text-indigo-800">
+            hoverStyle="hover:text-indigo-600">
         </ButtonBase>
     )
 }

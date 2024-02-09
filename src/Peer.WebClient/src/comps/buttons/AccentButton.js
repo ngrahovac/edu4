@@ -6,7 +6,7 @@ const AccentButton = (props) => {
         <ButtonBase
             {...props}
             defaultStyle="bg-lime-500 text-gray-50"
-            hoverStyle="bg-lime-600">
+            hoverStyle="hover:bg-lime-600">
         </ButtonBase>
     )
 }

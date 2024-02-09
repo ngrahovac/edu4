@@ -5,16 +5,16 @@ const Slogan = (props) => {
     const {
     } = props;
 
-    const changeInterval = 2000000;
+    const changeInterval = 2000;
 
     return (
-        <span className='text-2xl md:text-3xl lg:text-5xl font-semibold text-left text-gray-800'>
+        <span className='text-xl md:text-3xl lg:text-5xl font-semibold text-left text-gray-800'>
             Find amazing&nbsp;
             <span className='font-black text-indigo-500'>
                 <TypeAnimation
                     preRenderFirstString={true}
                     sequence={[
-                        'people',
+                        'backend developers',
                         changeInterval,
                         'backend developers',
                         changeInterval,

@@ -6,7 +6,8 @@ const BorderlessButton = (props) => {
     return (
         <ButtonBase
             {...props}
-            hoverStyle="text-blue-500">
+            defaultStyle="text-indigo-500"
+            hoverStyle="hover:text-indigo-600">
         </ButtonBase>
     )
 }

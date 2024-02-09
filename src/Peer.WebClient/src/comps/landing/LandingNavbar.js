@@ -7,8 +7,10 @@ const LandingNavbar = (props) => {
 
     return (
         <div
-            className='fixed top-0 w-2/3 h-16 flex items-center justify-between bg-white'>
+            className='fixed w-full top-0 left-0 h-16 bg-slate-50 flex place-content-center'>
+            <div className='flex items-center justify-between w-5/6'>
                 {children}
+            </div>
         </div>
     )
 }
