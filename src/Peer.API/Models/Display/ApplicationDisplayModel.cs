@@ -1,4 +1,5 @@
 using Peer.API.Utils;
+using Peer.Domain.Contributors;
 
 namespace Peer.API.Models.Display;
 
@@ -13,7 +14,12 @@ public class ApplicationDisplayModel
     public string DateSubmitted { get; set; }
     public string Status { get; set; }
 
-    public ApplicationDisplayModel(Domain.Applications.Application application)
+    public bool Own { get; set; }
+
+    public ApplicationDisplayModel(
+        Domain.Applications.Application application,
+        Contributor requester
+    )
     {
         Id = application.Id;
         ApplicantId = application.ApplicantId;
@@ -23,5 +29,6 @@ public class ApplicationDisplayModel
         PositionId = application.PositionId;
         DateSubmitted = application.DateSubmitted.ToShortDateString();
         Status = application.Status.ToString();
+        Own = requester.Id.Equals(ApplicantId);
     }
 }

@@ -39,6 +39,7 @@ public class ApplicationsController : ControllerBase
             Request
         );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+        var requester = await _contributors.GetByIdAsync(requesterId);
 
         var applications = await _applications.GetSentAsync(
             requesterId,
@@ -47,7 +48,7 @@ public class ApplicationsController : ControllerBase
             sort ?? ApplicationsSortOption.Default
         );
 
-        return applications.Select(a => new ApplicationDisplayModel(a)).ToList();
+        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
     }
 
     [HttpGet("sent/projects")]
@@ -79,6 +80,7 @@ public class ApplicationsController : ControllerBase
             Request
         );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+        var requester = await _contributors.GetByIdAsync(requesterId);
 
         var applications = await _applications.GetReceivedAsync(
             requesterId,
@@ -87,7 +89,7 @@ public class ApplicationsController : ControllerBase
             sort ?? ApplicationsSortOption.Default
         );
 
-        return applications.Select(a => new ApplicationDisplayModel(a)).ToList();
+        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
     }
 
     [HttpPost]
