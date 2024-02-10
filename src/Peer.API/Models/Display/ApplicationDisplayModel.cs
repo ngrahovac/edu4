@@ -13,7 +13,6 @@ public class ApplicationDisplayModel
     public Guid PositionId { get; set; }
     public string DateSubmitted { get; set; }
     public string Status { get; set; }
-
     public bool Own { get; set; }
 
     public ApplicationDisplayModel(

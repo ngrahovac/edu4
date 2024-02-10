@@ -5,9 +5,6 @@ import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 const ReceivedApplication = (props) => {
     const {
         application,
-        projectTitle,
-        positionName,
-        applicantName,
         onApplicationSelected,
         onApplicationDeselected
     } = props;
@@ -26,10 +23,10 @@ const ReceivedApplication = (props) => {
 
 
     return <tr key={application.id} className={`hover:bg-blue-200 cursor-pointer border-b ${isSelected ? "bg-cyan-300" : ""}`}>
-        <td className='py-4 px-2 pl-4 truncate underline text-blue-500 hover:text-blue-700'><Link to={application.projectUrl}>{projectTitle}</Link></td>
-        <td className='py-4 px-2 truncate'>{positionName}</td>
+        <td className='py-4 px-2 pl-4 truncate underline text-blue-500 hover:text-blue-700'><Link to={`/${application.projectUrl}`}>{application.project.title}</Link></td>
+        <td className='py-4 px-2 truncate'>{application.project.positions.find(p => p.id == application.positionId).name}</td>
         <td className='py-4 px-2 truncate'>{application.dateSubmitted}</td>
-        <td className='py-4 px-2 truncate cursor-pointer hover:text-blue-700 text-blue-500 underline'><Link to={application.applicantUrl}>{applicantName}</Link></td>
+        <td className='py-4 px-2 truncate cursor-pointer hover:text-blue-700 text-blue-500 underline'><Link to={`/${application.applicantUrl}`}>{application.applicant ? application.applicant.fullName : "nema"}</Link></td>
         <td className='py-4 px-2 truncate'>
             <SubmittedApplicationStatus></SubmittedApplicationStatus>
         </td>

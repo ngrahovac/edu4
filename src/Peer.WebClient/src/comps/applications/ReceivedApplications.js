@@ -22,8 +22,8 @@ const ReceivedApplications = (props) => {
         onSortChanged
     } = props;
 
-    const [displayedApplicationsProjects, setDisplayedApplicationsProjects] = useState(undefined);
-    const [applicants, setApplicants] = useState([]);
+    const [toggleReload, setToggleReload] = useState(false);
+
     const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
     const [displayedApplications, setDisplayedApplications] = useState(applications);
 
@@ -37,74 +37,6 @@ const ReceivedApplications = (props) => {
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
     const [loading, setLoading] = useState(true);
-
-    const fetchProjectsForDisplayedApplications = async () => {
-        setLoading(true);
-
-        try {
-            let fetchedProjects = [];
-
-            let token = await getAccessTokenSilently({
-                audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-            });
-
-            for (let application of displayedApplications) {
-                try {
-                    let result = await getById(application.projectId, token);
-
-                    if (result.outcome == successResult) {
-                        let project = await result.payload;
-
-                        fetchedProjects.push(project);
-                    } else {
-                        console.log("error fetching one of the projects for received applications");
-                    }
-                } catch (ex) {
-                    console.log(ex);
-                }
-            };
-
-            setDisplayedApplicationsProjects(fetchedProjects);
-        } catch (ex) {
-            console.log("error fetching projects for displayed applications");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const fetchApplicantsForDisplayedApplications = async () => {
-        setLoading(true);
-
-        try {
-            let token = await getAccessTokenSilently({
-                audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-            });
-
-            let fetchedApplicants = [];
-
-            for (let application of displayedApplications) {
-                try {
-                    let result = await getContributor(token, application.applicantUrl);
-
-                    if (result.outcome == successResult) {
-                        let applicant = await result.payload;
-
-                        fetchedApplicants.push(applicant);
-                    } else {
-                        console.log("error fetching an applicant")
-                    }
-                } catch (ex) {
-                    console.log(ex);
-                }
-            };
-
-            setApplicants(fetchedApplicants);
-        } catch (ex) {
-            console.log("error fetching all applicants for received applications", ex);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const fetchAuthoredProjects = async () => {
         setLoading(true);
@@ -141,8 +73,6 @@ const ReceivedApplications = (props) => {
     }, [applications]);
 
     useEffect(() => {
-        fetchProjectsForDisplayedApplications();
-        fetchApplicantsForDisplayedApplications();
         setSelectedApplicationIds([]);
     }, [displayedApplications])
 
@@ -170,14 +100,12 @@ const ReceivedApplications = (props) => {
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let successfullyRejectedApplicationIds = [];
-
                 for (let applicationId of selectedApplicationIds) {
                     let result = await rejectApplication(applicationId, token);
 
                     if (result.outcome === successResult) {
                         console.log("success");
-                        successfullyRejectedApplicationIds.push(applicationId);
+                        setToggleReload(!toggleReload);
                     }
                     else if (result.outcome === failureResult) {
                         console.log("failure");
@@ -185,12 +113,6 @@ const ReceivedApplications = (props) => {
                         console.log("error");
                     }
                 }
-
-                setDisplayedApplications(displayedApplications.filter(
-                    displayedApplication => !successfullyRejectedApplicationIds.find(
-                        id => id == displayedApplication.id
-                    )
-                ));
             }
             catch (ex) {
                 console.log("exception", ex);
@@ -271,9 +193,6 @@ const ReceivedApplications = (props) => {
     }
 
     return (
-        displayedApplicationsProjects &&
-        applicants &&
-        authoredProjects &&
         <>
             {rejectingApplicationsRequestDialog}
             {acceptingApplicationsRequestDialog}
@@ -309,9 +228,6 @@ const ReceivedApplications = (props) => {
                                 displayedApplications.map(a => <Fragment key={a.id}>
                                     <ReceivedApplication
                                         application={a}
-                                        projectTitle={displayedApplicationsProjects.find(p => p.id == a.projectId) ? displayedApplicationsProjects.find(p => p.id == a.projectId).title : "nema"}
-                                        positionName={displayedApplicationsProjects.find(p => p.id == a.projectId) ? displayedApplicationsProjects.find(p => p.id == a.projectId).positions.find(p => p.id == a.positionId).name : "nema"}
-                                        applicantName={applicants.find(i => i.id == a.applicantId) ? applicants.find(i => i.id == a.applicantId).fullName : "nema"}
                                         onApplicationSelected={applicationSelected}
                                         onApplicationDeselected={applicationDeselected}>
                                     </ReceivedApplication>
