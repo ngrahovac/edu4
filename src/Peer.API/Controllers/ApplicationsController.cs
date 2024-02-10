@@ -15,17 +15,42 @@ public class ApplicationsController : ControllerBase
 {
     private readonly ApplicationsService _applications;
     private readonly ContributorsService _contributors;
+    private readonly ProjectsService _projects;
     private readonly IAccountIdExtractionService _accountIdExtractionService;
 
     public ApplicationsController(
         ApplicationsService applications,
         ContributorsService contributors,
+        ProjectsService projectsService,
         IAccountIdExtractionService accountIdExtractionService
     )
     {
         _applications = applications;
         _contributors = contributors;
+        _projects = projectsService;
         _accountIdExtractionService = accountIdExtractionService;
+    }
+
+    [HttpGet("project/{projectId}")]
+    public async Task<
+        ActionResult<ICollection<ApplicationDisplayModel>>
+    > GetProjectApplicationsAsync(Guid projectId)
+    {
+        var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
+            Request
+        );
+        var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+        var requester = await _contributors.GetByIdAsync(requesterId);
+
+        var project = await _projects.GetByIdAsync(projectId);
+
+        var requesterIsProjectAuthor = requesterId.Equals(project.AuthorId);
+
+        var applications = requesterIsProjectAuthor
+            ? await _applications.GetReceivedAsync(requesterId, projectId)
+            : await _applications.GetSentAsync(requesterId, projectId);
+
+        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
     }
 
     [HttpGet("sent")]

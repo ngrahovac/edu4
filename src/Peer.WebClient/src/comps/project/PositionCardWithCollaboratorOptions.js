@@ -7,6 +7,7 @@ import TertiaryButton from '../buttons/TertiaryButton';
 const PositionCardWithCollaboratorOptions = (props) => {
     const {
         position,
+        applied,
         onApply = () => { },
         onRevoke = () => { },
     } = props;
@@ -34,11 +35,11 @@ const PositionCardWithCollaboratorOptions = (props) => {
 
             <div className='flex flex-row-reverse'>
                 {
-                    !position.applied &&
+                    !applied &&
                     <TertiaryButton onClick={onApply} text="Apply"></TertiaryButton>
                 }
                 {
-                    position.applied &&
+                    applied &&
                     <DangerTertiaryButton onClick={onRevoke} text="Revoke application"></DangerTertiaryButton>
                 }
             </div>

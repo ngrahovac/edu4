@@ -249,33 +249,25 @@ async function getById(projectId, accessToken) {
             c.collaborator = collaborator;
         }
 
-        let fetchSubmittedApplicationsUri = `${apiRootUri}/applications/sent`;
-        let fetchSubmittedApplicationsResponse = await getAsync(fetchSubmittedApplicationsUri, accessToken);
+        let fetchApplicationsUrl = `${apiRootUri}/${project.applicationsUrl}`;
+        let fetchApplicationsResponse = await getAsync(fetchApplicationsUrl, accessToken);
 
-        if (!fetchSubmittedApplicationsResponse.ok) {
+        if (!fetchApplicationsResponse.ok) {
             return {
                 outcome: failureResult,
-                message: "Error fetching sent applications"
+                message: "Error fetching project applications"
             };
         }
 
-        let submittedApplications = await fetchSubmittedApplicationsResponse.json();
-
-        for (let p of project.positions) {
-            var submittedApplication = submittedApplications.find(a => a.projectId == project.id && a.positionId == p.id);
-            p.applied = submittedApplication;
-            
-            if (p.applied) {
-                p.applicationId = submittedApplication.id;
-            }
-        }
+        let applications = await fetchApplicationsResponse.json();
 
         return {
             outcome: successResult,
             payload: {
                 ...project,
                 author: author,
-                collaborations: collaborations
+                collaborations: collaborations,
+                applications: applications
             }
         };
 
