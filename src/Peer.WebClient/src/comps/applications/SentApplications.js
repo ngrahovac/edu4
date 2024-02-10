@@ -221,7 +221,7 @@ const SentApplications = (props) => {
                             <TableRow selected={selectedApplicationIds.find(id => id == application.id)}>
                                 <TableCell>
                                     <div className='hover:underline'>
-                                    <Link to={application.projectUrl}>
+                                    <Link to={`/${application.projectUrl}`}>
                                         {displayedApplicationsProjects.find(p => p.id == application.projectId) ?
                                             displayedApplicationsProjects.find(p => p.id == application.projectId).title :
                                             "nema"}
