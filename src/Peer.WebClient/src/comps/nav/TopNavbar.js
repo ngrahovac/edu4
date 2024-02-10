@@ -29,7 +29,7 @@ const TopNavbar = () => {
         <>
             {topNavbarContextMenu}
 
-            <div className='fixed w-full h-16 bg-gray-100 flex justify-between px-8 z-40'>
+            <div className='fixed w-full h-16 bg-slate-50 flex justify-between px-8 z-40'>
                 {/* navbar items on the left */}
                 <div className='flex items-center gap-x-4'>
                     <LogoIcon></LogoIcon>
