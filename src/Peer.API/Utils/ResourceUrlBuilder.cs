@@ -11,4 +11,7 @@ public static class ResourceUrlBuilder
 
     public static string BuildProjectCollaborationsUrl(Guid projectId) =>
         $"collaborations/project/{projectId}";
+
+    internal static string BuildProjectApplicationsUrl(Guid projectId) =>
+        $"applications/project/{projectId}";
 }

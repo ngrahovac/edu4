@@ -25,7 +25,6 @@ const SentApplications = (props) => {
 
     const [loading, setLoading] = useState(true);
 
-    const [displayedApplicationsProjects, setDisplayedApplicationsProjects] = useState(undefined);
     const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
     const [displayedApplications, setDisplayedApplications] = useState(applications);
 
@@ -36,36 +35,6 @@ const SentApplications = (props) => {
     const revokingApplicationRequestDialogRef = useRef(null);
 
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
-
-    const fetchProjectsForDisplayedApplications = async () => {
-        setLoading(true);
-
-        try {
-            var fetchedProjects = [];
-
-            let token = await getAccessTokenSilently({
-                audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
-            });
-
-            for (let a of displayedApplications) {
-                let result = await getById(a.projectId, token);
-
-                if (result.outcome == successResult) {
-                    let project = await result.payload;
-                    fetchedProjects.push(project);
-                } else {
-                    console.log("error fetching a single project")
-                }
-            }
-
-            setDisplayedApplicationsProjects(fetchedProjects);
-
-        } catch (ex) {
-            console.log("error fetching one project for currently displayed applications", ex);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const fetchProjectsUserAppliedFor = async () => {
         setLoading(true);
@@ -111,7 +80,6 @@ const SentApplications = (props) => {
     }, [applications]);
 
     useEffect(() => {
-        fetchProjectsForDisplayedApplications();
         setSelectedApplicationIds([]);
     }, [displayedApplications]);
 
@@ -192,7 +160,6 @@ const SentApplications = (props) => {
     }
 
     return (
-        displayedApplicationsProjects &&
         submittedApplicationsProjects &&
         <>
             {revokingApplicationRequestDialog}
@@ -221,17 +188,13 @@ const SentApplications = (props) => {
                             <TableRow selected={selectedApplicationIds.find(id => id == application.id)}>
                                 <TableCell>
                                     <div className='hover:underline'>
-                                    <Link to={application.projectUrl}>
-                                        {displayedApplicationsProjects.find(p => p.id == application.projectId) ?
-                                            displayedApplicationsProjects.find(p => p.id == application.projectId).title :
-                                            "nema"}
-                                    </Link>
+                                        <Link to={`/${application.projectUrl}`}>
+                                            {application.project.title}
+                                        </Link>
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    {displayedApplicationsProjects.find(p => p.id == application.projectId) ?
-                                        displayedApplicationsProjects.find(p => p.id == application.projectId).positions.find(p => p.id == application.positionId).name :
-                                        "nema"}
+                                    {application.project.positions.find(p => p.id == application.positionId).name}
                                 </TableCell>
                                 <TableCell>{application.dateSubmitted}</TableCell>
                                 <TableCell><SubmittedApplicationStatus></SubmittedApplicationStatus></TableCell>

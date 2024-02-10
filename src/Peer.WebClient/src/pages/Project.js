@@ -111,7 +111,8 @@ const Project = () => {
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await revokeApplication(selectedPosition.applicationId, token);
+                let applicationId = project.applications.find(a => a.positionId == selectedPosition.id).id;
+                let result = await revokeApplication(applicationId, token);
 
                 if (result.outcome === successResult) {
                     console.log("success");
@@ -288,6 +289,7 @@ const Project = () => {
                                 project.positions.filter(p => p.recommended).map((p, index) => <div key={index}>
                                     <PositionCardWithCollaboratorOptions
                                         position={p}
+                                        applied={project.applications?.find(a => a.positionId == p.id) != undefined}
                                         onApply={() => {
                                             setSelectedPosition(p);
                                             handleSubmitApplicationRequested();
@@ -309,6 +311,7 @@ const Project = () => {
                                 project.positions.filter(p => !p.recommended).map((p, index) => <div key={index}>
                                     <PositionCardWithCollaboratorOptions
                                         position={p}
+                                        applied={project.applications?.find(a => a.positionId == p.id) != undefined}
                                         onApply={() => {
                                             setSelectedPosition(p);
                                             handleSubmitApplicationRequested();

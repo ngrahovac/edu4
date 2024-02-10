@@ -63,12 +63,34 @@ async function getSubmittedApplications(accessToken, projectId, sort) {
         var response = await getAsync(requestUri, accessToken);
 
         if (response.ok) {
-            let body = await response.json();
+            let applications = await response.json();
+
+            let uniqueProjectUrls = new Set(applications.map(a => a.projectUrl));
+            let projects = [];
+
+            for (let projectUrl of uniqueProjectUrls) {
+                let fetchProjectUrl = `${apiRootUri}/${projectUrl}`;
+                let fetchProjectResponse = await getAsync(fetchProjectUrl, accessToken);
+
+                if (!fetchProjectResponse.ok) {
+                    return {
+                        outcome: failureResult,
+                        message: "Error fetching project"
+                    };
+                }
+
+                let project = await fetchProjectResponse.json();
+                projects.push(project);
+            }
+
+            for (let application of applications){
+                application.project = projects.find(p => p.id == application.projectId);
+            }
 
             return {
                 outcome: successResult,
                 message: "Submitted applications retrieved successfully!",
-                payload: body
+                payload: applications
             };
         } else {
             var responseMessage = await response.text();
@@ -113,12 +135,56 @@ async function getIncomingApplications(accessToken, projectId, sort) {
         var response = await getAsync(requestUri, accessToken);
 
         if (response.ok) {
-            let body = await response.json();
+            debugger;
+            let applications = await response.json();
+            let uniqueApplicantUrls = new Set(applications.map(a => a.applicantUrl));
+            let applicants = [];
+
+            for (let applicantUrl of uniqueApplicantUrls) {
+                let fetchApplicantUri = `${apiRootUri}/${applicantUrl}`;
+                let fetchApplicantResponse = await getAsync(fetchApplicantUri, accessToken);
+
+                if (!fetchApplicantResponse.ok) {
+                    return {
+                        outcome: failureResult,
+                        message: "Error fetching applicant"
+                    };
+                }
+
+                let applicant = await fetchApplicantResponse.json();
+                applicants.push(applicant);
+            }
+
+            for (let application of applications) {
+                application.applicant = applicants.find(a => a.id == application.applicantId);
+            }
+
+            let uniqueProjectUrls = new Set(applications.map(a => a.projectUrl));
+            let projects = [];
+
+            for (let projectUrl of uniqueProjectUrls) {
+                let fetchProjectUrl = `${apiRootUri}/${projectUrl}`;
+                let fetchProjectResponse = await getAsync(fetchProjectUrl, accessToken);
+
+                if (!fetchProjectResponse.ok) {
+                    return {
+                        outcome: failureResult,
+                        message: "Error fetching project"
+                    };
+                }
+
+                let project = await fetchProjectResponse.json();
+                projects.push(project);
+            }
+
+            for (let application of applications) {
+                application.project = projects.find(p => p.id == application.projectId);
+            }
 
             return {
                 outcome: successResult,
                 message: "Received applications retrieved successfully!",
-                payload: body
+                payload: applications
             };
         } else {
             var responseMessage = await response.text();
