@@ -19,12 +19,12 @@ const PositionCard = (props) => {
             }
         }.call(this));
 
-    let borderColor = position.recommended ? "border-lime-300" : "border-indigo-100";
+    let borderColor = position.recommended ? "border-gray-300" : "border-gray-100";
     return (
-        <div className={`px-8 py-4 border-4 ${borderColor} flex flex-col gap-y-2`}>
+        <div className={`px-8 py-4 rounded-3xl bg-slate-50 ${borderColor} flex flex-col gap-y-2`}>
             {hat}
 
-            <p className='font-semibold text-xl text-indigo-500'>{position.name}</p>
+            <p className='font-semibold text-xl text-gray-500'>{position.name}</p>
             <p className='text-justify text-gray-500 h-max-24 overflow-clip'>{position.description}</p>
         </div>
     )

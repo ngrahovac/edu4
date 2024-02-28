@@ -31,8 +31,8 @@ const ProjectCard = (props) => {
     }
 
     return (
-        <div className='border-4 border-pink-500 cursor-pointer'>
-            <div className="flex flex-col gap-y-6 px-20 py-8">
+        <div className='bg-white rounded-3xl cursor-pointer'>
+            <div className="flex flex-col gap-y-4 px-16 py-6">
                 <div>
                     <div className='flex justify-between items-center flex-wrap gap-y-2'>
                         <div className='flex gap-x-4'>
@@ -122,12 +122,6 @@ const ProjectCard = (props) => {
                             value={<p>... and <span className='font-black'>{notShownPositionsCount}</span> more</p>}>
                         </ProjectDescriptor>
                     }
-                </div>
-
-                <div className='flex flex-row-reverse'>
-                    <Link to={`/${project.projectUrl}`}>
-                        <p className='font-semibold text-indigo-500'>Learn more</p>
-                    </Link>
                 </div>
             </div>
         </div>
