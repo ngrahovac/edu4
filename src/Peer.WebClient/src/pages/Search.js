@@ -156,48 +156,8 @@ const Search = () => {
 
         <SingleColumnLayout
             title={`Search results ${keyword ? `for ${keyword}` : ''}`}>
-            <div className='flex flex-col gap-y-8'>
-                <div className='flex gap-x-2'>
-                    {
-                        keyword &&
-                        <ProjectSearchParam
-                            onRemove={() => { setSearchParam('keyword', undefined) }}>
-                            contains "{keyword}"
-                        </ProjectSearchParam>
-                    }
-
-                    {
-                        sort &&
-                        <ProjectSearchParam
-                            onRemove={() => { setSearchParam('sort', undefined) }}>
-                            {`${sort === "asc" ? "oldest posted first" : "newest posted first"}`}
-                        </ProjectSearchParam>
-                    }
-
-                    {
-                        hat &&
-                        <ProjectSearchParam
-                            onRemove={() => { setSearchParam('hat', undefined) }}>
-                            for a {hat.type} like me
-                        </ProjectSearchParam>
-                    }
-                </div>
-
-                {searchResults}
-
-                {
-                    searchRefinementsFormVisible &&
-                    <div className='fixed left-0 top-0'>
-                        <DiscoveryParametersSidebar
-                            keyword={keyword}
-                            sort={sort}
-                            hat={hat}
-                            hats={ownHats}
-                            onModalClosed={() => setSearchRefinementsFormVisible(false)}
-                            onDiscoveryParametersChanged={handleDiscoveryRefinementsChange}>
-                        </DiscoveryParametersSidebar>
-                    </div>
-                }
+            <div className='flex flex-col gap-y-8'>                
+                {searchResults}               
             </div>
         </SingleColumnLayout >
     )
