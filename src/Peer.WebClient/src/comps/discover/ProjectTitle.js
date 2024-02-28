@@ -6,7 +6,7 @@ const ProjectTitle = (props) => {
     } = props;
 
     return (
-        <p className='text-2xl font-semibold text-indigo-500'>{children}</p>
+        <p className='text-2xl font-semibold text-gray-500'>{children}</p>
     )
 }
 

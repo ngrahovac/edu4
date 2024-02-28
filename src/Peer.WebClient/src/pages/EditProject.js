@@ -23,6 +23,7 @@ import { BeatLoader } from 'react-spinners';
 import SpinnerLayout from '../layout/SpinnerLayout';
 import { useRef } from 'react';
 import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
+import PositionCardWithAuthorOptions from '../comps/project/PositionCardWithAuthorOptions'
 
 const EditProject = () => {
 
@@ -50,27 +51,27 @@ const EditProject = () => {
         const fetchProject = () => {
             (async () => {
                 setPageLoading(true);
-    
+
                 try {
                     let token = await getAccessTokenSilently({
                         audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                     });
-    
+
                     let result = await getById(projectId, token);
                     setPageLoading(false);
-    
+
                     if (result.outcome === successResult) {
                         var project = result.payload;
-    
+
                         // sort positions by recommended first
                         const recommendedPositionSorter = (a, b) => {
                             if (a.recommended && !b.recommended) return -1;
                             if (!a.recommended && b.recommended) return +1;
                             return 0;
                         };
-    
+
                         project.positions.sort(recommendedPositionSorter);
-    
+
                         setOriginalProject(project);
                         setProject(project);
                     } else if (result.outcome === failureResult) {
@@ -83,7 +84,7 @@ const EditProject = () => {
                 }
             })();
         }
-        
+
         fetchProject();
     }, [projectId, getAccessTokenSilently]);
 
@@ -197,7 +198,7 @@ const EditProject = () => {
                 setPageLoading(false);
 
                 if (result.outcome === successResult) {
-                    let reopenedPosition = {...selectedPosition, open: true };
+                    let reopenedPosition = { ...selectedPosition, open: true };
 
                     setProject({
                         ...project,
@@ -317,30 +318,15 @@ const EditProject = () => {
                         project.positions.length === 0 &&
                         <p className='text-gray-500'>Currently there are no added positions.</p>
                     }
-                    {
-                        
-                    }
-
+                    
                     {
                         project.positions.length > 0 &&
-                        <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
-                            <DangerButton
-                                text="Close"
-                                disabled={!selectedPosition || !selectedPosition.open}
-                                onClick={handleClosePosition}>
-                            </DangerButton>
-
-                            <NeutralButton
-                                text="Reopen"
-                                disabled={!selectedPosition || selectedPosition.open}
-                                onClick={handleReopenPosition}>
-                            </NeutralButton>
-
-                            <DangerButton
-                                text="Remove"
-                                disabled={!selectedPosition}
-                                onClick={handleRemoveExistingPositionRequested}>
-                            </DangerButton>
+                        <div className='flex flex-col space-y-2'>
+                            {
+                                project.positions.map(p => <div key={p.id}>
+                                    <PositionCardWithAuthorOptions position={p}></PositionCardWithAuthorOptions>
+                                </div>)
+                            }
                         </div>
                     }
                 </div>

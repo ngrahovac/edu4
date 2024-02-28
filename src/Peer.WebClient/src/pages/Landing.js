@@ -111,7 +111,7 @@ const Landing = () => {
                 </div>
             </LandingNavbar>
 
-            <div className='flex flex-col pt-24 pb-16 gap-y-20 h-full'>
+            <div className='flex flex-col pt-24 pb-16 gap-y-16 h-full'>
                 <div className='flex flex-col gap-y-4 justify-start items-start justify-items-start'>
                     <Slogan></Slogan>
 
@@ -123,7 +123,7 @@ const Landing = () => {
                 </div>
                 
                 <div className='flex flex-row gap-x-2'>
-                <AccentButton text="Stay in the Loop"></AccentButton>
+                <PrimaryButton text="Stay in the Loop"></PrimaryButton>
                 <BorderlessButton text="Learn more"></BorderlessButton>
                 </div>
             </div>

@@ -157,10 +157,6 @@ const Search = () => {
         <SingleColumnLayout
             title={`Search results ${keyword ? `for ${keyword}` : ''}`}>
             <div className='flex flex-col gap-y-8'>
-                <RefineButton
-                    onClick={toggleSearchRefinementsFormVisibility}>
-                </RefineButton>
-
                 <div className='flex gap-x-2'>
                     {
                         keyword &&
