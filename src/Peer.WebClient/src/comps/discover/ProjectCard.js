@@ -55,7 +55,6 @@ const ProjectCard = (props) => {
                 </div>
 
                 <div className='flex flex-col gap-y-4'>
-                    <SubsectionTitle title={`${project.recommended ? "Recommended positions" : "Positions"}`}></SubsectionTitle>
 
                     <div className='flex flex-col space-y-2'>
                         {

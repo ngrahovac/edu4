@@ -17,7 +17,7 @@ const SingleColumnLayout = (props) => {
                 <PageDescription description={description}></PageDescription>
             </div>
 
-            <div className='my-16'>
+            <div className='my-8'>
                 {children}
             </div>
         </div>

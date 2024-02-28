@@ -155,9 +155,33 @@ const Search = () => {
         ownHats &&
 
         <SingleColumnLayout
-            title={`Search results ${keyword ? `for ${keyword}` : ''}`}>
-            <div className='flex flex-col gap-y-8'>                
-                {searchResults}               
+            title="Discover projects"
+            description="Search projects and find opportunities to contribute to bla bla">
+            <div className='flex flex-col gap-y-16'>
+                <div className='relative flex drop-shadow-md rounded-full bg-white px-6 py-4 gap-x-4 items-center mx-auto w-1/2'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="lightgray" className="w-6 h-6 absolute left-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                    <input
+                        className='text-center w-full'
+                        value={keyword}>
+                    </input>
+                </div>
+
+                <div className='flex flex-col gap-y-4'>
+                    <div className='flex justify-between items-center'>
+                        <label class="inline-flex items-center cursor-pointer gap-x-2">
+                            <input type="checkbox" value="" class="sr-only peer" />
+                            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-500"></div>
+                            <span className="text-gray-800">Recommended only</span>
+                        </label>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+                        </svg>
+                    </div>
+                    {searchResults}
+                </div>
             </div>
         </SingleColumnLayout >
     )
