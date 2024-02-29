@@ -145,7 +145,7 @@ const Search = () => {
             <div className='flex flex-col space-y-8'>
                 {
                     projects.map((p, index) => <div key={index}>
-                        <ProjectCard project={p}></ProjectCard>
+                        <ProjectCard project={p} ownHats={ownHats}></ProjectCard>
                     </div>)
                 }
             </div> :
@@ -170,8 +170,8 @@ const Search = () => {
 
                 <div className='flex flex-col gap-y-4'>
                     <div className='flex justify-between items-center'>
-                        <label class="inline-flex items-center cursor-pointer gap-x-2">
-                            <input type="checkbox" value="" class="sr-only peer" />
+                        <label className="inline-flex items-center cursor-pointer gap-x-2">
+                            <input type="checkbox" value="" className="sr-only peer" />
                             <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-500"></div>
                             <span className="text-gray-800">Recommended only</span>
                         </label>
@@ -180,6 +180,7 @@ const Search = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
                         </svg>
                     </div>
+                    
                     {searchResults}
                 </div>
             </div>

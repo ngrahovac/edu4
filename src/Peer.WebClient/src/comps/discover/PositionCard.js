@@ -12,9 +12,9 @@ const PositionCard = (props) => {
         function () {
             switch (position.requirements.type) {
                 case "Student":
-                    return <StudentHat hat={position.requirements}></StudentHat>
+                    return <StudentHat hat={position.requirements} ownHats={ownHats}></StudentHat>
                 case "Academic":
-                    return <AcademicHat hat={position.requirements}></AcademicHat>
+                    return <AcademicHat hat={position.requirements} ownHats={ownHats}></AcademicHat>
                 default:
                     return;
             }

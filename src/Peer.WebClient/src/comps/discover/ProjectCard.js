@@ -1,18 +1,14 @@
-import SubsectionTitle from '../../layout/SubsectionTitle';
 import PositionCard from './PositionCard';
-import ProjectDescriptor from './ProjectDescriptor';
-import RecommendedFlair from './RecommendedFlair';
-import { Link } from 'react-router-dom';
 import ProjectTitle from './ProjectTitle';
 import Nina from '../temp/Nina';
 import Collaborators from '../temp/Collaborators';
-import PrimaryButton from '../buttons/PrimaryButton'
 import TertiaryButton from '../buttons/TertiaryButton'
 
 const ProjectCard = (props) => {
 
     const {
         project,
+        ownHats = undefined
     } = props;
 
     const maxPositionsShown = 2;
@@ -61,7 +57,7 @@ const ProjectCard = (props) => {
                             project.recommended &&
 
                             project.positions.filter(p => p.recommended).slice(0, maxPositionsShown).map((p, index) => <div key={index}>
-                                <PositionCard position={p}></PositionCard>
+                                <PositionCard position={p} ownHats={ownHats}></PositionCard>
                             </div>)
                         }
 
@@ -69,7 +65,7 @@ const ProjectCard = (props) => {
                             !project.recommended &&
 
                             project.positions.slice(0, maxPositionsShown).map((p, index) => <div key={index}>
-                                <PositionCard position={p}></PositionCard>
+                                <PositionCard position={p} ownHats={ownHats}></PositionCard>
                             </div>)
                         }
                     </div>
