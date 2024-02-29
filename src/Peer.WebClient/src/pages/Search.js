@@ -9,9 +9,8 @@ import SingleColumnLayout from '../layout/SingleColumnLayout';
 import { me } from '../services/UsersService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
 import { discover } from '../services/ProjectsService';
-import RefineButton from '../comps/discover/RefineButton'
-import ProjectSearchParam from '../comps/search/ProjectSearchParam';
-import DiscoveryParametersSidebar from '../comps/discover/DiscoveryRefinementSidebar';
+import ProjectSearchParam from '../comps/search/ProjectSearchParam'
+import { HatSearchParam } from '../comps/search/HatSearchParam';
 
 const Search = () => {
 
@@ -19,8 +18,16 @@ const Search = () => {
     const [keyword, setKeyword] = useState(undefined);
     const [sort, setSort] = useState(undefined);
     const [hat, setHat] = useState(undefined);
+    const [recommended, setRecommended] = useState(false);
+
+    useEffect(() => {
+        if (!recommended)
+            setHat(undefined);
+    }, [recommended])
+
 
     const [ownHats, setOwnHats] = useState(undefined);
+
     const [projects, setProjects] = useState(undefined);
 
     const [searchRefinementsFormVisible, setSearchRefinementsFormVisible] = useState(false);
@@ -170,17 +177,43 @@ const Search = () => {
 
                 <div className='flex flex-col gap-y-4'>
                     <div className='flex justify-between items-center'>
+                        {/*
                         <label className="inline-flex items-center cursor-pointer gap-x-2">
                             <input type="checkbox" value="" className="sr-only peer" />
                             <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-500"></div>
-                            <span className="text-gray-800">Recommended only</span>
+                            <span className="text-gray-700">Recommended only</span>
+                        </label>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+                        </svg>
+    */}
+                        <label className="inline-flex items-center cursor-pointer gap-x-2">
+                            <input type="checkbox" value={recommended} className="sr-only peer" checked={recommended} onChange={() => setRecommended(!recommended)} />
+                            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-500"></div>
+                            <span className="text-gray-700">Recommended only</span>
                         </label>
 
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="gray" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
                         </svg>
                     </div>
-                    
+
+                    <div className={`flex gap-x-4 items-center text-gray-600 ${recommended ? "visible" : "hidden"}`}>
+                        Looking for a
+                        {
+                            ownHats.map(h => (
+                                <HatSearchParam
+                                    selected={hat != undefined && hat.type == h.type}
+                                    onSelected={() => { setHat(h) }}
+                                >
+                                    {h.type}
+                                </HatSearchParam>
+                            ))
+                        }
+                        like me
+                    </div>
+
                     {searchResults}
                 </div>
             </div>
