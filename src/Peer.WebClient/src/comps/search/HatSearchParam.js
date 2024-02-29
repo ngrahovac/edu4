@@ -8,7 +8,7 @@ export const HatSearchParam = (props) => {
     } = props;
 
     const backgroundColor = !selected ? "bg-gray-100" : "bg-indigo-400";
-    const textColor = !selected ? "text-gray-700" : "text-gray-50";
+    const textColor = !selected ? "text-gray-600" : "text-gray-50";
 
     return (
         <div
