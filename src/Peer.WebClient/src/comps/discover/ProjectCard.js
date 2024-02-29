@@ -56,7 +56,7 @@ const ProjectCard = (props) => {
                         {
                             project.recommended &&
 
-                            project.positions.filter(p => p.recommended).slice(0, maxPositionsShown).map((p, index) => <div key={index}>
+                            project.positions.sort(p => !p.recommended).slice(0, maxPositionsShown).map((p, index) => <div key={index}>
                                 <PositionCard position={p} ownHats={ownHats}></PositionCard>
                             </div>)
                         }

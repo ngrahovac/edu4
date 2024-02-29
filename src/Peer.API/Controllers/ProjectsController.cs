@@ -111,7 +111,10 @@ public class ProjectsController : ControllerBase
             hat
         );
 
-        return projects.Select(p => new ProjectDisplayModel(p, requester)).ToList();
+        return projects
+            .Where(p => p.AuthorId != requester.Id) // yikes
+            .Select(p => new ProjectDisplayModel(p, requester))
+            .ToList();
     }
 
     [HttpGet("{projectId}")]
