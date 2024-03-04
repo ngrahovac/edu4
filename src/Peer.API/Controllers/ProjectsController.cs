@@ -106,6 +106,7 @@ public class ProjectsController : ControllerBase
             );
 
         var projects = await _projects.DiscoverAsync(
+            requesterId,
             keyword,
             sort is null ? ProjectsSortOption.Unspecified : (ProjectsSortOption)sort,
             hat

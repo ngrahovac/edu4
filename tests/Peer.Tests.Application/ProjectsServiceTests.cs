@@ -337,7 +337,7 @@ public class ProjectsServiceTests
         );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
+        var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(1);
@@ -392,7 +392,7 @@ public class ProjectsServiceTests
         );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
+        var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(1);
@@ -441,7 +441,7 @@ public class ProjectsServiceTests
         );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
+        var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(1);
@@ -490,7 +490,7 @@ public class ProjectsServiceTests
         );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
+        var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(1);
@@ -581,7 +581,7 @@ public class ProjectsServiceTests
         );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(keyword);
+        var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(4);
@@ -659,7 +659,7 @@ public class ProjectsServiceTests
         );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync();
+        var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid());
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -717,7 +717,7 @@ public class ProjectsServiceTests
         );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedAsc);
+        var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), null, ProjectsSortOption.ByDatePostedAsc);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -781,7 +781,7 @@ public class ProjectsServiceTests
         );
 
         // ACT
-        var discoveredProjects = await sut.DiscoverAsync(null, ProjectsSortOption.ByDatePostedDesc);
+        var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), null, ProjectsSortOption.ByDatePostedDesc);
 
         // ASSERT
         discoveredProjects.Count.Should().Be(3);
@@ -839,6 +839,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             keyword,
             ProjectsSortOption.ByDatePostedAsc
         );
@@ -915,6 +916,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             keyword,
             ProjectsSortOption.ByDatePostedDesc
         );
@@ -1074,6 +1076,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             null,
             ProjectsSortOption.Unspecified,
             studentHat
@@ -1161,6 +1164,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             null,
             ProjectsSortOption.Unspecified,
             academicHat
@@ -1390,6 +1394,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             keyword,
             ProjectsSortOption.Unspecified,
             studentHat
@@ -1560,6 +1565,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             keyword,
             ProjectsSortOption.Unspecified,
             academicHat
@@ -1653,6 +1659,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             null,
             ProjectsSortOption.ByDatePostedAsc,
             academicHat
@@ -1750,6 +1757,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             null,
             ProjectsSortOption.ByDatePostedDesc,
             academicHat
@@ -1854,6 +1862,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             null,
             ProjectsSortOption.ByDatePostedAsc,
             studentHat
@@ -1955,6 +1964,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             null,
             ProjectsSortOption.ByDatePostedDesc,
             studentHat
@@ -2126,6 +2136,7 @@ public class ProjectsServiceTests
 
         // ACT
         var discoveredProjects = await sut.DiscoverAsync(
+            Guid.NewGuid(),
             keyword,
             ProjectsSortOption.ByDatePostedDesc,
             academicHat

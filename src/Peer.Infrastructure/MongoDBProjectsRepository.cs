@@ -8,6 +8,8 @@ using Peer.Domain.Projects;
 namespace Peer.Infrastructure;
 public class MongoDBProjectsRepository : IProjectsRepository
 {
+    private readonly int _pageSize = 5;
+
     private readonly IMongoCollection<Project> _projectsCollection;
     private readonly FilterDefinition<Project> _emptyProjectFilter =
         Builders<Project>.Filter.Empty;
@@ -93,7 +95,7 @@ public class MongoDBProjectsRepository : IProjectsRepository
         return projects;
     }
 
-    public async Task<IReadOnlyList<Project>> DiscoverAsync(string? keyword, ProjectsSortOption sortOption, Hat? usersHat)
+    public async Task<IReadOnlyList<Project>> DiscoverAsync(Guid requesterId, string? keyword, ProjectsSortOption sortOption, Hat? usersHat)
     {
         var keywordInProjectTitleFilter =
             keyword is not null ?

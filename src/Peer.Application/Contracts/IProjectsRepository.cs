@@ -10,9 +10,11 @@ public interface IProjectsRepository
     public Task<Project> GetByIdAsync(Guid id);
 
     public Task<IReadOnlyList<Project>> DiscoverAsync(
+        Guid requesterId,
         string? keyword,
         ProjectsSortOption sortOption,
         Hat? usersHat);
+
     public Task UpdateAsync(Project project);
     Task<List<Project>> GetByAuthorAsync(Guid authorId);
 }
