@@ -48,7 +48,7 @@ const ProjectCard = (props) => {
 
                 <div className='flex flex-col gap-y-2'>
                     <ProjectTitle>{project.title}</ProjectTitle>
-                    <p className='text-justify text-gray-800'>{project.description}</p>
+                    <p className='text-justify text-gray-700'>{project.description}</p>
                 </div>
 
                 <div className='flex flex-col gap-y-4'>
