@@ -222,7 +222,7 @@ const Search = () => {
                     {searchResults}
                 </div>
 
-                <div className='fixed bottom-16 right-16'>
+                <div className='fixed bottom-16 right-16 z-50'>
                     <BackToTop onClick={() => pageTopRef.current.scrollIntoView()}></BackToTop>
                 </div>
             </div>
