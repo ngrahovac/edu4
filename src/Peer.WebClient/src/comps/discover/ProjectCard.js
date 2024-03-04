@@ -3,6 +3,8 @@ import ProjectTitle from './ProjectTitle';
 import Nina from '../temp/Nina';
 import Collaborators from '../temp/Collaborators';
 import TertiaryButton from '../buttons/TertiaryButton'
+import Project from '../../pages/Project'
+import { Link } from 'react-router-dom';
 
 const ProjectCard = (props) => {
 
@@ -72,7 +74,9 @@ const ProjectCard = (props) => {
                 </div>
 
                 <div className='flex flex-row-reverse'>
-                    <TertiaryButton text="Learn more"></TertiaryButton>
+                    <Link to={{ pathname: `/projects/${project.id}` }}>
+                        <TertiaryButton text="Learn more"></TertiaryButton>
+                    </Link>
                 </div>
             </div>
         </div>
