@@ -1,10 +1,9 @@
 import PositionCard from './PositionCard';
 import ProjectTitle from './ProjectTitle';
-import Nina from '../temp/Nina';
 import Collaborators from '../temp/Collaborators';
 import TertiaryButton from '../buttons/TertiaryButton'
-import Project from '../../pages/Project'
 import { Link } from 'react-router-dom';
+import Gravatar from 'react-gravatar';
 
 const ProjectCard = (props) => {
 
@@ -37,14 +36,14 @@ const ProjectCard = (props) => {
             <div className="flex flex-col gap-y-8 px-16 py-12">
                 <div className='flex flex-row justify-between'>
                     <div className='flex gap-x-4'>
-                        <Nina></Nina>
+                        <Gravatar email={project.author.email} default='retro' className='rounded-full'></Gravatar>
                         <div className='flex flex-col'>
                             <p className='text-gray-500 font-semibold'>{project.author.fullName}</p>
                             <p className='text-gray-500 uppercase text-sm'>{daysSince} days ago</p>
                         </div>
                     </div>
 
-                    <Collaborators></Collaborators>
+                    <Collaborators collaborators={project.collaborators}></Collaborators>
                 </div>
 
                 <div className='flex flex-col gap-y-2'>

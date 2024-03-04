@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import SpinnerLayout from '../layout/SpinnerLayout';
@@ -11,6 +11,7 @@ import { successResult, failureResult, errorResult } from '../services/RequestRe
 import { discover } from '../services/ProjectsService';
 import { HatSearchParam } from '../comps/search/HatSearchParam';
 import { _ } from 'lodash';
+import BackToTop from '../comps/discover/BackToTop';
 
 const Search = () => {
 
@@ -28,6 +29,8 @@ const Search = () => {
     const [displayedProjects, setDisplayedProjects] = useState(undefined);
     const [pageLoading, setPageLoading] = useState(true);
     const [projectsLoading, setProjectsLoading] = useState(true);
+
+    const pageTopRef = useRef();
 
     useEffect(() => {
         const fetchOwnHats = () => {
@@ -81,7 +84,7 @@ const Search = () => {
     useEffect(() => {
         const handleDiscoveryRefinementsChange = () => {
             (async () => {
-                try {                    
+                try {
                     if (!ownHats)
                         return;
 
@@ -145,12 +148,13 @@ const Search = () => {
         <SingleColumnLayout
             title="Discover projects"
             description="Search projects and find opportunities to contribute to bla bla">
-            <div className='flex flex-col gap-y-16'>
+            <div className='flex flex-col gap-y-16 relative'>
                 <div className='relative flex drop-shadow-md rounded-full bg-white px-6 py-4 gap-x-4 items-center mx-auto w-1/2'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="lightgray" className="w-6 h-6 absolute left-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                     <input
+                        ref={pageTopRef}
                         className='text-center w-full'
                         onChange={e => {
                             if (e.target.value && e.target.value != "")
@@ -216,6 +220,10 @@ const Search = () => {
                     </div>
 
                     {searchResults}
+                </div>
+
+                <div className='fixed bottom-16 right-16'>
+                    <BackToTop onClick={() => pageTopRef.current.scrollIntoView()}></BackToTop>
                 </div>
             </div>
         </SingleColumnLayout >
