@@ -113,7 +113,6 @@ public class ProjectsController : ControllerBase
         );
 
         return projects
-            .Where(p => p.AuthorId != requester.Id) // yikes
             .Select(p => new ProjectDisplayModel(p, requester))
             .ToList();
     }

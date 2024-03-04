@@ -124,8 +124,12 @@ public class MongoDBProjectsRepository : IProjectsRepository
             GetFilterForProjectsFitForAUserWearingTheHat(usersHat) :
             _emptyProjectFilter;
 
+        var nonAuthoredFilter = Builders<Project>.Filter.Where(p => p.AuthorId != requesterId);
+
         var filter = Builders<Project>.Filter
-            .And(requirementsFilter,
+            .And(
+            requirementsFilter,
+            nonAuthoredFilter,
             Builders<Project>.Filter.Or(keywordInProjectTitleFilter,
             keywordInProjectDescriptionFilter,
             keywordInAnyPositionNameOrDescriptionFilter));
