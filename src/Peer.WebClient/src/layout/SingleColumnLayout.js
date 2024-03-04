@@ -24,7 +24,7 @@ const SingleColumnLayout = (props) => {
                 </div>
             </div>
 
-            <div className='w-full absolute bottom-0 left-0 border-2 border-red-500'>
+            <div className='w-full absolute bottom-0 left-0'>
                 <Footer></Footer>
             </div>
         </div>
