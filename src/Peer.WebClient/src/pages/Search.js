@@ -10,43 +10,24 @@ import { me } from '../services/UsersService';
 import { successResult, failureResult, errorResult } from '../services/RequestResult';
 import { discover } from '../services/ProjectsService';
 import { HatSearchParam } from '../comps/search/HatSearchParam';
+import { _ } from 'lodash';
 
 const Search = () => {
 
     const [search, setSearch] = useSearchParams();
-    const [keyword, setKeyword] = useState(undefined);
-    const [sort, setSort] = useState("asc");
-    const [hat, setHat] = useState(undefined);
-    const [recommended, setRecommended] = useState(false);
-
-    useEffect(() => {
-        if (!recommended)
-            setHat(undefined);
-    }, [recommended])
-
+    const { getAccessTokenSilently } = useAuth0();
 
     const [ownHats, setOwnHats] = useState(undefined);
 
-    const [projects, setProjects] = useState(undefined);
+    const [keyword, setKeyword] = useState(search.get('keyword') ?? undefined);
+    const [sort, setSort] = useState(search.get('sort') ?? undefined);
+    const [hatType, setHatType] = useState(search.get('hatType') ?? undefined);
 
-    const [searchRefinementsFormVisible, setSearchRefinementsFormVisible] = useState(false);
+    const [searchRecommended, setSearchRecommended] = useState(false);
 
+    const [displayedProjects, setDisplayedProjects] = useState(undefined);
     const [pageLoading, setPageLoading] = useState(true);
     const [projectsLoading, setProjectsLoading] = useState(true);
-
-    const { getAccessTokenSilently } = useAuth0();
-
-    useEffect(() => {
-        console.log(search)
-        console.log(search.get('hat'))
-        setKeyword(search.get('keyword'));
-        setSort(search.get('sort'));
-        setHat(search.get('hat') ? ownHats.find(h => h.type == search.get('hat')) : undefined);
-    }, [search])
-
-    function handleSortChange(e) {
-        setSort(e.target.value);
-    }
 
     useEffect(() => {
         const fetchOwnHats = () => {
@@ -75,12 +56,37 @@ const Search = () => {
         }
 
         fetchOwnHats();
-    }, [getAccessTokenSilently])
+    }, [])
+
+    useEffect(() => {
+        setKeyword(search.get('keyword') ?? undefined);
+        setSort(search.get('sort') ?? undefined);
+        setHatType(search.get('hatType') ?? undefined);
+        setSearchRecommended(search.get('hatType') != null && search.get('hatType') != undefined)
+    }, [search]);
+
+    useEffect(() => {
+        let currentKeyword = search.get('keyword') ?? undefined;
+        if (keyword != currentKeyword) {
+            let newSearchParams = new URLSearchParams(search.toString());
+            newSearchParams.delete('keyword');
+
+            if (keyword)
+                newSearchParams.set('keyword', keyword);
+
+            setSearch(newSearchParams);
+        }
+    }, [keyword])
 
     useEffect(() => {
         const handleDiscoveryRefinementsChange = () => {
             (async () => {
-                try {
+                try {                    
+                    if (!ownHats)
+                        return;
+
+                    let hat = ownHats.find(h => h.type == hatType);
+
                     setProjectsLoading(true);
 
                     let token = await getAccessTokenSilently({
@@ -92,7 +98,7 @@ const Search = () => {
 
                     if (result.outcome === successResult) {
                         var projects = result.payload;
-                        setProjects(projects);
+                        setDisplayedProjects(projects);
                     } else if (result.outcome === failureResult) {
                         console.log("failure");
                     } else if (result.outcome === errorResult) {
@@ -107,7 +113,7 @@ const Search = () => {
         }
 
         handleDiscoveryRefinementsChange();
-    }, [keyword, sort, hat])
+    }, [keyword, sort, hatType, ownHats])
 
     if (pageLoading) {
         return (
@@ -123,10 +129,10 @@ const Search = () => {
 
     const searchResults = projectsLoading ?
         <BeatLoader></BeatLoader> :
-        projects && projects.length ?
+        displayedProjects && displayedProjects.length && ownHats ?
             <div className='flex flex-col space-y-8'>
                 {
-                    projects.map((p, index) => <div key={index}>
+                    displayedProjects.map((p, index) => <div key={index}>
                         <ProjectCard project={p} ownHats={ownHats}></ProjectCard>
                     </div>)
                 }
@@ -146,6 +152,12 @@ const Search = () => {
                     </svg>
                     <input
                         className='text-center w-full'
+                        onChange={e => {
+                            if (e.target.value && e.target.value != "")
+                                setKeyword(e.target.value);
+                            else
+                                setKeyword(undefined);
+                        }}
                         value={keyword}>
                     </input>
                 </div>
@@ -153,29 +165,49 @@ const Search = () => {
                 <div className='flex flex-col gap-y-4'>
                     <div className='flex justify-between items-center'>
                         <label className="inline-flex items-center cursor-pointer gap-x-2">
-                            <input type="checkbox" value={recommended} className="sr-only peer" checked={recommended} onChange={() => setRecommended(!recommended)} />
+                            <input type="checkbox" value={searchRecommended} className="sr-only peer" checked={searchRecommended} onChange={() => {
+                                let newValue = !searchRecommended;
+                                if (!newValue) {
+                                    let newSearchParams = new URLSearchParams(search.toString());
+                                    newSearchParams.delete('hatType');
+                                    setSearch(newSearchParams);
+                                }
+
+                                setSearchRecommended(newValue);
+                            }} />
                             <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-500"></div>
                             <span className="text-gray-700">Recommended only</span>
                         </label>
 
                         <select
                             value={sort}
-                            onChange={handleSortChange}
+                            onChange={e => {
+                                let newSearchParams = new URLSearchParams(search.toString());
+                                newSearchParams.delete('sort');
+                                if (e.target.value != "undefined")
+                                    newSearchParams.set('sort', e.target.value);
+
+                                setSearch(newSearchParams);
+                            }}
                             className='rounded-full border-gray-200 text-gray-700 text-base'>
-                            <option value={undefined}>Default sort</option>
+                            <option value="undefined">Default sort</option>
                             <option value="asc">Oldest posted first</option>
                             <option value="desc">Newest posted first</option>
                         </select>
                     </div>
 
-                    <div className={`flex gap-x-4 items-center text-gray-600 ${recommended ? "visible" : "hidden"}`}>
+                    <div className={`flex gap-x-4 items-center text-gray-600 ${searchRecommended ? "visible" : "hidden"}`}>
                         Looking for a
                         {
                             ownHats.map(h => (
                                 <HatSearchParam
-                                    selected={hat != undefined && hat.type == h.type}
-                                    onSelected={() => { setHat(h) }}
-                                >
+                                    selected={hatType != undefined && hatType == h.type}
+                                    onSelected={() => {
+                                        let newSearchParams = new URLSearchParams(search.toString());
+                                        newSearchParams.delete('hatType');
+                                        newSearchParams.set('hatType', h.type);
+                                        setSearch(newSearchParams);
+                                    }}>
                                     {h.type}
                                 </HatSearchParam>
                             ))
