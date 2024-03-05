@@ -149,7 +149,14 @@ public class MongoDBProjectsRepository : IProjectsRepository
         };
 
         var totalDiscovered = await CountManyAsync(filter);
+        var totalPages = (long)Math.Ceiling((decimal)totalDiscovered / _pageSize);
         var projects = await FindManyAsync(filter, sorting, page);
+
+        var pagedList = new PagedList<Project>(
+            totalDiscovered,
+            page,
+            totalPages,
+            projects);
 
         return projects;
     }
