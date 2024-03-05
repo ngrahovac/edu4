@@ -7,6 +7,7 @@ using Peer.Domain.Contributors;
 using Peer.Domain.Projects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Peer.Application.Contracts;
 
 namespace Peer.API.Controllers;
 
@@ -62,7 +63,7 @@ public class ProjectsController : ControllerBase
 
     [HttpGet]
     [Authorize(Policy = "Contributor")]
-    public async Task<ActionResult<IReadOnlyList<ProjectDisplayModel>>> DiscoverAsync(
+    public async Task<ActionResult<PagedList<ProjectDisplayModel>>> DiscoverAsync(
         [FromQuery] string? keyword = null,
         [FromQuery] ProjectsSortOption? sort = ProjectsSortOption.Unspecified,
         [FromQuery] string? hatType = null
@@ -112,9 +113,12 @@ public class ProjectsController : ControllerBase
             hat
         );
 
-        return projects
-            .Select(p => new ProjectDisplayModel(p, requester))
-            .ToList();
+        return new PagedList<ProjectDisplayModel>(
+            projects.TotalItems,
+            projects.Page,
+            projects.TotalPages,
+            projects.Items.Select(p => new ProjectDisplayModel(p, requester)).ToList()
+        );
     }
 
     [HttpGet("{projectId}")]

@@ -75,7 +75,7 @@ public class ProjectsService
         return project;
     }
 
-    public async Task<IReadOnlyList<Project>> DiscoverAsync(
+    public async Task<PagedList<Project>> DiscoverAsync(
         Guid requesterId,
         string? keyword = null,
         ProjectsSortOption sortOption = ProjectsSortOption.Unspecified,

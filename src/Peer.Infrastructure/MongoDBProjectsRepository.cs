@@ -8,7 +8,7 @@ using Peer.Domain.Projects;
 namespace Peer.Infrastructure;
 public class MongoDBProjectsRepository : IProjectsRepository
 {
-    private readonly int _pageSize = 3;
+    private readonly int _pageSize = 5;
 
     private readonly IMongoCollection<Project> _projectsCollection;
     private readonly FilterDefinition<Project> _emptyProjectFilter =
@@ -101,7 +101,7 @@ public class MongoDBProjectsRepository : IProjectsRepository
         return projects;
     }
 
-    public async Task<IReadOnlyList<Project>> DiscoverAsync(Guid requesterId, string? keyword, ProjectsSortOption sortOption, Hat? usersHat, int page = 1)
+    public async Task<PagedList<Project>> DiscoverAsync(Guid requesterId, string? keyword, ProjectsSortOption sortOption, Hat? usersHat, int page = 1)
     {
         var keywordInProjectTitleFilter =
             keyword is not null ?
@@ -158,7 +158,7 @@ public class MongoDBProjectsRepository : IProjectsRepository
             totalPages,
             projects);
 
-        return projects;
+        return pagedList;
     }
 
     private FilterDefinition<Project> GetFilterForProjectsFitForAUserWearingTheHat(Hat usersHat)

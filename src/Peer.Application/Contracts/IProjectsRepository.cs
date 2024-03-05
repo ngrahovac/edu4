@@ -9,7 +9,7 @@ public interface IProjectsRepository
     public Task<IReadOnlyList<Project>> GetRecommendedForUserWearing(Hat hat);
     public Task<Project> GetByIdAsync(Guid id);
 
-    public Task<IReadOnlyList<Project>> DiscoverAsync(
+    public Task<PagedList<Project>> DiscoverAsync(
         Guid requesterId,
         string? keyword,
         ProjectsSortOption sortOption,

@@ -340,9 +340,9 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(1);
+        discoveredProjects.Items.Count.Should().Be(1);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Title.Should().Contain(keyword);
         }
@@ -395,9 +395,9 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(1);
+        discoveredProjects.Items.Count.Should().Be(1);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Description.Should().Contain(keyword);
         }
@@ -444,9 +444,9 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(1);
+        discoveredProjects.Items.Count.Should().Be(1);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Positions.Any(p => p.Name.Contains(keyword)).Should().BeTrue();
         }
@@ -493,9 +493,9 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(1);
+        discoveredProjects.Items.Count.Should().Be(1);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Positions.Any(p => p.Description.Contains(keyword)).Should().BeTrue();
         }
@@ -584,9 +584,9 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), keyword);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(4);
+        discoveredProjects.Items.Count.Should().Be(4);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
@@ -662,7 +662,7 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid());
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(3);
+        discoveredProjects.Items.Count.Should().Be(3);
     }
 
     [Fact]
@@ -720,11 +720,12 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), null, ProjectsSortOption.ByDatePostedAsc);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(3);
+        discoveredProjects.Items.Count.Should().Be(3);
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderBy(p => p.DatePosted),
+                discoveredProjects.Items.OrderBy(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
     }
@@ -784,11 +785,12 @@ public class ProjectsServiceTests
         var discoveredProjects = await sut.DiscoverAsync(Guid.NewGuid(), null, ProjectsSortOption.ByDatePostedDesc);
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(3);
+        discoveredProjects.Items.Count.Should().Be(3);
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                discoveredProjects.Items.OrderByDescending(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
     }
@@ -846,13 +848,14 @@ public class ProjectsServiceTests
 
         // ASSERT
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderBy(p => p.DatePosted),
+                discoveredProjects.Items.OrderBy(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
@@ -923,13 +926,14 @@ public class ProjectsServiceTests
 
         // ASSERT
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                discoveredProjects.Items.OrderByDescending(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             var titleContainsKeyword = project.Title.Contains(keyword);
             var descriptionContainsKeyword = project.Description.Contains(keyword);
@@ -1083,9 +1087,9 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(3);
+        discoveredProjects.Items.Count.Should().Be(3);
 
-        foreach (var discoveredProject in discoveredProjects)
+        foreach (var discoveredProject in discoveredProjects.Items)
         {
             discoveredProject.Positions.Any(p => studentHat.Fits(p.Requirements)).Should().BeTrue();
         }
@@ -1171,9 +1175,9 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(2);
+        discoveredProjects.Items.Count.Should().Be(2);
 
-        foreach (var discoveredProject in discoveredProjects)
+        foreach (var discoveredProject in discoveredProjects.Items)
         {
             discoveredProject.Positions
                 .Any(p => academicHat.Fits(p.Requirements))
@@ -1401,9 +1405,9 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(3);
+        discoveredProjects.Items.Count.Should().Be(3);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Positions.Any(p => studentHat.Fits(p.Requirements)).Should().BeTrue();
 
@@ -1572,9 +1576,9 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(4);
+        discoveredProjects.Items.Count.Should().Be(4);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
 
@@ -1666,9 +1670,9 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(2);
+        discoveredProjects.Items.Count.Should().Be(2);
 
-        foreach (var discoveredProject in discoveredProjects)
+        foreach (var discoveredProject in discoveredProjects.Items)
         {
             discoveredProject.Positions
                 .Any(p => academicHat.Fits(p.Requirements))
@@ -1677,9 +1681,10 @@ public class ProjectsServiceTests
         }
 
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderBy(p => p.DatePosted),
+                discoveredProjects.Items.OrderBy(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
     }
@@ -1764,9 +1769,9 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(2);
+        discoveredProjects.Items.Count.Should().Be(2);
 
-        foreach (var discoveredProject in discoveredProjects)
+        foreach (var discoveredProject in discoveredProjects.Items)
         {
             discoveredProject.Positions
                 .Any(p => academicHat.Fits(p.Requirements))
@@ -1775,9 +1780,10 @@ public class ProjectsServiceTests
         }
 
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                discoveredProjects.Items.OrderByDescending(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
     }
@@ -1869,17 +1875,18 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(2);
+        discoveredProjects.Items.Count.Should().Be(2);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Positions.Any(p => studentHat.Fits(p.Requirements)).Should().BeTrue();
         }
 
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderBy(p => p.DatePosted),
+                discoveredProjects.Items.OrderBy(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
     }
@@ -1971,17 +1978,18 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(2);
+        discoveredProjects.Items.Count.Should().Be(2);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Positions.Any(p => studentHat.Fits(p.Requirements)).Should().BeTrue();
         }
 
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                discoveredProjects.Items.OrderByDescending(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
     }
@@ -2143,9 +2151,9 @@ public class ProjectsServiceTests
         );
 
         // ASSERT
-        discoveredProjects.Count.Should().Be(4);
+        discoveredProjects.Items.Count.Should().Be(4);
 
-        foreach (var project in discoveredProjects)
+        foreach (var project in discoveredProjects.Items)
         {
             project.Positions.Any(p => academicHat.Fits(p.Requirements)).Should().BeTrue();
 
@@ -2165,9 +2173,10 @@ public class ProjectsServiceTests
         }
 
         discoveredProjects
+            .Items
             .Should()
             .BeEquivalentTo(
-                discoveredProjects.OrderByDescending(p => p.DatePosted),
+                discoveredProjects.Items.OrderByDescending(p => p.DatePosted),
                 options => options.WithStrictOrdering()
             );
     }
