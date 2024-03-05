@@ -135,7 +135,8 @@ async function discover(keyword, sort, hat, accessToken) {
             };
         }
 
-        let discoveredProjects = await fetchProjectsResponse.json();
+        let discoveredProjectsResult = await fetchProjectsResponse.json();
+        let discoveredProjects = discoveredProjectsResult.items;
 
         let projectAuthors = [];
         let uniqueAuthorUris = [... new Set(discoveredProjects.map(p => p.authorUrl))];
@@ -182,7 +183,10 @@ async function discover(keyword, sort, hat, accessToken) {
 
         return {
             outcome: successResult,
-            payload: projectModels
+            payload: {
+                ...discoveredProjectsResult,
+                items: projectModels
+            }
         };
     } catch (ex) {
         return {

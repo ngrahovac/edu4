@@ -27,6 +27,8 @@ const Search = () => {
     const [searchRecommended, setSearchRecommended] = useState(false);
 
     const [displayedProjects, setDisplayedProjects] = useState(undefined);
+    const [pagedList, setPagedList] = useState(undefined);
+
     const [pageLoading, setPageLoading] = useState(true);
     const [projectsLoading, setProjectsLoading] = useState(true);
 
@@ -101,7 +103,8 @@ const Search = () => {
 
                     if (result.outcome === successResult) {
                         var projects = result.payload;
-                        setDisplayedProjects(projects);
+                        setDisplayedProjects(projects.items);
+                        setPagedList(projects);
                     } else if (result.outcome === failureResult) {
                         console.log("failure");
                     } else if (result.outcome === errorResult) {
