@@ -26,7 +26,6 @@ const Search = () => {
 
     const [searchRecommended, setSearchRecommended] = useState(false);
 
-    const [displayedProjects, setDisplayedProjects] = useState(undefined);
     const [pagedList, setPagedList] = useState(undefined);
 
     const [pageLoading, setPageLoading] = useState(true);
@@ -103,7 +102,6 @@ const Search = () => {
 
                     if (result.outcome === successResult) {
                         var projects = result.payload;
-                        setDisplayedProjects(projects.items);
                         setPagedList(projects);
                     } else if (result.outcome === failureResult) {
                         console.log("failure");
@@ -135,10 +133,10 @@ const Search = () => {
 
     const searchResults = projectsLoading ?
         <BeatLoader></BeatLoader> :
-        displayedProjects && displayedProjects.length && ownHats ?
+        pagedList && pagedList.items && ownHats ?
             <div className='flex flex-col space-y-8'>
                 {
-                    displayedProjects.map((p, index) => <div key={index}>
+                    pagedList.items.map((p, index) => <div key={index}>
                         <ProjectCard project={p} ownHats={ownHats}></ProjectCard>
                     </div>)
                 }
