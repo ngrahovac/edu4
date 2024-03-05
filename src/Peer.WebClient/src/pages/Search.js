@@ -188,12 +188,16 @@ const Search = () => {
 
                     {
                         pagedList.nextPage && !loadMoreLoading &&
-                        <BorderlessButton text="Load more" onClick={() => loadNextPage(pagedList.nextPage)}></BorderlessButton>
+                        <div className='h-24'>
+                            <BorderlessButton text="Load more" onClick={() => loadNextPage(pagedList.nextPage)}></BorderlessButton>
+                        </div>
                     }
 
                     {
                         pagedList.nextPage && loadMoreLoading &&
-                        <BeatLoader></BeatLoader>
+                        <div className='h-24'>
+                            <BeatLoader></BeatLoader>
+                        </div>
                     }
                 </div>
             </div> :
