@@ -86,7 +86,7 @@ async function updateDetails(projectId, title, description, accessToken) {
     }
 }
 
-function AppendQueryString(baseUri, keyword, sort, hat) {
+function AppendQueryString(baseUri, keyword, sort, hat, page = 1) {
     var searchRefinemets = [];
 
     if (keyword != undefined)
@@ -104,6 +104,8 @@ function AppendQueryString(baseUri, keyword, sort, hat) {
         Object.keys(hat.parameters).forEach(k => searchRefinemets[k] = hat.parameters[k]);
     }
 
+    searchRefinemets["page"] = page;
+
     if (Object.keys(searchRefinemets).length > 0) {
         baseUri += "?";
 
@@ -117,14 +119,14 @@ function AppendQueryString(baseUri, keyword, sort, hat) {
     return baseUri;
 }
 
-async function discover(keyword, sort, hat, accessToken) {
+async function discover(keyword, sort, hat, accessToken, page = 1) {
     let projectModels = [];
 
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
         let projectsUri = `${apiRootUri}/projects`;
-        let queryParamsUri = AppendQueryString(projectsUri, keyword, sort, hat);
+        let queryParamsUri = AppendQueryString(projectsUri, keyword, sort, hat, page);
 
         let fetchProjectsResponse = await getAsync(queryParamsUri, accessToken);
 
