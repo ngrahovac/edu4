@@ -66,7 +66,9 @@ public class ProjectsController : ControllerBase
     public async Task<ActionResult<PagedList<ProjectDisplayModel>>> DiscoverAsync(
         [FromQuery] string? keyword = null,
         [FromQuery] ProjectsSortOption? sort = ProjectsSortOption.Unspecified,
-        [FromQuery] string? hatType = null
+        [FromQuery] string? hatType = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5
     )
     {
         if (!ProjectDiscoveryRequestValidator.RequestIsValid(Request.Query))
@@ -110,7 +112,9 @@ public class ProjectsController : ControllerBase
             requesterId,
             keyword,
             sort is null ? ProjectsSortOption.Unspecified : (ProjectsSortOption)sort,
-            hat
+            hat,
+            page,
+            pageSize
         );
 
         return new PagedList<ProjectDisplayModel>(

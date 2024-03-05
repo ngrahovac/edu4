@@ -8,8 +8,6 @@ using Peer.Domain.Projects;
 namespace Peer.Infrastructure;
 public class MongoDBProjectsRepository : IProjectsRepository
 {
-    private readonly int _pageSize = 5;
-
     private readonly IMongoCollection<Project> _projectsCollection;
     private readonly FilterDefinition<Project> _emptyProjectFilter =
         Builders<Project>.Filter.Empty;
@@ -35,12 +33,12 @@ public class MongoDBProjectsRepository : IProjectsRepository
         .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
         .SingleOrDefaultAsync();
 
-    private Task<List<Project>> FindManyAsync(FilterDefinition<Project> filter, SortDefinition<Project>? sort = null, int page = 1) =>
+    private Task<List<Project>> FindManyAsync(FilterDefinition<Project> filter, SortDefinition<Project>? sort = null, int page = 1, int pageSize = 5) =>
         _projectsCollection
         .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
         .Sort(sort)
-        .Skip((page - 1) * _pageSize)
-        .Limit(_pageSize)
+        .Skip((page - 1) * pageSize)
+        .Limit(pageSize)
         .ToListAsync();
 
     private Task<long> CountManyAsync(FilterDefinition<Project> filter) =>
@@ -101,7 +99,13 @@ public class MongoDBProjectsRepository : IProjectsRepository
         return projects;
     }
 
-    public async Task<PagedList<Project>> DiscoverAsync(Guid requesterId, string? keyword, ProjectsSortOption sortOption, Hat? usersHat, int page = 1)
+    public async Task<PagedList<Project>> DiscoverAsync(
+        Guid requesterId,
+        string? keyword,
+        ProjectsSortOption sortOption,
+        Hat? usersHat,
+        int page = 1,
+        int pageSize = 5)
     {
         var keywordInProjectTitleFilter =
             keyword is not null ?
@@ -149,8 +153,8 @@ public class MongoDBProjectsRepository : IProjectsRepository
         };
 
         var totalDiscovered = await CountManyAsync(filter);
-        var totalPages = (long)Math.Ceiling((decimal)totalDiscovered / _pageSize);
-        var projects = await FindManyAsync(filter, sorting, page);
+        var totalPages = (int)Math.Ceiling((decimal)totalDiscovered / pageSize);
+        var projects = await FindManyAsync(filter, sorting, page, pageSize);
 
         var pagedList = new PagedList<Project>(
             totalDiscovered,

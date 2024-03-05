@@ -14,7 +14,8 @@ public interface IProjectsRepository
         string? keyword,
         ProjectsSortOption sortOption,
         Hat? usersHat,
-        int page = 1);
+        int page = 1,
+        int pageSize = 5);
 
     public Task UpdateAsync(Project project);
     Task<List<Project>> GetByAuthorAsync(Guid authorId);

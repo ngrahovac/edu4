@@ -79,9 +79,11 @@ public class ProjectsService
         Guid requesterId,
         string? keyword = null,
         ProjectsSortOption sortOption = ProjectsSortOption.Unspecified,
-        Hat? usersHat = null)
+        Hat? usersHat = null,
+        int page = 1,
+        int pageSize = 5)
     {
-        var discoveredProjects = await _projects.DiscoverAsync(requesterId, keyword, sortOption, usersHat);
+        var discoveredProjects = await _projects.DiscoverAsync(requesterId, keyword, sortOption, usersHat, page, pageSize);
 
         return discoveredProjects;
     }
