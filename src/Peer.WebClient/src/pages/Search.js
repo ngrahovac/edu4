@@ -26,6 +26,7 @@ const Search = () => {
     const [hatType, setHatType] = useState(search.get('hatType') ?? undefined);
 
     const [searchRecommended, setSearchRecommended] = useState(false);
+    const [keywordTyped, setKeywordTyped] = useState(undefined);
 
     const [pagedList, setPagedList] = useState(undefined);
     const [projectsShown, setProjectsShown] = useState(0);
@@ -74,6 +75,8 @@ const Search = () => {
     }, [search]);
 
     useEffect(() => {
+        setKeywordTyped(keyword);
+        
         let currentKeyword = search.get('keyword') ?? undefined;
         if (keyword != currentKeyword) {
             let newSearchParams = new URLSearchParams(search.toString());
@@ -84,7 +87,24 @@ const Search = () => {
 
             setSearch(newSearchParams);
         }
-    }, [keyword])
+    }, [keyword])    
+
+    useEffect(() => {
+      const setKeywordParamDebounced = setTimeout(() => {
+        let newSearchParams = new URLSearchParams(search.toString);
+        newSearchParams.delete('keyword');
+
+        if (keywordTyped)
+            newSearchParams.set('keyword', keywordTyped);
+
+        setSearch(newSearchParams);
+      }, 500);
+    
+      return () => {
+        clearTimeout(setKeywordParamDebounced);
+      }
+    }, [keywordTyped])
+    
 
     useEffect(() => {
         const handleDiscoveryRefinementsChange = () => {
@@ -217,13 +237,8 @@ const Search = () => {
                     <input
                         ref={pageTopRef}
                         className='text-center w-full'
-                        onChange={e => {
-                            if (e.target.value && e.target.value != "")
-                                setKeyword(e.target.value);
-                            else
-                                setKeyword(undefined);
-                        }}
-                        value={keyword}>
+                        value={keywordTyped}
+                        onChange={e => setKeywordTyped(e.target.value)}>
                     </input>
                 </div>
 
