@@ -13,7 +13,8 @@ public interface IProjectsRepository
         Guid requesterId,
         string? keyword,
         ProjectsSortOption sortOption,
-        Hat? usersHat);
+        Hat? usersHat,
+        int page = 1);
 
     public Task UpdateAsync(Project project);
     Task<List<Project>> GetByAuthorAsync(Guid authorId);

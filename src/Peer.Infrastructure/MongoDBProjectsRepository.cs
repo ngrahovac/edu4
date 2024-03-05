@@ -8,7 +8,7 @@ using Peer.Domain.Projects;
 namespace Peer.Infrastructure;
 public class MongoDBProjectsRepository : IProjectsRepository
 {
-    private readonly int _pageSize = 5;
+    private readonly int _pageSize = 3;
 
     private readonly IMongoCollection<Project> _projectsCollection;
     private readonly FilterDefinition<Project> _emptyProjectFilter =
@@ -35,11 +35,17 @@ public class MongoDBProjectsRepository : IProjectsRepository
         .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
         .SingleOrDefaultAsync();
 
-    private Task<List<Project>> FindManyAsync(FilterDefinition<Project> filter, SortDefinition<Project>? sort = null) =>
+    private Task<List<Project>> FindManyAsync(FilterDefinition<Project> filter, SortDefinition<Project>? sort = null, int page = 1) =>
         _projectsCollection
         .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
         .Sort(sort)
+        .Skip((page - 1) * _pageSize)
+        .Limit(_pageSize)
         .ToListAsync();
+
+    private Task<long> CountManyAsync(FilterDefinition<Project> filter) =>
+            _projectsCollection
+            .CountDocumentsAsync(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter));
 
     public Task<Project> GetByIdAsync(Guid id)
         => FindOneAsync(Builders<Project>.Filter.Where(p => p.Id == id));
@@ -95,7 +101,7 @@ public class MongoDBProjectsRepository : IProjectsRepository
         return projects;
     }
 
-    public async Task<IReadOnlyList<Project>> DiscoverAsync(Guid requesterId, string? keyword, ProjectsSortOption sortOption, Hat? usersHat)
+    public async Task<IReadOnlyList<Project>> DiscoverAsync(Guid requesterId, string? keyword, ProjectsSortOption sortOption, Hat? usersHat, int page = 1)
     {
         var keywordInProjectTitleFilter =
             keyword is not null ?
@@ -142,7 +148,8 @@ public class MongoDBProjectsRepository : IProjectsRepository
             _ => throw new NotImplementedException()
         };
 
-        var projects = await FindManyAsync(filter, sorting);
+        var totalDiscovered = await CountManyAsync(filter);
+        var projects = await FindManyAsync(filter, sorting, page);
 
         return projects;
     }
