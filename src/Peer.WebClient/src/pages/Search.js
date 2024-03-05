@@ -12,6 +12,7 @@ import { discover } from '../services/ProjectsService';
 import { HatSearchParam } from '../comps/search/HatSearchParam';
 import { _ } from 'lodash';
 import BackToTop from '../comps/discover/BackToTop';
+import BorderlessButton from '../comps/buttons/BorderlessButton'
 
 const Search = () => {
 
@@ -27,9 +28,11 @@ const Search = () => {
     const [searchRecommended, setSearchRecommended] = useState(false);
 
     const [pagedList, setPagedList] = useState(undefined);
+    const [projectsShown, setProjectsShown] = useState(0);
 
     const [pageLoading, setPageLoading] = useState(true);
     const [projectsLoading, setProjectsLoading] = useState(true);
+    const [loadMoreLoading, setLoadMoreLoading] = useState(false);
 
     const pageTopRef = useRef();
 
@@ -63,6 +66,7 @@ const Search = () => {
     }, [])
 
     useEffect(() => {
+        setProjectsShown(0);
         setKeyword(search.get('keyword') ?? undefined);
         setSort(search.get('sort') ?? undefined);
         setHatType(search.get('hatType') ?? undefined);
@@ -103,6 +107,7 @@ const Search = () => {
                     if (result.outcome === successResult) {
                         var projects = result.payload;
                         setPagedList(projects);
+                        setProjectsShown(projects.items.length);
                     } else if (result.outcome === failureResult) {
                         console.log("failure");
                     } else if (result.outcome === errorResult) {
@@ -118,6 +123,43 @@ const Search = () => {
 
         handleDiscoveryRefinementsChange();
     }, [keyword, sort, hatType, ownHats])
+
+    function loadNextPage(page) {
+        (async () => {
+            try {
+                if (!ownHats)
+                    return;
+
+                let hat = ownHats.find(h => h.type == hatType);
+
+                setLoadMoreLoading(true);
+
+                let token = await getAccessTokenSilently({
+                    audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                });
+
+                let result = await discover(keyword, sort, hat, token, page);
+                setLoadMoreLoading(false);
+
+                if (result.outcome === successResult) {
+                    var projects = result.payload;
+                    setPagedList({
+                        ...projects,
+                        items: [...pagedList.items, ...projects.items]
+                    });
+                    setProjectsShown(projectsShown + projects.items.length);
+                } else if (result.outcome === failureResult) {
+                    console.log("failure");
+                } else if (result.outcome === errorResult) {
+                    console.log("error");
+                }
+            } catch (ex) {
+                console.log("exception", ex);
+            } finally {
+                setProjectsLoading(false);
+            }
+        })();
+    }
 
     if (pageLoading) {
         return (
@@ -140,6 +182,20 @@ const Search = () => {
                         <ProjectCard project={p} ownHats={ownHats}></ProjectCard>
                     </div>)
                 }
+
+                <div className='flex flex-col items-center gap-y-4'>
+                    <p className='uppercase text-gray-500'>{`Showing ${pagedList.items.length} of ${pagedList.totalItems} projects`}</p>
+
+                    {
+                        pagedList.nextPage && !loadMoreLoading &&
+                        <BorderlessButton text="Load more" onClick={() => loadNextPage(pagedList.nextPage)}></BorderlessButton>
+                    }
+
+                    {
+                        pagedList.nextPage && loadMoreLoading &&
+                        <BeatLoader></BeatLoader>
+                    }
+                </div>
             </div> :
             <p>There are currently no projects satisfying the criteria.</p>;
 
@@ -221,6 +277,7 @@ const Search = () => {
                     </div>
 
                     {searchResults}
+
                 </div>
 
                 <div className='fixed bottom-16 right-16 z-50'>
