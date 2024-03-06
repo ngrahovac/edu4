@@ -16,7 +16,7 @@ const Table = (props) => {
             <thead>
                 <tr className='border-b-2 border-gray-200'>
                     {
-                        numberedColumns.map(c => <th key={c.id} className={`${widths[c.column] ?? ''} p-4`}>
+                        numberedColumns.map(c => <th key={c.id} className={`${widths[c.column] ?? ''} font-medium text-sm p-4 text-gray-400 uppercase`}>
                             {c.column}
                         </th>)
                     }
@@ -27,7 +27,7 @@ const Table = (props) => {
             </tbody>
             <tfoot className='border-t-2 border-gray-200'>
                 <tr>
-                    <td className='text-left p-4 h-12 uppercase tracking-wider text-slate-500 text-sm font-medium'>
+                    <td className='text-left p-4 h-12 uppercase tracking-wider text-slate-400 text-sm font-medium'>
                         <p>{`Selected: ${selectedCount}`}</p>
                     </td>
                     {

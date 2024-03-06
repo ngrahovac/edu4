@@ -14,6 +14,7 @@ import TableRow from '../shared/table/TableRow';
 import TableCell from '../shared/table/TableCell';
 import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 import { Link } from 'react-router-dom';
+import TertiaryButton from '../buttons/TertiaryButton';
 
 const SentApplications = (props) => {
 
@@ -213,10 +214,17 @@ const SentApplications = (props) => {
                 </Table>
 
                 <div className='absolute bottom-0 right-0 flex flex-row space-x-8'>
+                    <TertiaryButton
+                        text="Cancel"
+                        disabled={selectedApplicationIds.length == 0}
+                        onClick={() => setSelectedApplicationIds([])}>
+                    </TertiaryButton>
+
                     <PrimaryButton
                         disabled={selectedApplicationIds.length == 0}
                         onClick={handleRevokeApplicationsRequested}
-                        text="Revoke"></PrimaryButton>
+                        text="Revoke">
+                    </PrimaryButton>
                 </div>
             </div >
         </>

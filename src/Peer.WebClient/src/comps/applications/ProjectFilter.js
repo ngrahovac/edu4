@@ -25,16 +25,14 @@ const ProjectFilter = (props) => {
 
 
     return (
-        <div className='flex flex-col space-y-2'>
-            <p>Filter by project:</p>
             <select
                 value={selectedProject ? selectedProject.id : undefined}
                 onChange={handleSelectedProject}
-                className='rounded-xl w-64'>
+                className='rounded-full border-gray-200 text-gray-700 text-base'>
                 <option
                     value={undefined}
                     className='rounded-xl'>
-                    All
+                    All projects
                 </option>
                 {projects.map(p => (
                     <Fragment key={p.id}>
@@ -44,7 +42,6 @@ const ProjectFilter = (props) => {
                     </Fragment>
                 ))}
             </select>
-        </div>
     )
 }
 
