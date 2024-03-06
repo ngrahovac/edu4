@@ -2,11 +2,9 @@ import React, { useRef } from 'react'
 import { useState } from 'react';
 import AddedPosition from '../comps/publish/AddedPosition';
 import { DoubleColumnLayout } from '../layout/DoubleColumnLayout'
-import { SectionTitle } from '../layout/SectionTitle'
-import SubsectionTitle from '../layout/SubsectionTitle';
 import NeutralButton from '../comps/buttons/NeutralButton';
 import PrimaryButton from '../comps/buttons/PrimaryButton';
-import { publish } from '../services/ProjectsService';
+import { publish, removePosition } from '../services/ProjectsService';
 import {
     successResult,
     failureResult,
@@ -15,13 +13,13 @@ import {
 import { useAuth0 } from '@auth0/auth0-react'
 import BasicInfoForm from '../comps/publish/BasicInfoForm';
 import PositionForm from '../comps/publish/PositionForm';
-import SectionTitleWrapper from '../layout/SectionTitleWrapper';
 import InvalidFormFieldWarning from '../comps/publish/InvalidFormFieldWarning';
 import _ from 'lodash';
 import { BeatLoader } from 'react-spinners';
 import SpinnerLayout from '../layout/SpinnerLayout';
 import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
-import SingleColumnLayout from '../layout/SingleColumnLayout';
+import PositionCard from '../comps/discover/PositionCard';
+import BorderlessButton from '../comps/buttons/BorderlessButton';
 
 const Publish = () => {
     const [project, setProject] = useState({ title: '', description: '', positions: [] });
@@ -121,72 +119,46 @@ const Publish = () => {
 
     const right = (
         <div className='flex flex-col w-full'>
-            {/* add position */}
-            <div className='relative pb-16 w-full'>
-                <div className='flex flex-col gap-y-2'>
-                <p className='text-lg text-gray-700'>Positions</p>
-                    <p className='h-8'></p>
-                </div>
-
-                <PositionForm
-                    onValidChange={position => {
-                        setPosition(position);
-                        if (!startShowingValidationErrors) {
-                            setStartShowingValidationErrors(true);
-                        }
-                    }}
-                    onInvalidChange={() => {
-                        setPosition(undefined);
-                        if (!startShowingValidationErrors) {
-                            setStartShowingValidationErrors(true);
-                        }
-                    }}
-                    startShowingValidationErrors={startShowingValidationErrors}>
-                </PositionForm>
-
-                <div className='absolute bottom-0 right-0'>
-                    <NeutralButton
-                        disabled={!validPosition}
-                        text="Add"
-                        onClick={() => setProject({ ...project, positions: [...project.positions, position] })}>
-                    </NeutralButton>
-                </div>
-            </div>
-
             {/* added positions + publish */}
-            <div className='w-full relative'>
-                <div className='mt-24'>
-                    <p className='text-lg text-gray-700'>Added positions</p>
-                    <InvalidFormFieldWarning
-                        visible={startShowingValidationErrors && !validPositionCount}
-                        text="Add at least one position when publishing a project.">
-                    </InvalidFormFieldWarning>
-                    <InvalidFormFieldWarning
-                        visible={startShowingValidationErrors && duplicatePositions}
-                        text="A project cannot contain duplicate positions.">
-                    </InvalidFormFieldWarning>
+            <div className='w-full relative pb-32'>
+                <p className='text-lg text-gray-700'>Positions</p>
+                <InvalidFormFieldWarning
+                    visible={startShowingValidationErrors && !validPositionCount}
+                    text="Add at least one position when publishing a project.">
+                </InvalidFormFieldWarning>
+                <InvalidFormFieldWarning
+                    visible={startShowingValidationErrors && duplicatePositions}
+                    text="A project cannot contain duplicate positions.">
+                </InvalidFormFieldWarning>
 
-                    <div className='absolute w-full bottom-16 top-52 overflow-y-auto'>
-                        {
-                            project.positions.length === 0 &&
-                            <p className='text-gray-500'>There are currently no added positions.</p>
-                        }
-                        {
-                            project.positions.length > 0 &&
-                            <div className='flex flex-col space-y-4'>
-                                {
-                                    project.positions.map((p, index) => (
-                                        <div key={index}>
-                                            <AddedPosition
-                                                position={p}
-                                                onRemoved={handleRemovePosition}>
-                                            </AddedPosition>
-                                        </div>)
-                                    )
-                                }
-                            </div>
-                        }
-                    </div>
+                <BorderlessButton
+                    icon={
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    }
+                    text="Add position">
+                </BorderlessButton>
+
+                <div>
+                    {
+                        project.positions.length === 0 &&
+                        <p className='text-gray-500'>There are currently no added positions.</p>
+                    }
+                    {
+                        project.positions.length > 0 &&
+                        <div className='flex flex-col space-y-4 h-96 border border-red-500'>
+                            {
+                                project.positions.map((p, index) => (
+                                    <div key={index}>
+                                        <AddedPosition
+                                            position={p}
+                                            onRemoved={() => handleRemovePosition(p)}></AddedPosition>
+                                    </div>)
+                                )
+                            }
+                        </div>
+                    }
                 </div>
 
                 {/* publish button */}
