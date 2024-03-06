@@ -166,7 +166,7 @@ const SentApplications = (props) => {
             {revokingApplicationRequestDialog}
 
             <div className='relative pb-32'>
-                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8'>
+                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start gap-x-8'>
                     <ProjectFilter
                         projects={submittedApplicationsProjects}
                         selectedProjectId={projectIdFilter}
@@ -213,7 +213,7 @@ const SentApplications = (props) => {
                     }
                 </Table>
 
-                <div className='absolute bottom-0 right-0 flex flex-row space-x-8'>
+                <div className='absolute bottom-0 right-0 flex flex-row gap-x-8'>
                     <TertiaryButton
                         text="Cancel"
                         disabled={selectedApplicationIds.length == 0}
