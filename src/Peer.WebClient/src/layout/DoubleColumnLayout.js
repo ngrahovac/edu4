@@ -19,7 +19,7 @@ export const DoubleColumnLayout = (props) => {
                     <PageDescription description={description}></PageDescription>
                 </div>
 
-                <div className='my-8 mb-64 flex flex-col gap-y-8 pt-16 lg:flex-row lg:gap-x-8'>
+                <div className='my-8 mb-64 flex flex-col gap-y-8 pt-16 lg:flex-row lg:gap-x-12'>
                     {left}
                     {right}
                 </div>
