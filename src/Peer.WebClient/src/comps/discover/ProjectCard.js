@@ -32,7 +32,7 @@ const ProjectCard = (props) => {
     }
 
     return (
-        <div className='bg-white rounded-3xl cursor-pointer border border-gray-200'>
+        <div className='bg-white rounded-3xl border border-gray-200'>
             <div className="flex flex-col gap-y-8 px-16 py-12">
                 <div className='flex flex-row justify-between'>
                     <div className='flex gap-x-4'>
