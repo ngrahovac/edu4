@@ -122,53 +122,8 @@ const Discover = () => {
             description="Explore projects and find opportunities to contribute to">
 
             <div className='flex flex-col gap-y-8'>
-                {/* refine button and selected discovery parameters 
-            <div className='flex flex-col mt-16'>
-                <RefineButton onClick={() => setDiscoveryParametersSidebarVisibility(true)}></RefineButton>
-
-                <SelectedDiscoveryParameters>
-                    {
-                        keyword !== undefined &&
-                        <SelectedDiscoveryParameter
-                            value={`keyword: ${keyword}`}
-                            onRemoved={() => setKeyword(undefined)}>
-                        </SelectedDiscoveryParameter>
-                    }
-                    {
-                        sort !== undefined &&
-                        <SelectedDiscoveryParameter
-                            value={`sort: ${sort === "asc" ? "oldest first" : "newest first"}`}
-                            onRemoved={() => setSort(undefined)}>
-                        </SelectedDiscoveryParameter>
-                    }
-                    {
-                        hat !== undefined &&
-                        <SelectedDiscoveryParameter
-                            value={`looking for: a ${hat.type.toLowerCase()} like me`}
-                            onRemoved={() => setHat(undefined)}>
-                        </SelectedDiscoveryParameter>
-                    }
-                </SelectedDiscoveryParameters>
-            </div>
-            */}
-
                 {discoveryResults}
             </div>
-
-            { /* discovery parameters sidebar */}
-            {
-                discoveryRefinementSidebarVisibility &&
-                <div className='fixed left-0 top-0'>
-                    <DiscoveryParametersSidebar
-                        keyword={keyword}
-                        sort={sort}
-                        hat={hat}
-                        hats={ownHats}
-                        onModalClosed={() => setDiscoveryParametersSidebarVisibility(false)}
-                        onDiscoveryParametersChanged={updateDiscoveryParameters}>
-                    </DiscoveryParametersSidebar>
-                </div>
-            }
         </SingleColumnLayout>
     )
 }

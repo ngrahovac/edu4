@@ -33,11 +33,17 @@ public class MongoDBProjectsRepository : IProjectsRepository
         .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
         .SingleOrDefaultAsync();
 
-    private Task<List<Project>> FindManyAsync(FilterDefinition<Project> filter, SortDefinition<Project>? sort = null) =>
+    private Task<List<Project>> FindManyAsync(FilterDefinition<Project> filter, SortDefinition<Project>? sort = null, int page = 1, int pageSize = 5) =>
         _projectsCollection
         .Find(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter))
         .Sort(sort)
+        .Skip((page - 1) * pageSize)
+        .Limit(pageSize)
         .ToListAsync();
+
+    private Task<long> CountManyAsync(FilterDefinition<Project> filter) =>
+            _projectsCollection
+            .CountDocumentsAsync(Builders<Project>.Filter.And(filter, _nonRemovedProjectsFilter));
 
     public Task<Project> GetByIdAsync(Guid id)
         => FindOneAsync(Builders<Project>.Filter.Where(p => p.Id == id));
@@ -93,7 +99,13 @@ public class MongoDBProjectsRepository : IProjectsRepository
         return projects;
     }
 
-    public async Task<IReadOnlyList<Project>> DiscoverAsync(string? keyword, ProjectsSortOption sortOption, Hat? usersHat)
+    public async Task<PagedList<Project>> DiscoverAsync(
+        Guid requesterId,
+        string? keyword,
+        ProjectsSortOption sortOption,
+        Hat? usersHat,
+        int page = 1,
+        int pageSize = 5)
     {
         var keywordInProjectTitleFilter =
             keyword is not null ?
@@ -122,8 +134,12 @@ public class MongoDBProjectsRepository : IProjectsRepository
             GetFilterForProjectsFitForAUserWearingTheHat(usersHat) :
             _emptyProjectFilter;
 
+        var nonAuthoredFilter = Builders<Project>.Filter.Where(p => p.AuthorId != requesterId);
+
         var filter = Builders<Project>.Filter
-            .And(requirementsFilter,
+            .And(
+            requirementsFilter,
+            nonAuthoredFilter,
             Builders<Project>.Filter.Or(keywordInProjectTitleFilter,
             keywordInProjectDescriptionFilter,
             keywordInAnyPositionNameOrDescriptionFilter));
@@ -136,9 +152,17 @@ public class MongoDBProjectsRepository : IProjectsRepository
             _ => throw new NotImplementedException()
         };
 
-        var projects = await FindManyAsync(filter, sorting);
+        var totalDiscovered = await CountManyAsync(filter);
+        var totalPages = (int)Math.Ceiling((decimal)totalDiscovered / pageSize);
+        var projects = await FindManyAsync(filter, sorting, page, pageSize);
 
-        return projects;
+        var pagedList = new PagedList<Project>(
+            totalDiscovered,
+            page,
+            totalPages,
+            projects);
+
+        return pagedList;
     }
 
     private FilterDefinition<Project> GetFilterForProjectsFitForAUserWearingTheHat(Hat usersHat)
