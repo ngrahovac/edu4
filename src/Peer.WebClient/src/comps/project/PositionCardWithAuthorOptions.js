@@ -28,22 +28,11 @@ const PositionCardWithAuthorOptions = (props) => {
     let backgroundColor = position.recommended ? "bg-indigo-50/40" : "bg-white";
 
     return (
-
         <div className={`px-8 py-6 rounded-3xl ${borderColor} ${backgroundColor} flex flex-col gap-y-2`}>
             <p className='font-semibold text-xl text-gray-800'>{position.name}</p>
             {hat}
             <p className='text-justify text-gray-600 h-max-24 overflow-clip'>{position.description}</p>
-        </div>
-    );
-}
-
-{/*
-        <div className={`px-8 py-4 border-4 ${borderColor} flex flex-col gap-y-2`}>
-            {hat}
-
-            <p className='font-semibold text-xl text-indigo-500'>{position.name}</p>
-            <p className='text-justify text-gray-500 h-max-24 overflow-clip'>{position.description}</p>
-
+        
             <div className='flex flex-row-reverse'>
                 {
                     !position.open &&
@@ -57,7 +46,7 @@ const PositionCardWithAuthorOptions = (props) => {
                 <DangerTertiaryButton onClick={onRemove} text="Delete"></DangerTertiaryButton>
             </div>
         </div>
-        */}
-
+    );
+}
 
 export default PositionCardWithAuthorOptions
