@@ -58,7 +58,7 @@ const StudentHatForm = (props) => {
 
             <div className='mb-8'>
                 <label>
-                    <p>Study field*</p>
+                <p className='text-gray-600'>Study field*</p>
                     <select
                         name="studyField"
                         className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
@@ -73,7 +73,7 @@ const StudentHatForm = (props) => {
 
             <div className='mb-16'>
                 <label>
-                    <p>Degree*</p>
+                <p className='text-gray-600'>Degree*</p>
                     <select
                         name="academicDegree"
                         className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">

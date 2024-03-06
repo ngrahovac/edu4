@@ -7,8 +7,8 @@ const AcademicHat = (props) => {
         ownHats = undefined
     } = props;
 
-    let typeMatch = ownHats.find(h => h.type == "Academic") != undefined;
-    let fieldMatch = ownHats.find(h => h.parameters.researchField == hat.parameters.researchField || h.parameters.studyField == hat.parameters.researchField);
+    let typeMatch = ownHats?.find(h => h.type == "Academic") != undefined;
+    let fieldMatch = ownHats?.find(h => h.parameters.researchField == hat.parameters.researchField || h.parameters.studyField == hat.parameters.researchField);
     
 
     return (

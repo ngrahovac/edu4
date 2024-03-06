@@ -20,7 +20,7 @@ const HatForm = (props) => {
         <>
             <div className='mb-8'>
                 <label>
-                    <p>Type*</p>
+                <p className='text-gray-600'>Type*</p>
                     <select
                         onChange={e => setHatTypeState(e.target.value)}
                         name="positionType"

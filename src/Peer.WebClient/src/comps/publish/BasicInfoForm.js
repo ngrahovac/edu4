@@ -39,7 +39,7 @@ const BasicInfoForm = (props) => {
             onChange={handleBasicInfoFormChange}>
             <div>
                 <label>
-                    <p>Title*</p>
+                    <p className='text-gray-500'>Title*</p>
                     <input
                         type="text"
                         name="title"
@@ -53,7 +53,7 @@ const BasicInfoForm = (props) => {
 
             <div>
                 <label>
-                    <p>Description*</p>
+                <p className='text-gray-500'>Description*</p>
                     <textarea
                         rows={5}
                         maxLength={1000}

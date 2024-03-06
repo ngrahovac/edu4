@@ -48,7 +48,7 @@ const AcademicHatForm = (props) => {
                 className='mb-4'>
                 <div className='mb-8'>
                     <label>
-                        <p>Research field*</p>
+                    <p className='text-gray-600'>Research field*</p>
                         <select
                             name="researchField"
                             className="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-600 focus:ring focus:ring-indigo-200 focus:ring-opacity-10">
