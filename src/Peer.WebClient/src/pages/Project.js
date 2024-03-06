@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import SingleColumnLayout from '../layout/SingleColumnLayout'
-import Collaborators from '../comps/project/Collaborators';
 import Author from '../comps/project/Author';
 import Collaborator from '../comps/project/Collaborator';
 import { closePosition, getById, remove, removePosition, reopenPosition } from '../services/ProjectsService'
@@ -19,6 +18,8 @@ import SubsectionTitle from '../layout/SubsectionTitle';
 import PositionCardWithAuthorOptions from '../comps/project/PositionCardWithAuthorOptions';
 import PositionCardWithCollaboratorOptions from '../comps/project/PositionCardWithCollaboratorOptions';
 import DangerTertiaryButton from '../comps/buttons/DangerTertiaryButton';
+import { me } from '../services/UsersService'
+import Collaborators from '../comps/temp/Collaborators';
 
 const Project = () => {
     const { projectId } = useParams();
@@ -28,6 +29,7 @@ const Project = () => {
     const [pageLoading, setPageLoading] = useState(true);
     const { getAccessTokenSilently } = useAuth0();
     const [fetchUpdatedDataSwitch, setFetchUpdatedDataSwitch] = useState(true);
+    const [ownHats, setOwnHats] = useState(undefined);
 
     // interactive state
     const [selectedPosition, setSelectedPosition] = useState(undefined);
@@ -70,6 +72,35 @@ const Project = () => {
         fetchProject();
         setPageLoading(false);
     }, [getAccessTokenSilently, projectId, fetchUpdatedDataSwitch]);
+
+    useEffect(() => {
+        const fetchOwnHats = () => {
+            (async () => {
+                setPageLoading(true);
+
+                try {
+                    let token = await getAccessTokenSilently({
+                        audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
+                    });
+
+                    let result = await me(token);
+                    setPageLoading(false);
+
+                    if (result.outcome === successResult) {
+                        setOwnHats(result.payload.hats);
+                    } else {
+                        console.log("error fetching users hats");
+                    }
+                } catch (ex) {
+                    console.log(ex);
+                } finally {
+                    setPageLoading(false);
+                }
+            })();
+        }
+
+        fetchOwnHats();
+    }, [])
 
     function handleSubmitApplicationRequested() {
         submitApplicationConfirmationDialogRef.current.showModal();
@@ -297,7 +328,8 @@ const Project = () => {
                                         onRevoke={() => {
                                             setSelectedPosition(p);
                                             handleRevokeApplicationRequested();
-                                        }}>
+                                        }}
+                                        ownHats={ownHats}>
                                     </PositionCardWithCollaboratorOptions>
                                 </div>)
                             }
@@ -319,7 +351,8 @@ const Project = () => {
                                         onRevoke={() => {
                                             setSelectedPosition(p);
                                             handleRevokeApplicationRequested();
-                                        }}>
+                                        }}
+                                        ownHats={ownHats}>
                                     </PositionCardWithCollaboratorOptions>
                                 </div>)
                             }
@@ -421,23 +454,6 @@ const Project = () => {
 
                         <div className='flex flex-col gap-y-4'>
                             <SubsectionTitle title="Collaborators"></SubsectionTitle>
-                            <Collaborators>
-                                <Author
-                                    name={project.author.fullName}>
-                                </Author>
-
-                                {
-                                    project.collaborations.length > 0 &&
-                                    project.collaborations.map(c => <div key={c.id}>
-                                        <Collaborator
-                                            name={c.collaborator.fullName}
-                                            position={project.positions.find(p => p.id == c.positionId).name}
-                                            onVisited={() => { }}>
-                                        </Collaborator>
-                                    </div>)
-                                }
-                            </Collaborators>
-
                             {
                                 !project.collaborations.length > 0 &&
                                 <p>There are no other collaborators on this project.&nbsp;
