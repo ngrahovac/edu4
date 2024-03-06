@@ -38,7 +38,7 @@ const ProjectCard = (props) => {
                     <div className='flex gap-x-4'>
                         <Gravatar email={project.author.email} default='retro' className='rounded-full'></Gravatar>
                         <div className='flex flex-col'>
-                            <p className='text-gray-500 font-semibold'>{project.author.fullName}</p>
+                            <Link to={`/contributors/${project.author.id}`}><p className='text-gray-500 hover:text-indigo-400 font-semibold'>{project.author.fullName}</p></Link>
                             <p className='text-gray-500 uppercase text-sm'>{daysSince} days ago</p>
                         </div>
                     </div>
