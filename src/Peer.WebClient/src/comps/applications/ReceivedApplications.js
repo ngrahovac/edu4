@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { getById } from '../../services/ProjectsService';
 import { useAuth0 } from '@auth0/auth0-react';
 import ReceivedApplication from './ReceivedApplication';
 import PrimaryButton from '../buttons/PrimaryButton';
-import { acceptApplication, rejectApplication, revokeApplication } from '../../services/ApplicationsService';
+import { acceptApplication, rejectApplication } from '../../services/ApplicationsService';
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
-import { getContributor } from '../../services/UsersService';
 import { getAuthored } from '../../services/ProjectsService';
 import DangerButton from '../buttons/DangerButton';
 import { Fragment } from 'react';
