@@ -59,7 +59,7 @@ const PositionForm = (props) => {
                 onChange={handlePositionFormChange}>
                 <div className='mb-4'>
                     <label>
-                        <p>Title*</p>
+                    <p className='text-gray-600'>Title*</p>
                         <input
                             type="text"
                             name="name"
@@ -74,7 +74,7 @@ const PositionForm = (props) => {
 
                 <div className='mb-4'>
                     <label>
-                        <p>Description*</p>
+                    <p className='text-gray-600'>Description*</p>
                         <textarea
                             name="description"
                             onChange={handlePositionFormChange}
