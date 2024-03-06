@@ -20,6 +20,7 @@ import SpinnerLayout from '../layout/SpinnerLayout';
 import ConfirmationDialog from '../comps/shared/ConfirmationDialog';
 import PositionCard from '../comps/discover/PositionCard';
 import BorderlessButton from '../comps/buttons/BorderlessButton';
+import DangerTertiaryButton from '../comps/buttons/DangerTertiaryButton'
 
 const Publish = () => {
     const [project, setProject] = useState({ title: '', description: '', positions: [] });
@@ -34,6 +35,7 @@ const Publish = () => {
     const [startShowingValidationErrors, setStartShowingValidationErrors] = useState(false);
 
     const publishConfirmationDialogRef = useRef(null);
+    const newPositionModalRef = useRef(null);
 
     const { getAccessTokenSilently } = useAuth0();
 
@@ -118,59 +120,99 @@ const Publish = () => {
     );
 
     const right = (
-        <div className='flex flex-col w-full'>
-            {/* added positions + publish */}
-            <div className='w-full relative pb-32'>
-                <p className='text-lg text-gray-700'>Positions</p>
-                <InvalidFormFieldWarning
-                    visible={startShowingValidationErrors && !validPositionCount}
-                    text="Add at least one position when publishing a project.">
-                </InvalidFormFieldWarning>
-                <InvalidFormFieldWarning
-                    visible={startShowingValidationErrors && duplicatePositions}
-                    text="A project cannot contain duplicate positions.">
-                </InvalidFormFieldWarning>
-
-                <BorderlessButton
-                    icon={
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    }
-                    text="Add position">
-                </BorderlessButton>
-
-                <div>
-                    {
-                        project.positions.length === 0 &&
-                        <p className='text-gray-500'>There are currently no added positions.</p>
-                    }
-                    {
-                        project.positions.length > 0 &&
-                        <div className='flex flex-col space-y-4 h-96 border border-red-500'>
-                            {
-                                project.positions.map((p, index) => (
-                                    <div key={index}>
-                                        <AddedPosition
-                                            position={p}
-                                            onRemoved={() => handleRemovePosition(p)}></AddedPosition>
-                                    </div>)
-                                )
+        <>
+            <dialog ref={newPositionModalRef} className='rounded-xl w-full md:w-1/2 lg:w-1/3'>
+                <div className='relative flex flex-col gap-y-4 w-full bg-white px-8 py-8 pb-16'>
+                    <PositionForm
+                        onValidChange={position => {
+                            setPosition(position);
+                            if (!startShowingValidationErrors) {
+                                setStartShowingValidationErrors(true);
                             }
-                        </div>
-                    }
-                </div>
+                        }}
+                        onInvalidChange={() => {
+                            setPosition(undefined);
+                            if (!startShowingValidationErrors) {
+                                setStartShowingValidationErrors(true);
+                            }
+                        }}
+                        startShowingValidationErrors={startShowingValidationErrors}>
+                    </PositionForm>
 
-                {/* publish button */}
-                <div className='absolute bottom-0 right-0'>
-                    <PrimaryButton
-                        text="Publish"
-                        onClick={handlePublishProjectRequested}
-                        disabled={!(validBasicInfo && validPositionCount && !duplicatePositions)}>
-                    </PrimaryButton>
+                    <div className='absolute bottom-4 right-8 flex gap-x-2'>
+
+                        <DangerTertiaryButton
+                            text="Go back"
+                            onClick={() => newPositionModalRef.current.close()}>
+                        </DangerTertiaryButton>
+
+                        <PrimaryButton
+                            disabled={!validPosition}
+                            text="Add"
+                            onClick={() => {
+                                setProject({ ...project, positions: [...project.positions, position] });
+                                newPositionModalRef.current.close();
+                            }}>
+                        </PrimaryButton>
+                    </div>
+                </div>
+            </dialog>
+
+            <div className='flex flex-col w-full'>
+                {/* added positions + publish */}
+                <div className='w-full relative pb-32'>
+                    <p className='text-lg text-gray-700'>Positions</p>
+                    <InvalidFormFieldWarning
+                        visible={startShowingValidationErrors && !validPositionCount}
+                        text="Add at least one position when publishing a project.">
+                    </InvalidFormFieldWarning>
+                    <InvalidFormFieldWarning
+                        visible={startShowingValidationErrors && duplicatePositions}
+                        text="A project cannot contain duplicate positions.">
+                    </InvalidFormFieldWarning>
+
+                    <BorderlessButton
+                        icon={
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        }
+                        text="Add position"
+                        onClick={() => newPositionModalRef.current.showModal()}>
+                    </BorderlessButton>
+
+                    <div>
+                        {
+                            project.positions.length === 0 &&
+                            <p className='text-gray-500'>There are currently no added positions.</p>
+                        }
+                        {
+                            project.positions.length > 0 &&
+                            <div className='flex flex-col space-y-4'>
+                                {
+                                    project.positions.map((p, index) => (
+                                        <div key={index}>
+                                            <AddedPosition
+                                                position={p}
+                                                onRemoved={() => handleRemovePosition(p)}></AddedPosition>
+                                        </div>)
+                                    )
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    {/* publish button */}
+                    <div className='absolute bottom-0 right-0'>
+                        <PrimaryButton
+                            text="Publish"
+                            onClick={handlePublishProjectRequested}
+                            disabled={!(validBasicInfo && validPositionCount && !duplicatePositions)}>
+                        </PrimaryButton>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 
     if (loading) {
