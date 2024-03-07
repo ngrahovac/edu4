@@ -152,6 +152,9 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
             a => a.Status == ApplicationStatus.Submitted
         );
 
+        var applicantIdFilter = Builders<Domain.Applications.Application>.Filter.Where(
+            a => a.ApplicantId == requesterId);
+
         var sorting = applicationsSortOption switch
         {
             ApplicationsSortOption.Default => null,
@@ -165,7 +168,8 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         var filter = Builders<Domain.Applications.Application>.Filter.And(
             projectFilter,
             positionFilter,
-            submittedApplicationsFilter
+            submittedApplicationsFilter,
+            applicantIdFilter
         );
 
         return await _applicationsCollection.Find(filter).Sort(sorting).ToListAsync();
