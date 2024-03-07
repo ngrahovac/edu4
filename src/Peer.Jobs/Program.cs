@@ -3,6 +3,11 @@ using Peer.Application.Handlers;
 using Peer.Infrastructure;
 using Peer.Jobs;
 
+
+var config = new ConfigurationBuilder()
+    .AddUserSecrets(typeof(DomainEventsProcessor).Assembly)
+    .Build();
+
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
@@ -28,7 +33,6 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddSingleton(serviceProvider =>
         {
             var client = new HttpClient();
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             client.BaseAddress = new Uri($"https://{config["Auth0:Domain"]}/api/v2/");
 
