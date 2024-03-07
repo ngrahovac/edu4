@@ -212,13 +212,13 @@ const ReceivedApplications = (props) => {
                 <div className='overflow-x-auto'>
                     <table className='text-left w-full table-fixed'>
                         <thead>
-                            <tr className=''>
-                                <th className='py-4 px-2 pl-4 w-1/4 truncate'>Project</th>
-                                <th className='py-4 px-2 w-1/4 truncate'>Position</th>
-                                <th className='py-4 px-2 truncate'>Date submitted</th>
-                                <th className='py-4 px-2 truncate'>Applicant</th>
-                                <th className='py-4 px-2 truncate'>Status</th>
-                                <th className='py-4 px-2 pr-4 truncate'></th>
+                            <tr className='border-b-2 border-gray-200'>
+                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Project</th>
+                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Position</th>
+                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Date submitted</th>
+                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Applicant</th>
+                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Status</th>
+                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'></th>
                             </tr>
                         </thead>
                         <tbody>
