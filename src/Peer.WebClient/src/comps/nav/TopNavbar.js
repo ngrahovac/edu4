@@ -7,6 +7,7 @@ import TopNavbarContextMenu from './TopNavbarContextMenu'
 import { useAuth0 } from '@auth0/auth0-react'
 import GlobalSearch from './GlobalSearch'
 import TopNavbarItem from './TopNavbarItem'
+import NotificationBell from './NotificationBell'
 
 const TopNavbar = () => {
     const [topNavbarContextMenuHidden, setTopNavbarContextMenuHidden] = useState(true);
@@ -57,6 +58,8 @@ const TopNavbar = () => {
                             </>}>
                         </TopNavbarItem>
                     </Link>
+
+                    <NotificationBell></NotificationBell>
                 </div>
 
             </div>
