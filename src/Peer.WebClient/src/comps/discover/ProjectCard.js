@@ -43,7 +43,7 @@ const ProjectCard = (props) => {
                         </div>
                     </div>
 
-                    <Collaborators collaborators={project.collaborators}></Collaborators>
+                    <Collaborators collaborations={project.collaborations}></Collaborators>
                 </div>
 
                 <div className='flex flex-col gap-y-2'>
