@@ -173,13 +173,31 @@ async function discover(keyword, sort, hat, accessToken, page = 1) {
             projectCollaborations = [...projectCollaborations, collaboration];
         }
 
-
         for (let i = 0; i < discoveredProjects.length; ++i) {
+            debugger;
+            let thisProjectsCollaborations = projectCollaborations.filter(c => c.some(c => c.projectId == discoveredProjects[i].id))[0] ?? [];
+
+            for (let j = 0; j < thisProjectsCollaborations.length; ++j) {
+                let fetchCollaboratorResponse = await getAsync(`${apiRootUri}/contributors/${thisProjectsCollaborations[j].collaboratorId}`, accessToken);
+
+                if (!fetchCollaboratorResponse.ok) {
+                    return {
+                        outcome: failureResult,
+                        message: "Error fetching project collaborations",
+                    };
+                }
+
+                let collaborator = await fetchCollaboratorResponse.json();
+
+                thisProjectsCollaborations[j].collaboratorEmail = collaborator.email;
+                thisProjectsCollaborations[j].collaboratorName = collaborator.fullName;
+            }
+
             projectModels = [...projectModels,
             {
                 ...discoveredProjects[i],
                 author: projectAuthors.filter(a => discoveredProjects[i].authorUrl.includes(a.id))[0],
-                collaborations: projectCollaborations.filter(c => c.some(c => c.projectId == discoveredProjects[i].id))[0] ?? []
+                collaborations: thisProjectsCollaborations
             }]
         }
 

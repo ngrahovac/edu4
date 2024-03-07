@@ -464,13 +464,21 @@ const Project = () => {
                                     }
                                 </p>
                             }
+                            {
+                                project.collaborations.length > 0 &&
+                                project.collaborations.map(c => <>
+                                    <Collaborator
+                                        collaborator={c.collaborator}
+                                        position={project.positions.find(p => p.id == c.positionId).name}></Collaborator>
+                                </>)
+                            }
                         </div>
 
                         {
                             project.authored &&
                             <div className='flex flex-row-reverse py-16'>
                                 <DangerTertiaryButton
-                                    text="Delete project"                                    
+                                    text="Delete project"
                                     onClick={handleDeleteProjectRequested}>
                                 </DangerTertiaryButton>
                             </div>
