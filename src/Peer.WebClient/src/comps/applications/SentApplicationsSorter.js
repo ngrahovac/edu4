@@ -14,19 +14,19 @@ const ApplicationsSorter = (props) => {
     };
 
     useEffect(() => {
-      onSortSelected(selectedSort);
+        onSortSelected(selectedSort);
     }, [selectedSort])
-    
+
 
     return (
-        <div className='flex flex-col space-y-2 w-64'>
-            <p>Sort by:</p>
-            <select value={selectedSort} onChange={handleSelectChange} className='rounded-xl'>
-                <option value="Default">Default</option>
-                <option value="OldestFirst">Oldest first</option>
-                <option value="NewestFirst">Newest first</option>
-            </select>
-        </div>
+        <select
+            value={selectedSort}
+            onChange={handleSelectChange}
+            className='rounded-full border-gray-200 text-gray-700 text-base'>
+            <option value="Default">Default sort</option>
+            <option value="OldestFirst">Oldest sent first</option>
+            <option value="NewestFirst">Recently sent first</option>
+        </select>
     )
 }
 

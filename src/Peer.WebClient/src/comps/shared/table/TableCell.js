@@ -6,7 +6,7 @@ const TableCell = (props) => {
   } = props;
 
   return (
-    <td className='p-4 truncate'>
+    <td className='p-4 truncate text-gray-800'>
       {children}
     </td>
 

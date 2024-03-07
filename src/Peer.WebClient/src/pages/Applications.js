@@ -11,6 +11,7 @@ import {
 import { useAuth0 } from '@auth0/auth0-react';
 import ReceivedApplications from '../comps/applications/ReceivedApplications'
 import TabulatedMenu from '../comps/nav/TabulatedMenu'
+import { HatSearchParam } from '../comps/search/HatSearchParam'
 
 const Applications = () => {
     const applicationType = {
@@ -117,15 +118,23 @@ const Applications = () => {
             title="Applications"
             description="Manage sent and received project applications">
 
-            <div className='mt-16 w-full'>
-                <TabulatedMenu
-                    items={["Sent", "Received"]}
-                    onSelectionChange={(item) =>
-                        setSelectedApplicationType(item)}>
-                </TabulatedMenu>
+            <div className='pt-16 w-full flex flex-col gap-y-8'>
+                <div className="flex gap-x-4 items-center text-gray-600">
+                    <HatSearchParam
+                        selected={selectedApplicationType == "Sent"}
+                        onSelected={() => setSelectedApplicationType("Sent")}>
+                        Sent
+                    </HatSearchParam>
+
+                    <HatSearchParam
+                        selected={selectedApplicationType == "Received"}
+                        onSelected={() => setSelectedApplicationType("Received")}>
+                        Received
+                    </HatSearchParam>
+                </div>
 
                 {/* applications */}
-                <div className='mt-16'>
+                <div>
                     {
                         selectedApplicationType == applicationType.sent &&
                         sentApplications != undefined &&

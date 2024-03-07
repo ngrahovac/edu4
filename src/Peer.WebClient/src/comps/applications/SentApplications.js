@@ -14,6 +14,7 @@ import TableRow from '../shared/table/TableRow';
 import TableCell from '../shared/table/TableCell';
 import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 import { Link } from 'react-router-dom';
+import TertiaryButton from '../buttons/TertiaryButton';
 
 const SentApplications = (props) => {
 
@@ -165,7 +166,7 @@ const SentApplications = (props) => {
             {revokingApplicationRequestDialog}
 
             <div className='relative pb-32'>
-                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8'>
+                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start gap-x-8'>
                     <ProjectFilter
                         projects={submittedApplicationsProjects}
                         selectedProjectId={projectIdFilter}
@@ -187,7 +188,7 @@ const SentApplications = (props) => {
                         displayedApplications.map(application => <>
                             <TableRow selected={selectedApplicationIds.find(id => id == application.id)}>
                                 <TableCell>
-                                    <div className='hover:underline'>
+                                    <div className='underline text-blue-500'>
                                         <Link to={`/${application.projectUrl}`}>
                                             {application.project.title}
                                         </Link>
@@ -212,11 +213,18 @@ const SentApplications = (props) => {
                     }
                 </Table>
 
-                <div className='absolute bottom-0 right-0 flex flex-row space-x-8'>
+                <div className='absolute bottom-0 right-0 flex flex-row gap-x-8'>
+                    <TertiaryButton
+                        text="Cancel"
+                        disabled={selectedApplicationIds.length == 0}
+                        onClick={() => setSelectedApplicationIds([])}>
+                    </TertiaryButton>
+
                     <PrimaryButton
                         disabled={selectedApplicationIds.length == 0}
                         onClick={handleRevokeApplicationsRequested}
-                        text="Revoke"></PrimaryButton>
+                        text="Revoke">
+                    </PrimaryButton>
                 </div>
             </div >
         </>
