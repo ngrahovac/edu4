@@ -135,7 +135,6 @@ async function getIncomingApplications(accessToken, projectId, sort) {
         var response = await getAsync(requestUri, accessToken);
 
         if (response.ok) {
-            debugger;
             let applications = await response.json();
             let uniqueApplicantUrls = new Set(applications.map(a => a.applicantUrl));
             let applicants = [];
