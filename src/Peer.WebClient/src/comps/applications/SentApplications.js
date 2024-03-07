@@ -188,7 +188,7 @@ const SentApplications = (props) => {
                         displayedApplications.map(application => <>
                             <TableRow selected={selectedApplicationIds.find(id => id == application.id)}>
                                 <TableCell>
-                                    <div className='hover:underline'>
+                                    <div className='underline text-blue-500'>
                                         <Link to={`/${application.projectUrl}`}>
                                             {application.project.title}
                                         </Link>
