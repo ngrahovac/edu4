@@ -42,7 +42,7 @@ public class ApplicationAcceptedHandler
         var acceptedApplication = await _applications.GetByIdAsync(applicationId);
         var applicant = await _contributors.GetByIdAsync(acceptedApplication.ApplicantId);
 
-        var notification = new OwnApplicationAccepted(applicant, acceptedApplication);
+        var notification = new OwnApplicationAccepted(applicant, acceptedApplication, DateTime.UtcNow);
 
         await _notifications.AddAsync(notification);
     }

@@ -7,7 +7,7 @@ const Notification = ({ notif }) => {
             <Link to="/applications">
                 <div className='px-8 py-4 border-b flex flex-col gap-y-1 hover:bg-gray-50 cursor-pointer'>
                     <p className='text-gray-800'>{notif.message}</p>
-                    <p className='text-gray-400 uppercase text-sm font-semibold tracking-wider'>today</p>
+                    <p className='text-gray-400 uppercase text-sm font-semibold tracking-wider'>{notif.when}</p>
                 </div>
             </Link>
         )
