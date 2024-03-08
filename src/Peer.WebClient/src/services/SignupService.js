@@ -8,7 +8,7 @@ import {
 async function signUp(signupModel, accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
-        var response = await postAsync(`${apiRootUri}/users`, signupModel, accessToken);
+        var response = await postAsync(`${apiRootUri}/contributors`, signupModel, accessToken);
 
         if (response.ok) {
             return {
