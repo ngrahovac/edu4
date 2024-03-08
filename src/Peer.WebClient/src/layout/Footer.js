@@ -8,6 +8,7 @@ import FooterCTA from './FooterCTA'
 const Footer = () => {
     return (
         <div className='flex px-32 justify-between h-80 bg-gray-600 py-16'>
+            {/*
             <div className='flex gap-x-32 items-start'>
                 <GiantLogo></GiantLogo>
 
@@ -30,6 +31,7 @@ const Footer = () => {
             <div className='flex flex-col text-gray-200'>
                 <FooterCTA></FooterCTA>
             </div>
+    */}
         </div>
     )
 }
