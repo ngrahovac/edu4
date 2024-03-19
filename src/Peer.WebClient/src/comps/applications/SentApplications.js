@@ -21,8 +21,6 @@ const SentApplications = (props) => {
         onSortChanged
     } = props;
 
-    const [loading, setLoading] = useState(true);
-
     const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
     const [displayedApplications, setDisplayedApplications] = useState(applications);
 
@@ -35,8 +33,6 @@ const SentApplications = (props) => {
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
     const fetchProjectsUserAppliedFor = async () => {
-        setLoading(true);
-
         try {
             let fetchedProjects = [];
 
@@ -67,8 +63,6 @@ const SentApplications = (props) => {
             setSubmittedApplicationsProjects(fetchedProjects);
         } catch (ex) {
             console.log("error fetching all projects user applied to", ex);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -197,6 +191,12 @@ const SentApplications = (props) => {
 
                     <ApplicationsTable.Body>
                         {
+                            !displayedApplications &&
+                            <BeatLoader></BeatLoader>
+                        }
+
+                        {
+                            displayedApplications &&
                             displayedApplications.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
                                 <ApplicationsTable.Body.Cell>
                                     <div className='underline text-blue-500 truncate'>
