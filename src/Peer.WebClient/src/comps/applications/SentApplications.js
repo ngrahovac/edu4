@@ -236,7 +236,7 @@ const SentApplications = (props) => {
                     <ApplicationsTable.Footer selectedCount={selectedApplicationIds.length}></ApplicationsTable.Footer>
                 </ApplicationsTable>
 
-                <div className='absolute bottom-0 right-0 flex flex-row gap-x-8'>
+                <div className='absolute bottom-0 right-0 flex flex-row gap-x-4'>
                     <TertiaryButton
                         text="Cancel"
                         disabled={selectedApplicationIds.length == 0}

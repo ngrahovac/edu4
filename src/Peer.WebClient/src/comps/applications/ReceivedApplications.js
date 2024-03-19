@@ -275,7 +275,7 @@ const ReceivedApplications = (props) => {
                     <ApplicationsTable.Footer selectedCount={selectedApplicationIds.length}></ApplicationsTable.Footer>
                 </ApplicationsTable>
 
-                <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
+                <div className='absolute bottom-0 right-0 flex flex-row gap-x-4'>
                     <DangerButton
                         disabled={selectedApplicationIds.length == 0}
                         onClick={handleRejectSelectedApplicationsRequested}
