@@ -35,7 +35,7 @@ const ProjectCard = (props) => {
         <div className='bg-white rounded-3xl border border-gray-200'>
             <div className="flex flex-col gap-y-8 px-16 py-12">
                 <div className='flex flex-row justify-between'>
-                    <div className='flex gap-x-4'>
+                    <div className='flex gap-x-4 shrink-0'>
                         <Gravatar email={project.author.email} default='retro' className='rounded-full'></Gravatar>
                         <div className='flex flex-col'>
                             <Link to={`/contributors/${project.author.id}`}><p className='text-gray-500 hover:text-indigo-400 font-semibold'>{project.author.fullName}</p></Link>
