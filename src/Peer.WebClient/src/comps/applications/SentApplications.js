@@ -6,7 +6,7 @@ import { revokeApplication, getSubmittedApplicationsProjectIds } from '../../ser
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
 import ProjectFilter from './ProjectFilter'
 import ApplicationsSorter from './SentApplicationsSorter';
-import { BeatLoader } from 'react-spinners';
+import { BeatLoader, ClipLoader } from 'react-spinners';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
 import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 import { Link } from 'react-router-dom';
@@ -153,23 +153,32 @@ const SentApplications = (props) => {
         </dialog>
     );
 
-    if (loading) {
-        return <BeatLoader></BeatLoader>
-    }
 
     return (
-        submittedApplicationsProjects &&
         <>
             {revokingApplicationRequestDialog}
 
             <div className='relative pb-32'>
-                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start gap-x-8'>
-                    <ProjectFilter
-                        projects={submittedApplicationsProjects}
-                        selectedProjectId={projectIdFilter}
-                        onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
-                        onProjectDeselected={() => { }}>
-                    </ProjectFilter>
+                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start gap-x-8 items-center'>
+                    <div className='w-64'>
+                        {
+                            !submittedApplicationsProjects &&
+                            <div className='flex items-center gap-x-2 text-gray-600'>
+                                Loading projects
+                                <ClipLoader size={16}></ClipLoader>
+                            </div>
+                        }
+
+                        {
+                            submittedApplicationsProjects &&
+                            <ProjectFilter
+                                projects={submittedApplicationsProjects}
+                                selectedProjectId={projectIdFilter}
+                                onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
+                                onProjectDeselected={() => { }}>
+                            </ProjectFilter>
+                        }
+                    </div>
 
                     <ApplicationsSorter
                         sort={sort}

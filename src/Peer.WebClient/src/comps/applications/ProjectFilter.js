@@ -28,7 +28,7 @@ const ProjectFilter = (props) => {
             <select
                 value={selectedProject ? selectedProject.id : undefined}
                 onChange={handleSelectedProject}
-                className='rounded-full border-gray-200 text-gray-700 text-base'>
+                className='rounded-full border-gray-200 text-gray-700 text-base w-full'>
                 <option
                     value={undefined}
                     className='rounded-xl'>
