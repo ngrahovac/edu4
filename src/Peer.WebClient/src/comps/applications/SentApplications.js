@@ -1,7 +1,6 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { getById } from '../../services/ProjectsService';
 import { useAuth0 } from '@auth0/auth0-react';
-import SentApplication from './SentApplication';
 import PrimaryButton from '../buttons/PrimaryButton';
 import { revokeApplication, getSubmittedApplicationsProjectIds } from '../../services/ApplicationsService';
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
@@ -9,12 +8,10 @@ import ProjectFilter from './ProjectFilter'
 import ApplicationsSorter from './SentApplicationsSorter';
 import { BeatLoader } from 'react-spinners';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
-import Table from '../shared/table/Table';
-import TableRow from '../shared/table/TableRow';
-import TableCell from '../shared/table/TableCell';
 import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 import { Link } from 'react-router-dom';
 import TertiaryButton from '../buttons/TertiaryButton';
+import ApplicationsTable from '../table2/ApplicationsTable';
 
 const SentApplications = (props) => {
 
@@ -180,26 +177,39 @@ const SentApplications = (props) => {
                     </ApplicationsSorter>
                 </div>
 
-                <Table
-                    columns={["Project", "Position", "Date submitted", "Status", ""]}
-                    widths={{ "Project": "w-1/3", "Position": "w-1/4" }}
-                    selectedCount={selectedApplicationIds.length}>
-                    {
-                        displayedApplications.map(application => <>
-                            <TableRow selected={selectedApplicationIds.find(id => id == application.id)}>
-                                <TableCell>
-                                    <div className='underline text-blue-500'>
+                <ApplicationsTable>
+                    <ApplicationsTable.Header>
+                        <ApplicationsTable.Header.Cell>Project</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell>Position</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell>Date submitted</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell>Status</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell></ApplicationsTable.Header.Cell>
+                    </ApplicationsTable.Header>
+
+                    <ApplicationsTable.Body>
+                        {
+                            displayedApplications.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
+                                <ApplicationsTable.Body.Cell>
+                                    <div className='underline text-blue-500 truncate'>
                                         <Link to={`/${application.projectUrl}`}>
                                             {application.project.title}
                                         </Link>
                                     </div>
-                                </TableCell>
-                                <TableCell>
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
                                     {application.project.positions.find(p => p.id == application.positionId).name}
-                                </TableCell>
-                                <TableCell>{application.dateSubmitted}</TableCell>
-                                <TableCell><SubmittedApplicationStatus></SubmittedApplicationStatus></TableCell>
-                                <TableCell>
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
+                                    {application.dateSubmitted}
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
+                                    <SubmittedApplicationStatus />
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
                                     <form onChange={() => { }}>
                                         <input
                                             type='checkbox'
@@ -207,11 +217,14 @@ const SentApplications = (props) => {
                                             onChange={() => selectedApplicationIds.find(id => id == application.id) ?
                                                 applicationDeselected(application.id) :
                                                 applicationSelected(application.id)}></input>
-                                    </form></TableCell>
-                            </TableRow>
-                        </>)
-                    }
-                </Table>
+                                    </form>
+                                </ApplicationsTable.Body.Cell>
+                            </ApplicationsTable.Body.Row>)
+                        }
+                    </ApplicationsTable.Body>
+
+                    <ApplicationsTable.Footer selectedCount={selectedApplicationIds.length}></ApplicationsTable.Footer>
+                </ApplicationsTable>
 
                 <div className='absolute bottom-0 right-0 flex flex-row gap-x-8'>
                     <TertiaryButton
