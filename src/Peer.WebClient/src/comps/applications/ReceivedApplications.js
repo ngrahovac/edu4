@@ -12,6 +12,7 @@ import ConfirmationDialog from '../shared/ConfirmationDialog';
 import ApplicationsTable from '../table2/ApplicationsTable';
 import { Link } from 'react-router-dom';
 import SubmittedApplicationStatus from './SubmittedApplicationStatus';
+import { ClipLoader } from 'react-spinners';
 
 
 const ReceivedApplications = (props) => {
@@ -35,11 +36,7 @@ const ReceivedApplications = (props) => {
 
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
-    const [loading, setLoading] = useState(true);
-
     const fetchAuthoredProjects = async () => {
-        setLoading(true);
-
         try {
             let token = await getAccessTokenSilently({
                 audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
@@ -57,8 +54,6 @@ const ReceivedApplications = (props) => {
             }
         } catch (ex) {
             console.log("error fetching authored projects", ex);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -187,26 +182,36 @@ const ReceivedApplications = (props) => {
         </dialog>
     );
 
-    if (loading) {
-        return <BeatLoader></BeatLoader>
-    }
-
     return (
         <>
             {rejectingApplicationsRequestDialog}
             {acceptingApplicationsRequestDialog}
 
             <div className='relative pb-32'>
-                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8'>
-                    <ProjectFilter
-                        projects={authoredProjects}
-                        onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
-                        onProjectDeselected={() => { }}
-                        selectedProjectId={projectIdFilter}>
-                    </ProjectFilter>
+                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8 items-center'>
+                    <div className='w-64'>
+                        {
+                            !authoredProjects &&
+                            <div className='flex items-center gap-x-2 text-gray-600'>
+                                Loading projects
+                                <ClipLoader size={16}></ClipLoader>
+                            </div>
+                        }
 
-                    <ApplicationsSorter sort={sort} onSortSelected={setSort}>
+                        {
+                            authoredProjects &&
+                            <ProjectFilter
+                                projects={authoredProjects}
+                                onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
+                                onProjectDeselected={() => { }}
+                                selectedProjectId={projectIdFilter}>
+                            </ProjectFilter>
+                        }
+                    </div>
 
+                    <ApplicationsSorter
+                        sort={sort}
+                        onSortSelected={setSort}>
                     </ApplicationsSorter>
                 </div>
 
@@ -222,6 +227,12 @@ const ReceivedApplications = (props) => {
 
                     <ApplicationsTable.Body>
                         {
+                            !displayedApplications &&
+                            <BeatLoader></BeatLoader>
+                        }
+
+                        {
+                            displayedApplications &&
                             displayedApplications.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
                                 <ApplicationsTable.Body.Cell>
                                     <Link to={`/${application.projectUrl}`}><p className='underline text-blue-500 hover:text-blue-700 truncate'>{application.project.title}</p></Link>
