@@ -259,6 +259,7 @@ const ReceivedApplications = (props) => {
                                 <ApplicationsTable.Body.Cell>
                                     <form onChange={() => { }}>
                                         <input
+                                            className='cursor-pointer'
                                             type='checkbox'
                                             checked={selectedApplicationIds.find(id => id == application.id)}
                                             onChange={() => selectedApplicationIds.find(id => id == application.id) ?
