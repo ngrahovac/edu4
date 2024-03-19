@@ -48,7 +48,7 @@ const TopNavbar = () => {
                         </BorderlessButton>
                     </Link>
 
-                    <Link to="/applications">
+                    <Link to="/applications/sent">
                         <TopNavbarItem
                             text="Applications"
                             icon={<>

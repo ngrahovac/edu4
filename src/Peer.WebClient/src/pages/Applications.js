@@ -10,19 +10,19 @@ import {
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react';
 import ReceivedApplications from '../comps/applications/ReceivedApplications'
-import TabulatedMenu from '../comps/nav/TabulatedMenu'
 import { HatSearchParam } from '../comps/search/HatSearchParam'
+import { Link, useParams } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 const Applications = () => {
     const applicationType = {
-        sent: "Sent",
-        received: "Received"
+        sent: "sent",
+        received: "received"
     };
 
     const { getAccessTokenSilently } = useAuth0();
 
-    const [selectedApplicationType, setSelectedApplicationType] = useState(applicationType.sent);
-
+    const { selectedApplicationType } = useParams();
     const [sentApplications, setSentApplications] = useState(undefined);
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
     const [sort, setSort] = useState(undefined);
@@ -36,6 +36,12 @@ const Applications = () => {
             getReceivedApplications();
         }
     }, [selectedApplicationType, sort, projectIdFilter])
+   
+
+    if (selectedApplicationType != applicationType.sent &&
+        selectedApplicationType != applicationType.received) {
+            return <Navigate to="/404" replace></Navigate>
+    }
 
 
     function getSentApplications() {
@@ -120,17 +126,19 @@ const Applications = () => {
 
             <div className='pt-16 w-full flex flex-col gap-y-8'>
                 <div className="flex gap-x-4 items-center text-gray-600">
-                    <HatSearchParam
-                        selected={selectedApplicationType == "Sent"}
-                        onSelected={() => setSelectedApplicationType("Sent")}>
-                        Sent
-                    </HatSearchParam>
+                    <Link to="/applications/sent">
+                        <HatSearchParam
+                            selected={selectedApplicationType == "sent"}>
+                            Sent
+                        </HatSearchParam>
+                    </Link>
 
-                    <HatSearchParam
-                        selected={selectedApplicationType == "Received"}
-                        onSelected={() => setSelectedApplicationType("Received")}>
-                        Received
-                    </HatSearchParam>
+                    <Link to="/applications/received">
+                        <HatSearchParam
+                            selected={selectedApplicationType == "received"}>
+                            Received
+                        </HatSearchParam>
+                    </Link>
                 </div>
 
                 {/* applications */}
