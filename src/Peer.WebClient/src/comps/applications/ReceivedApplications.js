@@ -13,6 +13,7 @@ import ApplicationsTable from '../table2/ApplicationsTable';
 import { Link } from 'react-router-dom';
 import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 import { ClipLoader } from 'react-spinners';
+import TertiaryButton from '../buttons/TertiaryButton';
 
 
 const ReceivedApplications = (props) => {
@@ -276,15 +277,17 @@ const ReceivedApplications = (props) => {
                 </ApplicationsTable>
 
                 <div className='absolute bottom-0 right-0 flex flex-row gap-x-4'>
-                    <DangerButton
+                    <TertiaryButton
                         disabled={selectedApplicationIds.length == 0}
                         onClick={handleRejectSelectedApplicationsRequested}
-                        text="Reject"></DangerButton>
+                        text="Reject">
+                    </TertiaryButton>
 
                     <PrimaryButton
                         disabled={selectedApplicationIds.length == 0}
                         onClick={handleAcceptSelectedApplicationsRequested}
-                        text="Accept"></PrimaryButton>
+                        text="Accept">
+                    </PrimaryButton>
                 </div>
             </div >
         </>
