@@ -278,6 +278,12 @@ const ReceivedApplications = (props) => {
 
                 <div className='absolute bottom-0 right-0 flex flex-row gap-x-4'>
                     <TertiaryButton
+                        text="Cancel"
+                        disabled={selectedApplicationIds.length == 0}
+                        onClick={() => setSelectedApplicationIds([])}>
+                    </TertiaryButton>
+
+                    <TertiaryButton
                         disabled={selectedApplicationIds.length == 0}
                         onClick={handleRejectSelectedApplicationsRequested}
                         text="Reject">
