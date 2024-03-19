@@ -12,7 +12,7 @@ ApplicationsTable.Header = ({ children }) => <thead><tr className='border-b-2 bo
 ApplicationsTable.Header.Cell = ({ children }) => <th className='font-medium truncate text-sm p-4 text-gray-400 uppercase text-left'>{children}</th>
 
 ApplicationsTable.Body = ({ children }) => <tbody>{children}</tbody>
-ApplicationsTable.Body.Row = ({ children, selected = false }) => <tr className={`cursor-pointer ${selected ? 'hover:bg-indigo-400 bg-indigo-300' : 'hover:bg-gray-200 bg:gray-100'}`}>{children}</tr>
+ApplicationsTable.Body.Row = ({ children, selected = false }) => <tr className={`${selected ? 'hover:bg-indigo-400 bg-indigo-300' : 'hover:bg-gray-200 bg:gray-100'}`}>{children}</tr>
 ApplicationsTable.Body.Cell = ({ children }) => <td className={`text-gray-800 p-4 text-left truncate`}>{children}</td>
 
 ApplicationsTable.Footer = ({ selectedCount = 0 }) => <tfoot className='border-t-2 border-gray-200'>
