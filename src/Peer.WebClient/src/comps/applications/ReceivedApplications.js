@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react';
-import ReceivedApplication from './ReceivedApplication';
 import PrimaryButton from '../buttons/PrimaryButton';
 import { acceptApplication, rejectApplication } from '../../services/ApplicationsService';
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
 import { getAuthored } from '../../services/ProjectsService';
 import DangerButton from '../buttons/DangerButton';
-import { Fragment } from 'react';
 import ProjectFilter from './ProjectFilter';
 import ApplicationsSorter from './SentApplicationsSorter';
 import { BeatLoader } from 'react-spinners';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
+import ApplicationsTable from '../table2/ApplicationsTable';
+import { Link } from 'react-router-dom';
+import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 
 
 const ReceivedApplications = (props) => {
@@ -209,46 +210,58 @@ const ReceivedApplications = (props) => {
                     </ApplicationsSorter>
                 </div>
 
-                <div className='overflow-x-auto'>
-                    <table className='text-left w-full table-fixed'>
-                        <thead>
-                            <tr className='border-b-2 border-gray-200'>
-                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Project</th>
-                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Position</th>
-                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Date submitted</th>
-                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Applicant</th>
-                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'>Status</th>
-                                <th className='w-1/4 truncate font-medium text-sm p-4 text-gray-400 uppercase'></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                displayedApplications.map(a => <Fragment key={a.id}>
-                                    <ReceivedApplication
-                                        application={a}
-                                        onApplicationSelected={applicationSelected}
-                                        onApplicationDeselected={applicationDeselected}>
-                                    </ReceivedApplication>
-                                </Fragment>)
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td className='text-left pl-4 h-12 uppercase tracking-wide'>
-                                    {
-                                        selectedApplicationIds.length > 0 &&
-                                        <p>{`Selected: ${selectedApplicationIds.length}`}</p>
-                                    }
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                <ApplicationsTable>
+                    <ApplicationsTable.Header>
+                        <ApplicationsTable.Header.Cell>Project</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell>Position</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell>Date submitted</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell>Applicant</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell>Status</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell></ApplicationsTable.Header.Cell>
+                    </ApplicationsTable.Header>
+
+                    <ApplicationsTable.Body>
+                        {
+                            displayedApplications.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
+                                <ApplicationsTable.Body.Cell>
+                                    <Link to={`/${application.projectUrl}`}><p className='underline text-blue-500 hover:text-blue-700 truncate'>{application.project.title}</p></Link>
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
+                                    {application.project.positions.find(p => p.id == application.positionId).name}
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
+                                    {application.dateSubmitted}
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
+                                    <Link to={`/${application.applicantUrl}`}>
+                                        <p className='underline text-blue-500 hover:text-blue-700'>{application.applicant.fullName}</p>
+                                    </Link>
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
+                                    <SubmittedApplicationStatus></SubmittedApplicationStatus>
+                                </ApplicationsTable.Body.Cell>
+
+                                <ApplicationsTable.Body.Cell>
+                                    <form onChange={() => { }}>
+                                        <input
+                                            type='checkbox'
+                                            checked={selectedApplicationIds.find(id => id == application.id)}
+                                            onChange={() => selectedApplicationIds.find(id => id == application.id) ?
+                                                applicationDeselected(application.id) :
+                                                applicationSelected(application.id)}>
+                                        </input>
+                                    </form>
+                                </ApplicationsTable.Body.Cell>
+                            </ApplicationsTable.Body.Row>)
+                        }
+                    </ApplicationsTable.Body>
+
+                    <ApplicationsTable.Footer selectedCount={selectedApplicationIds.length}></ApplicationsTable.Footer>
+                </ApplicationsTable>
 
                 <div className='absolute bottom-0 right-0 flex flex-row space-x-2'>
                     <DangerButton
@@ -261,7 +274,7 @@ const ReceivedApplications = (props) => {
                         onClick={handleAcceptSelectedApplicationsRequested}
                         text="Accept"></PrimaryButton>
                 </div>
-            </div>
+            </div >
         </>
     )
 }
