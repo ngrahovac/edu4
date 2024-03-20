@@ -23,7 +23,7 @@ const Applications = () => {
     const { getAccessTokenSilently } = useAuth0();
 
     const { selectedApplicationType } = useParams();
-    const [sentApplications, setSentApplications] = useState(undefined);
+    const [sentApplicationsPage, setSentApplicationsPage] = useState(undefined);
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
     const [sort, setSort] = useState(undefined);
 
@@ -55,7 +55,7 @@ const Applications = () => {
 
                 if (result.outcome === successResult) {
                     const sentApplications = result.payload;
-                    setSentApplications(sentApplications.items);
+                    setSentApplicationsPage(sentApplications);
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
@@ -145,9 +145,9 @@ const Applications = () => {
                 <div>
                     {
                         selectedApplicationType == applicationType.sent &&
-                        sentApplications != undefined &&
+                        sentApplicationsPage != undefined &&
                         <SentApplications
-                            applications={sentApplications}
+                            applications={sentApplicationsPage}
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
                             onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}></SentApplications>
                     }

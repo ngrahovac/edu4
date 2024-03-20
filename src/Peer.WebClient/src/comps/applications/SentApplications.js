@@ -22,7 +22,7 @@ const SentApplications = (props) => {
     } = props;
 
     const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
-    const [displayedApplications, setDisplayedApplications] = useState(applications);
+    const [displayedApplicationsPage, setDisplayedApplicationsPage] = useState(applications);
 
     const [submittedApplicationsProjects, setSubmittedApplicationsProjects] = useState(undefined);
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
@@ -68,12 +68,12 @@ const SentApplications = (props) => {
 
     /* mirroring prop bc we'll fake fetching data after a successful API call with UI changes */
     useEffect(() => {
-        setDisplayedApplications(applications);
+        setDisplayedApplicationsPage(applications);
     }, [applications]);
 
     useEffect(() => {
         setSelectedApplicationIds([]);
-    }, [displayedApplications]);
+    }, [displayedApplicationsPage]);
 
     useEffect(() => {
         fetchProjectsUserAppliedFor();
@@ -124,7 +124,7 @@ const SentApplications = (props) => {
                     }
                 }
 
-                setDisplayedApplications(displayedApplications.filter(
+                setDisplayedApplicationsPage(displayedApplicationsPage.filter(
                     displayedApplication => !successfullyRevokedApplicationIds.find(
                         id => id == displayedApplication.id)));
             }
@@ -191,13 +191,13 @@ const SentApplications = (props) => {
 
                     <ApplicationsTable.Body>
                         {
-                            !displayedApplications &&
+                            !displayedApplicationsPage &&
                             <BeatLoader></BeatLoader>
                         }
 
                         {
-                            displayedApplications &&
-                            displayedApplications.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
+                            displayedApplicationsPage &&
+                            displayedApplicationsPage.items.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
                                 <ApplicationsTable.Body.Cell>
                                     <div className='underline text-blue-500 truncate'>
                                         <Link to={`/${application.projectUrl}`}>
@@ -235,7 +235,7 @@ const SentApplications = (props) => {
 
                     <ApplicationsTable.Footer>
                         <ApplicationsTable.Footer.Row>
-                            <ApplicationsTable.Footer.Cell></ApplicationsTable.Footer.Cell>
+                            <ApplicationsTable.Footer.Cell>{`Total: ${displayedApplicationsPage.totalItems}`}</ApplicationsTable.Footer.Cell>
                             <ApplicationsTable.Footer.Cell></ApplicationsTable.Footer.Cell>
                             <ApplicationsTable.Footer.Cell></ApplicationsTable.Footer.Cell>
                             <ApplicationsTable.Footer.Cell></ApplicationsTable.Footer.Cell>
