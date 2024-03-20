@@ -21,7 +21,7 @@ ApplicationsTable.Footer = ({ children }) => <tfoot className='border-t-2 border
 
 ApplicationsTable.Footer.Row = ({ children }) => <tr>{children}</tr>
 
-ApplicationsTable.Footer.Cell = ({ children }) => <td className='text-left p-4 h-12 uppercase tracking-wider text-slate-400 text-sm font-medium'>
+ApplicationsTable.Footer.Cell = ({ children, collspan = 1 }) => <td collSpan={collspan} className='text-left p-4 h-12 uppercase tracking-wider text-slate-400 text-sm font-medium'>
     {children}
 </td>
 
