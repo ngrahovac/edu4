@@ -55,7 +55,7 @@ const Applications = () => {
 
                 if (result.outcome === successResult) {
                     const sentApplications = result.payload;
-                    setSentApplications(sentApplications);
+                    setSentApplications(sentApplications.items);
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {

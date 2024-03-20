@@ -233,7 +233,18 @@ const SentApplications = (props) => {
                         }
                     </ApplicationsTable.Body>
 
-                    <ApplicationsTable.Footer selectedCount={selectedApplicationIds.length}></ApplicationsTable.Footer>
+                    <ApplicationsTable.Footer>
+                        <ApplicationsTable.Footer.Row>
+                            <ApplicationsTable.Footer.Cell></ApplicationsTable.Footer.Cell>
+                            <ApplicationsTable.Footer.Cell></ApplicationsTable.Footer.Cell>
+                            <ApplicationsTable.Footer.Cell></ApplicationsTable.Footer.Cell>
+                            <ApplicationsTable.Footer.Cell></ApplicationsTable.Footer.Cell>
+
+                            <ApplicationsTable.Footer.Cell>
+                                <p>{`Selected: ${selectedApplicationIds.length}`}</p>
+                            </ApplicationsTable.Footer.Cell>
+                        </ApplicationsTable.Footer.Row>
+                    </ApplicationsTable.Footer>
                 </ApplicationsTable>
 
                 <div className='absolute bottom-0 right-0 flex flex-row gap-x-4'>

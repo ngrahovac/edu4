@@ -65,7 +65,7 @@ async function getSubmittedApplications(accessToken, projectId, sort) {
         if (response.ok) {
             let applications = await response.json();
 
-            let uniqueProjectUrls = new Set(applications.map(a => a.projectUrl));
+            let uniqueProjectUrls = new Set(applications.items.map(a => a.projectUrl));
             let projects = [];
 
             for (let projectUrl of uniqueProjectUrls) {
@@ -83,7 +83,7 @@ async function getSubmittedApplications(accessToken, projectId, sort) {
                 projects.push(project);
             }
 
-            for (let application of applications){
+            for (let application of applications.items){
                 application.project = projects.find(p => p.id == application.projectId);
             }
 
