@@ -294,7 +294,7 @@ async function acceptApplication(applicationId, accessToken) {
     }
 }
 
-async function getSubmittedApplicationsProjectIds(accessToken) {
+async function getSubmittedApplicationsProjects(accessToken) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
@@ -331,5 +331,5 @@ export {
     revokeApplication,
     rejectApplication,
     acceptApplication,
-    getSubmittedApplicationsProjectIds
+    getSubmittedApplicationsProjects
 }

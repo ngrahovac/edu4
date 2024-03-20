@@ -6,6 +6,7 @@ using Peer.API.Utils;
 using Peer.Application.Contracts;
 using Peer.Application.Services;
 using Peer.Domain.Applications;
+using Peer.Domain.Projects;
 
 namespace Peer.API.Controllers;
 
@@ -87,12 +88,13 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpGet("sent/projects")]
-    public async Task<ActionResult<ICollection<Guid>>> GetSubmittedApplicationsProjectsAsync()
+    public async Task<ActionResult<ICollection<ProjectDisplayModel>>> GetSubmittedApplicationsProjectsAsync()
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
             Request
         );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+        var requester = await _contributors.GetByIdAsync(requesterId);
 
         var applications = await _applications.GetSentAsync(
             requesterId,
@@ -102,7 +104,16 @@ public class ApplicationsController : ControllerBase
             pageSize: int.MaxValue
         );
 
-        return applications.Items.Select(a => a.ProjectId).Distinct().ToList();
+        var projectsIds = applications.Items.Select(a => a.ProjectId).Distinct().ToList();
+
+        List<Project> projects = new();
+        foreach (var id in projectsIds)
+        {
+            var project = await _projects.GetByIdAsync(id);
+            projects.Add(project);
+        }
+
+        return projects.Select(p => new ProjectDisplayModel(p, requester)).ToList();
     }
 
     [HttpGet("received")]

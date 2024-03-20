@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { getById } from '../../services/ProjectsService';
 import { useAuth0 } from '@auth0/auth0-react';
 import PrimaryButton from '../buttons/PrimaryButton';
-import { revokeApplication, getSubmittedApplicationsProjectIds } from '../../services/ApplicationsService';
+import { revokeApplication, getSubmittedApplicationsProjects } from '../../services/ApplicationsService';
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
 import ProjectFilter from './ProjectFilter'
 import ApplicationsSorter from './SentApplicationsSorter';
@@ -42,22 +42,11 @@ const SentApplications = (props) => {
                 audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
             });
 
-            let result = await getSubmittedApplicationsProjectIds(token);
+            let result = await getSubmittedApplicationsProjects(token);
 
             if (result.outcome == successResult) {
-                let projectIds = await result.payload;
-
-                for (let projectId of projectIds) {
-                    let result = await getById(projectId, token);
-
-                    if (result.outcome == successResult) {
-                        let project = await result.payload;
-
-                        fetchedProjects.push(project);
-                    } else {
-                        console.log("error fetching one of the projects user applied to")
-                    }
-                }
+                let projects = await result.payload;
+                fetchedProjects.push(projects);
             } else {
                 console.log("error fetching all projects user applied to");
             }
