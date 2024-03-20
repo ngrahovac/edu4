@@ -13,7 +13,7 @@ const ButtonBase = (props) => {
 
     const baseStyle = "rounded-full py-2 px-4 font-semibold w-fit flex flex-row items-center shrink-0 cursor-pointer"
     const enabledStyle = `${baseStyle} ${defaultStyle} ${hoverStyle ? hoverStyle : ''}`  // works if hoverStyle is just one string, e.g. bg-red-500
-    const disabledStyle = `${baseStyle} text-gray-300 cursor-not-allowed`
+    const disabledStyle = `${baseStyle} text-gray-300 cursor-no-drop`
 
     return (
         <div
