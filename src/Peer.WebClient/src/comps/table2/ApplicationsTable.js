@@ -15,12 +15,14 @@ ApplicationsTable.Body = ({ children }) => <tbody>{children}</tbody>
 ApplicationsTable.Body.Row = ({ children, selected = false }) => <tr className={`${selected ? 'hover:bg-indigo-400 bg-indigo-300' : 'hover:bg-gray-200 bg:gray-100'}`}>{children}</tr>
 ApplicationsTable.Body.Cell = ({ children }) => <td className={`text-gray-800 p-4 text-left truncate`}>{children}</td>
 
-ApplicationsTable.Footer = ({ selectedCount = 0 }) => <tfoot className='border-t-2 border-gray-200'>
-    <tr>
-        <td className='text-left p-4 h-12 uppercase tracking-wider text-slate-400 text-sm font-medium'>
-            <p>{`Selected: ${selectedCount}`}</p>
-        </td>
-    </tr>
+ApplicationsTable.Footer = ({ children }) => <tfoot className='border-t-2 border-gray-200'>
+    {children}
 </tfoot>
+
+ApplicationsTable.Footer.Row = ({ children }) => <tr>{children}</tr>
+
+ApplicationsTable.Footer.Cell = ({ children }) => <td className='text-left p-4 h-12 uppercase tracking-wider text-slate-400 text-sm font-medium'>
+    {children}
+</td>
 
 export default ApplicationsTable
