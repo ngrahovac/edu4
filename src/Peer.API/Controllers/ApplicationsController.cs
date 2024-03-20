@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Peer.API.Models.Display;
 using Peer.API.Models.Input;
 using Peer.API.Utils;
+using Peer.Application.Contracts;
 using Peer.Application.Services;
 using Peer.Domain.Applications;
 
@@ -47,17 +48,19 @@ public class ApplicationsController : ControllerBase
         var requesterIsProjectAuthor = requesterId.Equals(project.AuthorId);
 
         var applications = requesterIsProjectAuthor
-            ? await _applications.GetReceivedAsync(requesterId, projectId)
-            : await _applications.GetSentAsync(requesterId, projectId);
+            ? throw new NotImplementedException()
+            : await _applications.GetSentAsync(requesterId, projectId, pageSize: int.MaxValue);
 
-        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
+        return applications.Items.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
     }
 
     [HttpGet("sent")]
-    public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetSentAsync(
+    public async Task<ActionResult<PagedList<ApplicationDisplayModel>>> GetSentAsync(
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption? sort
+        ApplicationsSortOption? sort,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5
     )
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
@@ -70,10 +73,17 @@ public class ApplicationsController : ControllerBase
             requesterId,
             projectId,
             positionId,
-            sort ?? ApplicationsSortOption.Default
+            sort ?? ApplicationsSortOption.Default,
+            page,
+            pageSize
         );
 
-        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
+        return new PagedList<ApplicationDisplayModel>(
+            applications.TotalItems,
+            applications.Page,
+            applications.TotalPages,
+            applications.Items.Select(a => new ApplicationDisplayModel(a, requester)).ToList()
+        );
     }
 
     [HttpGet("sent/projects")]
@@ -88,10 +98,11 @@ public class ApplicationsController : ControllerBase
             requesterId,
             null,
             null,
-            ApplicationsSortOption.Default
+            ApplicationsSortOption.Default,
+            pageSize: int.MaxValue
         );
 
-        return applications.Select(a => a.ProjectId).Distinct().ToList();
+        return applications.Items.Select(a => a.ProjectId).Distinct().ToList();
     }
 
     [HttpGet("received")]

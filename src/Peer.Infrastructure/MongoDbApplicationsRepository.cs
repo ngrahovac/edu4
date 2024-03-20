@@ -131,11 +131,13 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         }
     }
 
-    public async Task<List<Domain.Applications.Application>> GetSentAsync(
+    public async Task<PagedList<Domain.Applications.Application>> GetSentAsync(
         Guid requesterId,
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption applicationsSortOption
+        ApplicationsSortOption applicationsSortOption,
+        int page = 1,
+        int pageSize = 5
     )
     {
         var projectFilter = projectId is null
@@ -172,8 +174,27 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
             applicantIdFilter
         );
 
-        return await _applicationsCollection.Find(filter).Sort(sorting).ToListAsync();
+        var totalSent = await CountManyAsync(filter);
+        var totalPages = (int)Math.Ceiling((decimal)totalSent / pageSize);
+        var applications = await _applicationsCollection
+            .Find(filter)
+            .Sort(sorting)
+            .Skip((page - 1) * pageSize)
+            .Limit(pageSize)
+            .ToListAsync();
+
+        var pagedList = new PagedList<Domain.Applications.Application>(
+            totalSent,
+            page,
+            totalPages,
+            applications);
+
+        return pagedList;
     }
+
+    private Task<long> CountManyAsync(FilterDefinition<Domain.Applications.Application> filter) =>
+        _applicationsCollection
+        .CountDocumentsAsync(filter);
 
     public Task<List<Domain.Applications.Application>> GetByApplicantAsync(Guid applicantId)
     {

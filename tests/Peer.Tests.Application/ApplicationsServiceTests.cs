@@ -1256,7 +1256,7 @@ public class ApplicationsServiceTests
         );
 
         // ASSERT
-        receivedApplications.Count.Should().Be(3);
+        receivedApplications.Items.Count.Should().Be(3);
     }
 
     [Fact]
@@ -1347,7 +1347,7 @@ public class ApplicationsServiceTests
         );
 
         // ASSERT
-        receivedApplications.Count.Should().Be(2);
+        receivedApplications.Items.Count.Should().Be(2);
         receivedApplications
             .Should()
             .BeEquivalentTo(

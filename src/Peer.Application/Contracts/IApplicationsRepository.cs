@@ -13,13 +13,14 @@ public interface IApplicationsRepository
         Guid? projectId,
         Guid? positionId,
         ApplicationsSortOption applicationsSortOption);
-    Task<List<Domain.Applications.Application>> GetSentAsync(
+    Task<PagedList<Domain.Applications.Application>> GetSentAsync(
         Guid requesterId,
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption applicationsSortOption);
+        ApplicationsSortOption applicationsSortOption,
+        int page = 1,
+        int pageSize = 5);
     Task<List<Domain.Applications.Application>> GetByApplicantAsync(Guid applicantId);
     Task<List<Domain.Applications.Application>> GetByProjectAsync(Guid projectId);
-
     Task<List<Domain.Applications.Application>> GetByPositionAsync(Guid projectId, Guid positionId);
 }
