@@ -36,7 +36,7 @@ async function submitApplication(projectId, positionId, accessToken) {
     }
 }
 
-async function getSubmittedApplications(accessToken, projectId, sort) {
+async function getSubmittedApplications(accessToken, projectId, sort, page) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
@@ -49,6 +49,9 @@ async function getSubmittedApplications(accessToken, projectId, sort) {
 
         if (sort != undefined)
             queryParams["sort"] = sort;
+
+        if (page != undefined)
+            queryParams["page"] = page;
 
         if (Object.keys(queryParams).length > 0) {
             requestUri += "?";
@@ -83,7 +86,7 @@ async function getSubmittedApplications(accessToken, projectId, sort) {
                 projects.push(project);
             }
 
-            for (let application of applications.items){
+            for (let application of applications.items) {
                 application.project = projects.find(p => p.id == application.projectId);
             }
 

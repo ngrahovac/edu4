@@ -36,22 +36,22 @@ const Applications = () => {
             getReceivedApplications();
         }
     }, [selectedApplicationType, sort, projectIdFilter])
-   
+
 
     if (selectedApplicationType != applicationType.sent &&
         selectedApplicationType != applicationType.received) {
-            return <Navigate to="/404" replace></Navigate>
+        return <Navigate to="/404" replace></Navigate>
     }
 
 
-    function getSentApplications() {
+    function getSentApplications(page = 1) {
         (async () => {
             try {
                 let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await getSubmittedApplications(token, projectIdFilter, sort);
+                let result = await getSubmittedApplications(token, projectIdFilter, sort, page);
 
                 if (result.outcome === successResult) {
                     const sentApplications = result.payload;
@@ -149,7 +149,8 @@ const Applications = () => {
                         <SentApplications
                             applications={sentApplicationsPage}
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
-                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}></SentApplications>
+                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}
+                            onPageChanged={(page) => getSentApplications(page)}></SentApplications>
                     }
                     {
                         selectedApplicationType == applicationType.received &&
