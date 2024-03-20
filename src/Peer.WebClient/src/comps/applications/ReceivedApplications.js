@@ -222,10 +222,10 @@ const ReceivedApplications = (props) => {
                     <ApplicationsTable.Header>
                         <ApplicationsTable.Header.Cell>Project</ApplicationsTable.Header.Cell>
                         <ApplicationsTable.Header.Cell>Position</ApplicationsTable.Header.Cell>
-                        <ApplicationsTable.Header.Cell>Date submitted</ApplicationsTable.Header.Cell>
-                        <ApplicationsTable.Header.Cell>Applicant</ApplicationsTable.Header.Cell>
-                        <ApplicationsTable.Header.Cell>Status</ApplicationsTable.Header.Cell>
-                        <ApplicationsTable.Header.Cell></ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell width='w-40'>Date submitted</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell width='w-36'>Applicant</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell width='w-36'>Status</ApplicationsTable.Header.Cell>
+                        <ApplicationsTable.Header.Cell width='w-14'></ApplicationsTable.Header.Cell>
                     </ApplicationsTable.Header>
 
                     <ApplicationsTable.Body>
