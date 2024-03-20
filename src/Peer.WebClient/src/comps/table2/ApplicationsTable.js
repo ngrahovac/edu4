@@ -11,7 +11,7 @@ const ApplicationsTable = ({ children }) => {
 }
 
 ApplicationsTable.Header = ({ children }) => <thead><tr className='border-b-2 border-gray-200'>{children}</tr></thead>
-ApplicationsTable.Header.Cell = ({ children }) => <th className='font-medium truncate text-sm px-4 py-2 text-gray-400 uppercase text-left'>{children}</th>
+ApplicationsTable.Header.Cell = ({ children, width = "w-full" }) => <th className={`${width} font-medium truncate text-sm px-4 py-2 text-gray-400 uppercase text-left`}>{children}</th>
 
 ApplicationsTable.Body = ({ children }) => <tbody>{children}</tbody>
 ApplicationsTable.Body.Row = ({ children, selected = false }) => <tr className={`${selected ? 'hover:bg-indigo-400 bg-indigo-300' : 'hover:bg-gray-200 bg:gray-100'}`}>{children}</tr>
