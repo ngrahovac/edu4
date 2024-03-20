@@ -13,6 +13,7 @@ import ReceivedApplications from '../comps/applications/ReceivedApplications'
 import { HatSearchParam } from '../comps/search/HatSearchParam'
 import { Link, useParams } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
+import { BeatLoader, ClipLoader, PulseLoader } from 'react-spinners'
 
 const Applications = () => {
     const applicationType = {
@@ -143,6 +144,13 @@ const Applications = () => {
 
                 {/* applications */}
                 <div>
+                    {
+                        ((selectedApplicationType == applicationType.sent && !sentApplicationsPage) ||
+                            (selectedApplicationType == applicationType.received && !receivedApplications)) &&
+                        <div className='flex content-center place-content-center h-96'>
+                            <ClipLoader></ClipLoader>
+                        </div>
+                    }
                     {
                         selectedApplicationType == applicationType.sent &&
                         sentApplicationsPage != undefined &&
