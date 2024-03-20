@@ -124,7 +124,7 @@ const Applications = () => {
             title="Applications"
             description="Manage sent and received project applications">
 
-            <div className='pt-16 w-full flex flex-col gap-y-8'>
+            <div className='w-full flex flex-col gap-y-16 mt-16'>
                 <div className="flex gap-x-4 items-center text-gray-600">
                     <Link to="/applications/sent">
                         <HatSearchParam
