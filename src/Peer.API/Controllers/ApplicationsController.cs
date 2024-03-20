@@ -6,6 +6,7 @@ using Peer.API.Utils;
 using Peer.Application.Contracts;
 using Peer.Application.Services;
 using Peer.Domain.Applications;
+using Peer.Domain.Contributors;
 using Peer.Domain.Projects;
 
 namespace Peer.API.Controllers;
@@ -133,7 +134,7 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpGet("received")]
-    public async Task<ActionResult<PagedList<ApplicationDisplayModel>>> GetReceivedAsync(
+    public async Task<ActionResult<PagedList<ReceivedApplicationDisplayModel>>> GetReceivedAsync(
         Guid? projectId,
         Guid? positionId,
         ApplicationsSortOption? sort,
@@ -156,12 +157,40 @@ public class ApplicationsController : ControllerBase
             pageSize
         );
 
-        return new PagedList<ApplicationDisplayModel>(
+        var uniqueProjectIds = applications.Items
+            .Select(a => a.ProjectId)
+            .Distinct();
+
+        var uniqueProjects = new List<Project>();
+
+        foreach (var id in uniqueProjectIds)
+        {
+            var project = await _projects.GetByIdAsync(id);
+            uniqueProjects.Add(project);
+        }
+
+        var uniqueApplicantIds = applications.Items
+            .Select(a => a.ApplicantId)
+            .Distinct();
+
+        var uniqueApplicants = new List<Contributor>();
+
+        foreach (var id in uniqueApplicantIds)
+        {
+            var applicant = await _contributors.GetByIdAsync(id);
+            uniqueApplicants.Add(applicant);
+        }
+
+        return new PagedList<ReceivedApplicationDisplayModel>(
             applications.TotalItems,
             applications.Page,
             applications.TotalPages,
-            applications.Items.Select(a => new ApplicationDisplayModel(a, requester)).ToList()
-        );
+            applications.Items.Select(a => new ReceivedApplicationDisplayModel(
+                a,
+                requester,
+                uniqueProjects.Single(p => p.Id == a.ProjectId),
+                uniqueApplicants.Single(c => c.Id == a.ApplicantId))
+            ).ToList());
     }
 
     [HttpPost]

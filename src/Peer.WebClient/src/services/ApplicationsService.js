@@ -120,50 +120,7 @@ async function getIncomingApplications(accessToken, projectId, sort, page) {
 
         if (response.ok) {
             let applications = await response.json();
-            let uniqueApplicantUrls = new Set(applications.items.map(a => a.applicantUrl));
-            let applicants = [];
-
-            for (let applicantUrl of uniqueApplicantUrls) {
-                let fetchApplicantUri = `${apiRootUri}/${applicantUrl}`;
-                let fetchApplicantResponse = await getAsync(fetchApplicantUri, accessToken);
-
-                if (!fetchApplicantResponse.ok) {
-                    return {
-                        outcome: failureResult,
-                        message: "Error fetching applicant"
-                    };
-                }
-
-                let applicant = await fetchApplicantResponse.json();
-                applicants.push(applicant);
-            }
-
-            for (let application of applications.items) {
-                application.applicant = applicants.find(a => a.id == application.applicantId);
-            }
-
-            let uniqueProjectUrls = new Set(applications.items.map(a => a.projectUrl));
-            let projects = [];
-
-            for (let projectUrl of uniqueProjectUrls) {
-                let fetchProjectUrl = `${apiRootUri}/${projectUrl}`;
-                let fetchProjectResponse = await getAsync(fetchProjectUrl, accessToken);
-
-                if (!fetchProjectResponse.ok) {
-                    return {
-                        outcome: failureResult,
-                        message: "Error fetching project"
-                    };
-                }
-
-                let project = await fetchProjectResponse.json();
-                projects.push(project);
-            }
-
-            for (let application of applications.items) {
-                application.project = projects.find(p => p.id == application.projectId);
-            }
-
+           
             return {
                 outcome: successResult,
                 message: "Received applications retrieved successfully!",
