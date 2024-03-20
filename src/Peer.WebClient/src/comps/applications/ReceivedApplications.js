@@ -190,8 +190,8 @@ const ReceivedApplications = (props) => {
             {rejectingApplicationsRequestDialog}
             {acceptingApplicationsRequestDialog}
 
-            <div className='relative pb-32'>
-                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start space-x-8 items-center'>
+            <div className='relative pb-24'>
+                <div className='flex flex-row px-2 mb-8 flex-wrap justify-start space-x-8 items-center'>
                     <div className='w-64'>
                         {
                             !authoredProjects &&
