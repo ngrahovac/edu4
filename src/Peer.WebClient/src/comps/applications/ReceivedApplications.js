@@ -14,19 +14,21 @@ import { Link } from 'react-router-dom';
 import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 import { ClipLoader } from 'react-spinners';
 import TertiaryButton from '../buttons/TertiaryButton';
+import BorderlessButton from '../buttons/BorderlessButton';
 
 
 const ReceivedApplications = (props) => {
     const {
-        applications,
+        applications: displayedApplicationsPage,
         onProjectIdFilterChanged,
-        onSortChanged
+        onSortChanged,
+        onPageChanged = () => { }
     } = props;
 
     const [toggleReload, setToggleReload] = useState(false);
 
     const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
-    const [displayedApplications, setDisplayedApplications] = useState(applications);
+    const [displayedApplications, setDisplayedApplications] = useState(displayedApplicationsPage);
 
     const [authoredProjects, setAuthoredProjects] = useState(undefined);
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
@@ -64,8 +66,8 @@ const ReceivedApplications = (props) => {
 
     /* mirroring prop bc we'll fake fetching data after a successful API call with UI changes */
     useEffect(() => {
-        setDisplayedApplications(applications);
-    }, [applications]);
+        setDisplayedApplications(displayedApplicationsPage);
+    }, [displayedApplicationsPage]);
 
     useEffect(() => {
         setSelectedApplicationIds([]);
@@ -234,7 +236,7 @@ const ReceivedApplications = (props) => {
 
                         {
                             displayedApplications &&
-                            displayedApplications.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
+                            displayedApplications.items.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
                                 <ApplicationsTable.Body.Cell>
                                     <Link to={`/${application.projectUrl}`}><p className='underline text-blue-500 hover:text-blue-700 truncate'>{application.project.title}</p></Link>
                                 </ApplicationsTable.Body.Cell>
@@ -249,7 +251,7 @@ const ReceivedApplications = (props) => {
 
                                 <ApplicationsTable.Body.Cell>
                                     <Link to={`/${application.applicantUrl}`}>
-                                        <p className='underline text-blue-500 hover:text-blue-700'>{application.applicant.fullName}</p>
+                                        <p className='underline text-blue-500 hover:text-blue-700 truncate'>{application.applicant.fullName}</p>
                                     </Link>
                                 </ApplicationsTable.Body.Cell>
 
@@ -273,7 +275,42 @@ const ReceivedApplications = (props) => {
                         }
                     </ApplicationsTable.Body>
 
-                    <ApplicationsTable.Footer selectedCount={selectedApplicationIds.length}></ApplicationsTable.Footer>
+                    <ApplicationsTable.Footer>
+                        <ApplicationsTable.Footer.Row>
+                            <ApplicationsTable.Footer.Cell>{`Total: ${displayedApplicationsPage.totalItems}`}</ApplicationsTable.Footer.Cell>
+
+                            <ApplicationsTable.Footer.Cell collspan={4}>
+                                <div className='flex shrink-0 items-center w-full align-middle justify-center'>
+                                    <BorderlessButton
+                                        onClick={() => { if (displayedApplicationsPage.previousPage != null) onPageChanged(displayedApplicationsPage.previousPage) }}
+                                        disabled={displayedApplicationsPage.previousPage == null}
+                                        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                        </svg>
+                                        }>
+                                    </BorderlessButton>
+
+                                    <p>
+                                        {`page ${displayedApplicationsPage.page} /  
+                                        ${displayedApplicationsPage.nextPage != null ? displayedApplicationsPage.nextPage : displayedApplicationsPage.page}`}
+                                    </p>
+
+                                    <BorderlessButton
+                                        onClick={() => { if (displayedApplicationsPage.nextPage != null) onPageChanged(displayedApplicationsPage.nextPage) }}
+                                        disabled={displayedApplicationsPage.nextPage == null}
+                                        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                        }>
+                                    </BorderlessButton>
+                                </div>
+                            </ApplicationsTable.Footer.Cell>
+
+                            <ApplicationsTable.Footer.Cell>
+                                <p className='w-28 pl-2 text-left'>{`Selected: ${selectedApplicationIds.length}`}</p>
+                            </ApplicationsTable.Footer.Cell>
+                        </ApplicationsTable.Footer.Row>
+                    </ApplicationsTable.Footer>
                 </ApplicationsTable>
 
                 <div className='absolute bottom-0 right-0 flex flex-row gap-x-4'>

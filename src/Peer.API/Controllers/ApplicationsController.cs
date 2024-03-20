@@ -124,7 +124,9 @@ public class ApplicationsController : ControllerBase
             requesterId,
             projectId,
             positionId,
-            sort ?? ApplicationsSortOption.Default
+            sort ?? ApplicationsSortOption.Default,
+            page,
+            pageSize
         );
 
         return new PagedList<ApplicationDisplayModel>(

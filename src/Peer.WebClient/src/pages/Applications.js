@@ -81,7 +81,7 @@ const Applications = () => {
         })();
     }
 
-    function getReceivedApplications() {
+    function getReceivedApplications(page = 1) {
         (async () => {
             try {
                 {/* add validation */ }
@@ -89,7 +89,7 @@ const Applications = () => {
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await getIncomingApplications(token, projectIdFilter, sort);
+                let result = await getIncomingApplications(token, projectIdFilter, sort, page);
 
                 if (result.outcome === successResult) {
                     const receivedApplications = result.payload;
@@ -158,7 +158,8 @@ const Applications = () => {
                         <ReceivedApplications
                             applications={receivedApplications}
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
-                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}>
+                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}
+                            onPageChanged={(page) => getReceivedApplications(page)}>
                         </ReceivedApplications>
                     }
                 </div>

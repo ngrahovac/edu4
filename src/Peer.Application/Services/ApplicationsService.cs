@@ -50,7 +50,9 @@ public class ApplicationsService
         Guid requesterId,
         Guid? projectId = null,
         Guid? positionId = null,
-        ApplicationsSortOption applicationsSortOption = ApplicationsSortOption.Default)
+        ApplicationsSortOption applicationsSortOption = ApplicationsSortOption.Default,
+        int page = 1,
+        int pageSize = 5)
     {
         var requester = await _contributors.GetByIdAsync(requesterId) ??
             throw new InvalidOperationException("The contributor with the given Id doesn't exist");
@@ -81,7 +83,9 @@ public class ApplicationsService
             requesterId,
             projectId,
             positionId,
-            applicationsSortOption);
+            applicationsSortOption,
+            page,
+            pageSize);
     }
 
     public async Task<PagedList<Domain.Applications.Application>> GetSentAsync(

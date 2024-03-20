@@ -111,7 +111,7 @@ async function getSubmittedApplications(accessToken, projectId, sort, page) {
     }
 }
 
-async function getIncomingApplications(accessToken, projectId, sort) {
+async function getIncomingApplications(accessToken, projectId, sort, page) {
     try {
         const apiRootUri = process.env.REACT_APP_EDU4_API_ROOT_URI;
 
@@ -124,6 +124,9 @@ async function getIncomingApplications(accessToken, projectId, sort) {
 
         if (sort != undefined)
             queryParams["sort"] = sort;
+
+        if (page != undefined)
+            queryParams["page"] = page;
 
         if (Object.keys(queryParams).length > 0) {
             requestUri += "?";
@@ -139,7 +142,7 @@ async function getIncomingApplications(accessToken, projectId, sort) {
 
         if (response.ok) {
             let applications = await response.json();
-            let uniqueApplicantUrls = new Set(applications.map(a => a.applicantUrl));
+            let uniqueApplicantUrls = new Set(applications.items.map(a => a.applicantUrl));
             let applicants = [];
 
             for (let applicantUrl of uniqueApplicantUrls) {
@@ -157,11 +160,11 @@ async function getIncomingApplications(accessToken, projectId, sort) {
                 applicants.push(applicant);
             }
 
-            for (let application of applications) {
+            for (let application of applications.items) {
                 application.applicant = applicants.find(a => a.id == application.applicantId);
             }
 
-            let uniqueProjectUrls = new Set(applications.map(a => a.projectUrl));
+            let uniqueProjectUrls = new Set(applications.items.map(a => a.projectUrl));
             let projects = [];
 
             for (let projectUrl of uniqueProjectUrls) {
@@ -179,7 +182,7 @@ async function getIncomingApplications(accessToken, projectId, sort) {
                 projects.push(project);
             }
 
-            for (let application of applications) {
+            for (let application of applications.items) {
                 application.project = projects.find(p => p.id == application.projectId);
             }
 
