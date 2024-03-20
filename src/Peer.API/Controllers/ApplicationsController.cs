@@ -56,7 +56,7 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpGet("sent")]
-    public async Task<ActionResult<PagedList<ApplicationDisplayModel>>> GetSentAsync(
+    public async Task<ActionResult<PagedList<SentApplicationDisplayModel>>> GetSentAsync(
         Guid? projectId,
         Guid? positionId,
         ApplicationsSortOption? sort,
@@ -79,11 +79,27 @@ public class ApplicationsController : ControllerBase
             pageSize
         );
 
-        return new PagedList<ApplicationDisplayModel>(
+        var uniqueProjectIds = applications.Items
+            .Select(a => a.ProjectId)
+            .Distinct();
+
+        var uniqueProjects = new List<Project>();
+
+        foreach (var id in uniqueProjectIds)
+        {
+            var project = await _projects.GetByIdAsync(id);
+            uniqueProjects.Add(project);
+        }
+
+        return new PagedList<SentApplicationDisplayModel>(
             applications.TotalItems,
             applications.Page,
             applications.TotalPages,
-            applications.Items.Select(a => new ApplicationDisplayModel(a, requester)).ToList()
+            applications.Items.Select(a => new SentApplicationDisplayModel(
+                a,
+                requester,
+                uniqueProjects.Single(p => p.Id == a.ProjectId)))
+            .ToList()
         );
     }
 
