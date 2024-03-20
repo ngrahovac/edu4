@@ -154,7 +154,7 @@ const SentApplications = (props) => {
         <>
             {revokingApplicationRequestDialog}
 
-            <div className='relative pb-32'>
+            <div className='relative pb-24'>
                 <div className='flex flex-row px-2 mb-12 flex-wrap justify-start gap-x-8 items-center'>
                     <div className='w-64'>
                         {
