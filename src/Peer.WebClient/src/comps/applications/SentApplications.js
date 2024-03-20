@@ -267,7 +267,7 @@ const SentApplications = (props) => {
                             </ApplicationsTable.Footer.Cell>
 
                             <ApplicationsTable.Footer.Cell>
-                                <p>{`Selected: ${selectedApplicationIds.length}`}</p>
+                                <p className='w-28 pl-2 text-left'>{`Selected: ${selectedApplicationIds.length}`}</p>
                             </ApplicationsTable.Footer.Cell>
                         </ApplicationsTable.Footer.Row>
                     </ApplicationsTable.Footer>
