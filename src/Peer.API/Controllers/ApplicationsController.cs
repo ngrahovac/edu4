@@ -106,10 +106,12 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpGet("received")]
-    public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetReceivedAsync(
+    public async Task<ActionResult<PagedList<ApplicationDisplayModel>>> GetReceivedAsync(
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption? sort
+        ApplicationsSortOption? sort,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5
     )
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
@@ -125,7 +127,12 @@ public class ApplicationsController : ControllerBase
             sort ?? ApplicationsSortOption.Default
         );
 
-        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
+        return new PagedList<ApplicationDisplayModel>(
+            applications.TotalItems,
+            applications.Page,
+            applications.TotalPages,
+            applications.Items.Select(a => new ApplicationDisplayModel(a, requester)).ToList()
+        );
     }
 
     [HttpPost]

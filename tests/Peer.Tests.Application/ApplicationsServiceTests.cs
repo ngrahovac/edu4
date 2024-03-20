@@ -767,7 +767,7 @@ public class ApplicationsServiceTests
         );
 
         // ASSERT
-        receivedApplications.Count.Should().Be(3);
+        receivedApplications.Items.Count.Should().Be(3);
     }
 
     [Fact]
@@ -866,7 +866,7 @@ public class ApplicationsServiceTests
         );
 
         // ASSERT
-        receivedApplications.Count.Should().Be(2);
+        receivedApplications.Items.Count.Should().Be(2);
     }
 
     [Fact]
@@ -965,7 +965,7 @@ public class ApplicationsServiceTests
         );
 
         // ASSERT
-        receivedApplications.Count.Should().Be(1);
+        receivedApplications.Items.Count.Should().Be(1);
     }
 
     [Fact]
@@ -1053,8 +1053,9 @@ public class ApplicationsServiceTests
         );
 
         // ASSERT
-        receivedApplications.Count.Should().Be(2);
+        receivedApplications.Items.Count.Should().Be(2);
         receivedApplications
+            .Items
             .Should()
             .BeEquivalentTo(
                 new List<Domain.Applications.Application>()
@@ -1153,8 +1154,9 @@ public class ApplicationsServiceTests
         );
 
         // ASSERT
-        receivedApplications.Count.Should().Be(2);
+        receivedApplications.Items.Count.Should().Be(2);
         receivedApplications
+            .Items
             .Should()
             .BeEquivalentTo(
                 new List<Domain.Applications.Application>()
@@ -1349,6 +1351,7 @@ public class ApplicationsServiceTests
         // ASSERT
         receivedApplications.Items.Count.Should().Be(2);
         receivedApplications
+            .Items
             .Should()
             .BeEquivalentTo(
                 new List<Domain.Applications.Application>()

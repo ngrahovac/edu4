@@ -65,11 +65,13 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
         return _applicationsCollection.UpdateOneAsync(a => a.Id == application.Id, update);
     }
 
-    public async Task<List<Domain.Applications.Application>> GetReceivedAsync(
+    public async Task<PagedList<Domain.Applications.Application>> GetReceivedAsync(
         Guid requesterId,
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption applicationsSortOption
+        ApplicationsSortOption applicationsSortOption,
+        int page = 1,
+        int pageSize = 5
     )
     {
         var projectFilter = Builders<Domain.Applications.Application>.Filter.Empty;
@@ -106,7 +108,20 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
                 submittedApplicationsFilter
             );
 
-            return await _applicationsCollection.Find(filter).Sort(sorting).ToListAsync();
+            var totalApplications = await _applicationsCollection.CountDocumentsAsync(filter);
+            var totalPages = (int)Math.Ceiling((decimal)totalApplications / pageSize);
+            var items = await _applicationsCollection
+                .Find(filter)
+                .Sort(sorting)
+                .Skip((page - 1) * pageSize)
+                .Limit(pageSize)
+                .ToListAsync();
+
+            return new PagedList<Domain.Applications.Application>(
+                totalApplications,
+                page,
+                totalPages,
+                items);
         }
         else
         {
@@ -127,7 +142,20 @@ public class MongoDbApplicationsRepository : IApplicationsRepository
                 submittedApplicationsFilter
             );
 
-            return await _applicationsCollection.Find(filter).Sort(sorting).ToListAsync();
+            var totalApplications = await _applicationsCollection.CountDocumentsAsync(filter);
+            var totalPages = (int)Math.Ceiling((decimal)totalApplications / pageSize);
+            var items = await _applicationsCollection
+                .Find(filter)
+                .Sort(sorting)
+                .Skip((page - 1) * pageSize)
+                .Limit(pageSize)
+                .ToListAsync();
+
+            return new PagedList<Domain.Applications.Application>(
+                totalApplications,
+                page,
+                totalPages,
+                items);
         }
     }
 

@@ -46,7 +46,7 @@ public class ApplicationsService
         await Task.WhenAll(application.DomainEvents.Select(de => _domainEvents.AddAsync(de)));
     }
 
-    public async Task<List<Domain.Applications.Application>> GetReceivedAsync(
+    public async Task<PagedList<Domain.Applications.Application>> GetReceivedAsync(
         Guid requesterId,
         Guid? projectId = null,
         Guid? positionId = null,

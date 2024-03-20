@@ -8,11 +8,13 @@ public interface IApplicationsRepository
     Task AddAsync(Domain.Applications.Application application);
     public Task<Domain.Applications.Application> GetByApplicantAndPositionAsync(Guid applicantId, Guid positionId);
     Task UpdateAsync(Domain.Applications.Application application);
-    Task<List<Domain.Applications.Application>> GetReceivedAsync(
+    Task<PagedList<Domain.Applications.Application>> GetReceivedAsync(
         Guid requesterId,
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption applicationsSortOption);
+        ApplicationsSortOption applicationsSortOption,
+        int page = 1,
+        int pageSize = 5);
     Task<PagedList<Domain.Applications.Application>> GetSentAsync(
         Guid requesterId,
         Guid? projectId,
