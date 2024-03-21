@@ -7,16 +7,20 @@ const ApplicationsSorter = (props) => {
         sort = undefined
     } = props;
 
-    const [selectedSort, setSelectedSort] = useState(sort ? sort : "Default");
+    const [selectedSort, setSelectedSort] = useState(sort ?? "Default");
 
     const handleSelectChange = (e) => {
         setSelectedSort(e.target.value);
     };
 
     useEffect(() => {
+        setSelectedSort(sort ?? "Default")
+    }, [sort])
+
+
+    useEffect(() => {
         onSortSelected(selectedSort);
     }, [selectedSort])
-
 
     return (
         <select

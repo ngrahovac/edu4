@@ -191,31 +191,45 @@ const ReceivedApplications = (props) => {
             {acceptingApplicationsRequestDialog}
 
             <div className='relative pb-24'>
-                <div className='flex flex-row px-2 mb-8 flex-wrap justify-start space-x-8 items-center'>
-                    <div className='w-64'>
-                        {
-                            !authoredProjects &&
-                            <div className='flex items-center gap-x-2 text-gray-600'>
-                                Loading projects
-                                <ClipLoader size={16}></ClipLoader>
-                            </div>
-                        }
+                <div className='flex flex-row px-2 mb-8 flex-wrap justify-between gap-x-8 items-center'>
+                    <div className='flex gap-x-8 flex-wrap'>
+                        <div className='w-64'>
+                            {
+                                !authoredProjects &&
+                                <div className='flex items-center gap-x-2 text-gray-600'>
+                                    Loading projects
+                                    <ClipLoader size={16}></ClipLoader>
+                                </div>
+                            }
 
-                        {
-                            authoredProjects &&
-                            <ProjectFilter
-                                projects={authoredProjects}
-                                onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
-                                onProjectDeselected={() => { }}
-                                selectedProjectId={projectIdFilter}>
-                            </ProjectFilter>
-                        }
+                            {
+                                authoredProjects &&
+                                <ProjectFilter
+                                    projects={authoredProjects}
+                                    onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
+                                    onProjectDeselected={() => { }}
+                                    selectedProjectId={projectIdFilter}>
+                                </ProjectFilter>
+                            }
+                        </div>
+
+                        <ApplicationsSorter
+                            sort={sort}
+                            onSortSelected={setSort}>
+                        </ApplicationsSorter>
                     </div>
 
-                    <ApplicationsSorter
-                        sort={sort}
-                        onSortSelected={setSort}>
-                    </ApplicationsSorter>
+                    <BorderlessButton
+                        text="Refresh"
+                        onClick={() => {
+                            setProjectIdFilter(undefined)
+                            setSort("NewestFirst");
+                        }}
+                        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        }>
+                    </BorderlessButton>
                 </div>
 
                 <ApplicationsTable>
