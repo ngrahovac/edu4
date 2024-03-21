@@ -167,7 +167,8 @@ const Applications = () => {
                             applications={receivedApplications}
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
                             onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}
-                            onPageChanged={(page) => getReceivedApplications(page)}>
+                            onPageChanged={(page) => getReceivedApplications(page)}
+                            onRefreshRequested={() => getReceivedApplications()}>
                         </ReceivedApplications>
                     }
                 </div>
