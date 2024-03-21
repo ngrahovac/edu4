@@ -50,6 +50,7 @@ const Applications = () => {
     function getSentApplications(page = 1) {
         (async () => {
             try {
+                setApplicationsLoading(true);
                 let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
@@ -80,6 +81,8 @@ const Applications = () => {
                 // setTimeout(() => {
                 //     document.getElementById('user-action-fail-toast').close();
                 // }, 3000);
+            } finally {
+                setApplicationsLoading(false);
             }
         })();
     }
@@ -164,7 +167,9 @@ const Applications = () => {
                             applications={sentApplicationsPage}
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
                             onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}
-                            onPageChanged={(page) => getSentApplications(page)}></SentApplications>
+                            onPageChanged={(page) => getSentApplications(page)}
+                            applicationsLoading={applicationsLoading}>
+                        </SentApplications>
                     }
                     {
                         selectedApplicationType == applicationType.received &&

@@ -20,7 +20,8 @@ const SentApplications = (props) => {
         applications,
         onProjectIdFilterChanged,
         onSortChanged,
-        onPageChanged = () => { }
+        onPageChanged = () => { },
+        applicationsLoading = false
     } = props;
 
     const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
@@ -166,98 +167,105 @@ const SentApplications = (props) => {
                         onSortSelected={(sort) => setSort(sort)}>
                     </ApplicationsSorter>
                 </div>
+                {
+                    applicationsLoading &&
+                    <div className='h-96 flex place-content-center align-middle justify-center items-center'>
+                        <ClipLoader></ClipLoader>
+                    </div>
+                }
+                {
+                    !applicationsLoading &&
+                    <ApplicationsTable>
+                        <ApplicationsTable.Header>
+                            <ApplicationsTable.Header.Cell>Project</ApplicationsTable.Header.Cell>
+                            <ApplicationsTable.Header.Cell>Position</ApplicationsTable.Header.Cell>
+                            <ApplicationsTable.Header.Cell width='w-40'>Date submitted</ApplicationsTable.Header.Cell>
+                            <ApplicationsTable.Header.Cell width='w-36'>Status</ApplicationsTable.Header.Cell>
+                            <ApplicationsTable.Header.Cell width='w-14'></ApplicationsTable.Header.Cell>
+                        </ApplicationsTable.Header>
 
-                <ApplicationsTable>
-                    <ApplicationsTable.Header>
-                        <ApplicationsTable.Header.Cell>Project</ApplicationsTable.Header.Cell>
-                        <ApplicationsTable.Header.Cell>Position</ApplicationsTable.Header.Cell>
-                        <ApplicationsTable.Header.Cell width='w-40'>Date submitted</ApplicationsTable.Header.Cell>
-                        <ApplicationsTable.Header.Cell width='w-36'>Status</ApplicationsTable.Header.Cell>
-                        <ApplicationsTable.Header.Cell width='w-14'></ApplicationsTable.Header.Cell>
-                    </ApplicationsTable.Header>
+                        <ApplicationsTable.Body>
+                            {
+                                !displayedApplicationsPage &&
+                                <BeatLoader></BeatLoader>
+                            }
 
-                    <ApplicationsTable.Body>
-                        {
-                            !displayedApplicationsPage &&
-                            <BeatLoader></BeatLoader>
-                        }
+                            {
+                                displayedApplicationsPage &&
+                                displayedApplicationsPage.items.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
+                                    <ApplicationsTable.Body.Cell>
+                                        <div className='underline text-blue-500 truncate'>
+                                            <Link to={`/${application.projectUrl}`}>
+                                                {application.project.title}
+                                            </Link>
+                                        </div>
+                                    </ApplicationsTable.Body.Cell>
 
-                        {
-                            displayedApplicationsPage &&
-                            displayedApplicationsPage.items.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
-                                <ApplicationsTable.Body.Cell>
-                                    <div className='underline text-blue-500 truncate'>
-                                        <Link to={`/${application.projectUrl}`}>
-                                            {application.project.title}
-                                        </Link>
-                                    </div>
-                                </ApplicationsTable.Body.Cell>
+                                    <ApplicationsTable.Body.Cell>
+                                        {application.project.positions.find(p => p.id == application.positionId).name}
+                                    </ApplicationsTable.Body.Cell>
 
-                                <ApplicationsTable.Body.Cell>
-                                    {application.project.positions.find(p => p.id == application.positionId).name}
-                                </ApplicationsTable.Body.Cell>
+                                    <ApplicationsTable.Body.Cell>
+                                        {application.dateSubmitted}
+                                    </ApplicationsTable.Body.Cell>
 
-                                <ApplicationsTable.Body.Cell>
-                                    {application.dateSubmitted}
-                                </ApplicationsTable.Body.Cell>
+                                    <ApplicationsTable.Body.Cell>
+                                        <SubmittedApplicationStatus />
+                                    </ApplicationsTable.Body.Cell>
 
-                                <ApplicationsTable.Body.Cell>
-                                    <SubmittedApplicationStatus />
-                                </ApplicationsTable.Body.Cell>
+                                    <ApplicationsTable.Body.Cell>
+                                        <form onChange={() => { }}>
+                                            <input
+                                                className='cursor-pointer'
+                                                type='checkbox'
+                                                checked={selectedApplicationIds.find(id => id == application.id)}
+                                                onChange={() => selectedApplicationIds.find(id => id == application.id) ?
+                                                    applicationDeselected(application.id) :
+                                                    applicationSelected(application.id)}></input>
+                                        </form>
+                                    </ApplicationsTable.Body.Cell>
+                                </ApplicationsTable.Body.Row>)
+                            }
+                        </ApplicationsTable.Body>
 
-                                <ApplicationsTable.Body.Cell>
-                                    <form onChange={() => { }}>
-                                        <input
-                                            className='cursor-pointer'
-                                            type='checkbox'
-                                            checked={selectedApplicationIds.find(id => id == application.id)}
-                                            onChange={() => selectedApplicationIds.find(id => id == application.id) ?
-                                                applicationDeselected(application.id) :
-                                                applicationSelected(application.id)}></input>
-                                    </form>
-                                </ApplicationsTable.Body.Cell>
-                            </ApplicationsTable.Body.Row>)
-                        }
-                    </ApplicationsTable.Body>
+                        <ApplicationsTable.Footer>
+                            <ApplicationsTable.Footer.Row>
+                                <ApplicationsTable.Footer.Cell>{`Total: ${displayedApplicationsPage.totalItems}`}</ApplicationsTable.Footer.Cell>
 
-                    <ApplicationsTable.Footer>
-                        <ApplicationsTable.Footer.Row>
-                            <ApplicationsTable.Footer.Cell>{`Total: ${displayedApplicationsPage.totalItems}`}</ApplicationsTable.Footer.Cell>
+                                <ApplicationsTable.Footer.Cell collspan={3}>
+                                    <div className='flex shrink-0 items-center w-full align-middle justify-center'>
+                                        <BorderlessButton
+                                            onClick={() => { if (displayedApplicationsPage.previousPage != null) onPageChanged(displayedApplicationsPage.previousPage) }}
+                                            disabled={displayedApplicationsPage.previousPage == null}
+                                            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                            </svg>
+                                            }>
+                                        </BorderlessButton>
 
-                            <ApplicationsTable.Footer.Cell collspan={3}>
-                                <div className='flex shrink-0 items-center w-full align-middle justify-center'>
-                                    <BorderlessButton
-                                        onClick={() => { if (displayedApplicationsPage.previousPage != null) onPageChanged(displayedApplicationsPage.previousPage) }}
-                                        disabled={displayedApplicationsPage.previousPage == null}
-                                        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                                        </svg>
-                                        }>
-                                    </BorderlessButton>
-
-                                    <p>
-                                        {`page ${displayedApplicationsPage.page} /  
+                                        <p>
+                                            {`page ${displayedApplicationsPage.page} /  
                                         ${displayedApplicationsPage.nextPage != null ? displayedApplicationsPage.nextPage : displayedApplicationsPage.page}`}
-                                    </p>
+                                        </p>
 
-                                    <BorderlessButton
-                                        onClick={() => { if (displayedApplicationsPage.nextPage != null) onPageChanged(displayedApplicationsPage.nextPage) }}
-                                        disabled={displayedApplicationsPage.nextPage == null}
-                                        icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                                        </svg>
-                                        }>
-                                    </BorderlessButton>
-                                </div>
-                            </ApplicationsTable.Footer.Cell>
+                                        <BorderlessButton
+                                            onClick={() => { if (displayedApplicationsPage.nextPage != null) onPageChanged(displayedApplicationsPage.nextPage) }}
+                                            disabled={displayedApplicationsPage.nextPage == null}
+                                            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                            </svg>
+                                            }>
+                                        </BorderlessButton>
+                                    </div>
+                                </ApplicationsTable.Footer.Cell>
 
-                            <ApplicationsTable.Footer.Cell>
-                                <p className='w-28 pl-2 text-left'>{`Selected: ${selectedApplicationIds.length}`}</p>
-                            </ApplicationsTable.Footer.Cell>
-                        </ApplicationsTable.Footer.Row>
-                    </ApplicationsTable.Footer>
-                </ApplicationsTable>
-
+                                <ApplicationsTable.Footer.Cell>
+                                    <p className='w-28 pl-2 text-left'>{`Selected: ${selectedApplicationIds.length}`}</p>
+                                </ApplicationsTable.Footer.Cell>
+                            </ApplicationsTable.Footer.Row>
+                        </ApplicationsTable.Footer>
+                    </ApplicationsTable>
+                }
                 <div className='absolute bottom-0 right-0 flex flex-row gap-x-4'>
                     <TertiaryButton
                         text="Cancel"

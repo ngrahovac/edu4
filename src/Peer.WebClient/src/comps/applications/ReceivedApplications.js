@@ -237,13 +237,11 @@ const ReceivedApplications = (props) => {
                         }>
                     </BorderlessButton>
                 </div>
-
                 {
                     applicationsLoading &&
                     <div className='h-96 flex place-content-center align-middle justify-center items-center'>
                         <ClipLoader></ClipLoader>
                     </div>
-                    
                 }
                 {
                     !applicationsLoading &&
