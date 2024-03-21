@@ -28,7 +28,7 @@ const Applications = () => {
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
     const [sort, setSort] = useState(undefined);
 
-    const [receivedApplications, setReceivedApplications] = useState(undefined);
+    const [receivedApplicationsPage, setReceivedApplicationsPage] = useState(undefined);
 
     useEffect(() => {
         if (selectedApplicationType == applicationType.sent) {
@@ -94,7 +94,7 @@ const Applications = () => {
 
                 if (result.outcome === successResult) {
                     const receivedApplications = result.payload;
-                    setReceivedApplications(receivedApplications);
+                    setReceivedApplicationsPage(receivedApplications);
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
@@ -146,7 +146,7 @@ const Applications = () => {
                 <div>
                     {
                         ((selectedApplicationType == applicationType.sent && !sentApplicationsPage) ||
-                            (selectedApplicationType == applicationType.received && !receivedApplications)) &&
+                            (selectedApplicationType == applicationType.received && !receivedApplicationsPage)) &&
                         <div className='flex content-center place-content-center h-96'>
                             <ClipLoader></ClipLoader>
                         </div>
@@ -162,9 +162,9 @@ const Applications = () => {
                     }
                     {
                         selectedApplicationType == applicationType.received &&
-                        receivedApplications != undefined &&
+                        receivedApplicationsPage != undefined &&
                         <ReceivedApplications
-                            applications={receivedApplications}
+                            applications={receivedApplicationsPage}
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
                             onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}
                             onPageChanged={(page) => getReceivedApplications(page)}
