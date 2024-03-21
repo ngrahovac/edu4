@@ -1,33 +1,31 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { getById } from '../../services/ProjectsService';
 import { useAuth0 } from '@auth0/auth0-react';
-import SentApplication from './SentApplication';
 import PrimaryButton from '../buttons/PrimaryButton';
-import { revokeApplication, getSubmittedApplicationsProjectIds } from '../../services/ApplicationsService';
+import { revokeApplication, getSubmittedApplicationsProjects } from '../../services/ApplicationsService';
 import { successResult, errorResult, failureResult } from '../../services/RequestResult';
 import ProjectFilter from './ProjectFilter'
 import ApplicationsSorter from './SentApplicationsSorter';
-import { BeatLoader } from 'react-spinners';
+import { BeatLoader, ClipLoader } from 'react-spinners';
 import ConfirmationDialog from '../shared/ConfirmationDialog';
-import Table from '../shared/table/Table';
-import TableRow from '../shared/table/TableRow';
-import TableCell from '../shared/table/TableCell';
 import SubmittedApplicationStatus from './SubmittedApplicationStatus';
 import { Link } from 'react-router-dom';
 import TertiaryButton from '../buttons/TertiaryButton';
+import ApplicationsTable from '../table2/ApplicationsTable';
+import BorderlessButton from '../buttons/BorderlessButton';
 
 const SentApplications = (props) => {
 
     const {
         applications,
         onProjectIdFilterChanged,
-        onSortChanged
+        onSortChanged,
+        onPageChanged = () => { },
+        applicationsLoading = false
     } = props;
 
-    const [loading, setLoading] = useState(true);
-
     const [selectedApplicationIds, setSelectedApplicationIds] = useState([])
-    const [displayedApplications, setDisplayedApplications] = useState(applications);
+    const [displayedApplicationsPage, setDisplayedApplicationsPage] = useState(applications);
 
     const [submittedApplicationsProjects, setSubmittedApplicationsProjects] = useState(undefined);
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
@@ -38,51 +36,32 @@ const SentApplications = (props) => {
     const { getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
 
     const fetchProjectsUserAppliedFor = async () => {
-        setLoading(true);
-
         try {
-            let fetchedProjects = [];
-
             let token = await getAccessTokenSilently({
                 audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
             });
 
-            let result = await getSubmittedApplicationsProjectIds(token);
+            let result = await getSubmittedApplicationsProjects(token);
 
             if (result.outcome == successResult) {
-                let projectIds = await result.payload;
-
-                for (let projectId of projectIds) {
-                    let result = await getById(projectId, token);
-
-                    if (result.outcome == successResult) {
-                        let project = await result.payload;
-
-                        fetchedProjects.push(project);
-                    } else {
-                        console.log("error fetching one of the projects user applied to")
-                    }
-                }
+                let projects = await result.payload;
+                setSubmittedApplicationsProjects(projects);
             } else {
                 console.log("error fetching all projects user applied to");
             }
-
-            setSubmittedApplicationsProjects(fetchedProjects);
         } catch (ex) {
             console.log("error fetching all projects user applied to", ex);
-        } finally {
-            setLoading(false);
         }
     };
 
     /* mirroring prop bc we'll fake fetching data after a successful API call with UI changes */
     useEffect(() => {
-        setDisplayedApplications(applications);
+        setDisplayedApplicationsPage(applications);
     }, [applications]);
 
     useEffect(() => {
         setSelectedApplicationIds([]);
-    }, [displayedApplications]);
+    }, [displayedApplicationsPage]);
 
     useEffect(() => {
         fetchProjectsUserAppliedFor();
@@ -133,7 +112,7 @@ const SentApplications = (props) => {
                     }
                 }
 
-                setDisplayedApplications(displayedApplications.filter(
+                setDisplayedApplicationsPage(displayedApplicationsPage.filter(
                     displayedApplication => !successfullyRevokedApplicationIds.find(
                         id => id == displayedApplication.id)));
             }
@@ -156,64 +135,138 @@ const SentApplications = (props) => {
         </dialog>
     );
 
-    if (loading) {
-        return <BeatLoader></BeatLoader>
-    }
 
     return (
-        submittedApplicationsProjects &&
         <>
             {revokingApplicationRequestDialog}
 
-            <div className='relative pb-32'>
-                <div className='flex flex-row px-2 mb-12 flex-wrap justify-start gap-x-8'>
-                    <ProjectFilter
-                        projects={submittedApplicationsProjects}
-                        selectedProjectId={projectIdFilter}
-                        onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
-                        onProjectDeselected={() => { }}>
-                    </ProjectFilter>
+            <div className='relative pb-24'>
+                <div className='flex flex-row px-2 mb-8 flex-wrap justify-start gap-x-8 items-center'>
+                    <div className='w-64'>
+                        {
+                            !submittedApplicationsProjects &&
+                            <div className='flex items-center gap-x-2 text-gray-600'>
+                                Loading projects
+                                <ClipLoader size={16}></ClipLoader>
+                            </div>
+                        }
+
+                        {
+                            submittedApplicationsProjects &&
+                            <ProjectFilter
+                                projects={submittedApplicationsProjects}
+                                selectedProjectId={projectIdFilter}
+                                onProjectSelected={(project) => setProjectIdFilter(project ? project.id : undefined)}
+                                onProjectDeselected={() => { }}>
+                            </ProjectFilter>
+                        }
+                    </div>
 
                     <ApplicationsSorter
                         sort={sort}
                         onSortSelected={(sort) => setSort(sort)}>
                     </ApplicationsSorter>
                 </div>
+                {
+                    applicationsLoading &&
+                    <div className='h-96 flex place-content-center align-middle justify-center items-center'>
+                        <ClipLoader></ClipLoader>
+                    </div>
+                }
+                {
+                    !applicationsLoading &&
+                    <ApplicationsTable>
+                        <ApplicationsTable.Header>
+                            <ApplicationsTable.Header.Cell>Project</ApplicationsTable.Header.Cell>
+                            <ApplicationsTable.Header.Cell>Position</ApplicationsTable.Header.Cell>
+                            <ApplicationsTable.Header.Cell width='w-40'>Date submitted</ApplicationsTable.Header.Cell>
+                            <ApplicationsTable.Header.Cell width='w-36'>Status</ApplicationsTable.Header.Cell>
+                            <ApplicationsTable.Header.Cell width='w-14'></ApplicationsTable.Header.Cell>
+                        </ApplicationsTable.Header>
 
-                <Table
-                    columns={["Project", "Position", "Date submitted", "Status", ""]}
-                    widths={{ "Project": "w-1/3", "Position": "w-1/4" }}
-                    selectedCount={selectedApplicationIds.length}>
-                    {
-                        displayedApplications.map(application => <>
-                            <TableRow selected={selectedApplicationIds.find(id => id == application.id)}>
-                                <TableCell>
-                                    <div className='underline text-blue-500'>
-                                        <Link to={`/${application.projectUrl}`}>
-                                            {application.project.title}
-                                        </Link>
+                        <ApplicationsTable.Body>
+                            {
+                                !displayedApplicationsPage &&
+                                <BeatLoader></BeatLoader>
+                            }
+
+                            {
+                                displayedApplicationsPage &&
+                                displayedApplicationsPage.items.map(application => <ApplicationsTable.Body.Row selected={selectedApplicationIds.find(id => id == application.id) != undefined}>
+                                    <ApplicationsTable.Body.Cell>
+                                        <div className='underline text-blue-500 truncate'>
+                                            <Link to={`/${application.projectUrl}`}>
+                                                {application.project.title}
+                                            </Link>
+                                        </div>
+                                    </ApplicationsTable.Body.Cell>
+
+                                    <ApplicationsTable.Body.Cell>
+                                        {application.project.positions.find(p => p.id == application.positionId).name}
+                                    </ApplicationsTable.Body.Cell>
+
+                                    <ApplicationsTable.Body.Cell>
+                                        {application.dateSubmitted}
+                                    </ApplicationsTable.Body.Cell>
+
+                                    <ApplicationsTable.Body.Cell>
+                                        <SubmittedApplicationStatus />
+                                    </ApplicationsTable.Body.Cell>
+
+                                    <ApplicationsTable.Body.Cell>
+                                        <form onChange={() => { }}>
+                                            <input
+                                                className='cursor-pointer'
+                                                type='checkbox'
+                                                checked={selectedApplicationIds.find(id => id == application.id)}
+                                                onChange={() => selectedApplicationIds.find(id => id == application.id) ?
+                                                    applicationDeselected(application.id) :
+                                                    applicationSelected(application.id)}></input>
+                                        </form>
+                                    </ApplicationsTable.Body.Cell>
+                                </ApplicationsTable.Body.Row>)
+                            }
+                        </ApplicationsTable.Body>
+
+                        <ApplicationsTable.Footer>
+                            <ApplicationsTable.Footer.Row>
+                                <ApplicationsTable.Footer.Cell>{`Total: ${displayedApplicationsPage.totalItems}`}</ApplicationsTable.Footer.Cell>
+
+                                <ApplicationsTable.Footer.Cell collspan={3}>
+                                    <div className='flex shrink-0 items-center w-full align-middle justify-center'>
+                                        <BorderlessButton
+                                            onClick={() => { if (displayedApplicationsPage.previousPage != null) onPageChanged(displayedApplicationsPage.previousPage) }}
+                                            disabled={displayedApplicationsPage.previousPage == null}
+                                            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                            </svg>
+                                            }>
+                                        </BorderlessButton>
+
+                                        <p>
+                                            {`page ${displayedApplicationsPage.page} /  
+                                        ${displayedApplicationsPage.nextPage != null ? displayedApplicationsPage.nextPage : displayedApplicationsPage.page}`}
+                                        </p>
+
+                                        <BorderlessButton
+                                            onClick={() => { if (displayedApplicationsPage.nextPage != null) onPageChanged(displayedApplicationsPage.nextPage) }}
+                                            disabled={displayedApplicationsPage.nextPage == null}
+                                            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                            </svg>
+                                            }>
+                                        </BorderlessButton>
                                     </div>
-                                </TableCell>
-                                <TableCell>
-                                    {application.project.positions.find(p => p.id == application.positionId).name}
-                                </TableCell>
-                                <TableCell>{application.dateSubmitted}</TableCell>
-                                <TableCell><SubmittedApplicationStatus></SubmittedApplicationStatus></TableCell>
-                                <TableCell>
-                                    <form onChange={() => { }}>
-                                        <input
-                                            type='checkbox'
-                                            checked={selectedApplicationIds.find(id => id == application.id)}
-                                            onChange={() => selectedApplicationIds.find(id => id == application.id) ?
-                                                applicationDeselected(application.id) :
-                                                applicationSelected(application.id)}></input>
-                                    </form></TableCell>
-                            </TableRow>
-                        </>)
-                    }
-                </Table>
+                                </ApplicationsTable.Footer.Cell>
 
-                <div className='absolute bottom-0 right-0 flex flex-row gap-x-8'>
+                                <ApplicationsTable.Footer.Cell>
+                                    <p className='w-28 pl-2 text-left'>{`Selected: ${selectedApplicationIds.length}`}</p>
+                                </ApplicationsTable.Footer.Cell>
+                            </ApplicationsTable.Footer.Row>
+                        </ApplicationsTable.Footer>
+                    </ApplicationsTable>
+                }
+                <div className='absolute bottom-0 right-0 flex flex-row gap-x-4'>
                     <TertiaryButton
                         text="Cancel"
                         disabled={selectedApplicationIds.length == 0}

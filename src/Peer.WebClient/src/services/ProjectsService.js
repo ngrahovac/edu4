@@ -174,7 +174,6 @@ async function discover(keyword, sort, hat, accessToken, page = 1) {
         }
 
         for (let i = 0; i < discoveredProjects.length; ++i) {
-            debugger;
             let thisProjectsCollaborations = projectCollaborations.filter(c => c.some(c => c.projectId == discoveredProjects[i].id))[0] ?? [];
 
             for (let j = 0; j < thisProjectsCollaborations.length; ++j) {

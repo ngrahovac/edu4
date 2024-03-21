@@ -18,4 +18,19 @@ public class MongoDbNotificationsRepository : INotificationsRepository
         _notificationsCollection = mongoDb.GetCollection<AbstractNotification>(notificationsCollectionName);
     }
     public Task AddAsync(AbstractNotification notification) => _notificationsCollection.InsertOneAsync(notification);
+    public Task<List<AbstractNotification>> GetForRequesterAsync(Guid requesterId)
+    {
+        var recipientFilter = Builders<AbstractNotification>.Filter
+            .Where(n => n.ContributorToNotifyId == requesterId);
+
+        var unprocessedFilter = Builders<AbstractNotification>.Filter
+            .Where(n => n.Processed == false);
+
+        var filter = Builders<AbstractNotification>.Filter
+            .And(recipientFilter, unprocessedFilter);
+
+        return _notificationsCollection.Find(filter)
+            .Limit(10)
+            .ToListAsync();
+    }
 }

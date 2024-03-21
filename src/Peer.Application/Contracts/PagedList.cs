@@ -7,6 +7,7 @@ public class PagedList<T>
     public int TotalPages { get; private set; }
 
     public int? NextPage => Page < TotalPages ? (Page + 1) : null;
+    public int? PreviousPage => Page > 1 ? (Page - 1) : null;
 
     public PagedList(long totalItems, int page, int totalPages, ICollection<T> items)
     {

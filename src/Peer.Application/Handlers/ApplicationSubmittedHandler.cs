@@ -27,7 +27,7 @@ public class ApplicationSubmittedHandler
         var project = await _projects.GetByIdAsync(submittedApplication.ProjectId);
         var author = await _contributors.GetByIdAsync(project.AuthorId);
 
-        var notification = new NewApplicationReceived(author, submittedApplication);
+        var notification = new NewApplicationReceived(author, submittedApplication, DateTime.UtcNow);
 
         await _notifications.AddAsync(notification);
     }

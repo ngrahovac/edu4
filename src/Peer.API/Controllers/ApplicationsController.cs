@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Peer.API.Models.Display;
 using Peer.API.Models.Input;
 using Peer.API.Utils;
+using Peer.Application.Contracts;
 using Peer.Application.Services;
 using Peer.Domain.Applications;
+using Peer.Domain.Contributors;
+using Peer.Domain.Projects;
 
 namespace Peer.API.Controllers;
 
@@ -47,17 +50,19 @@ public class ApplicationsController : ControllerBase
         var requesterIsProjectAuthor = requesterId.Equals(project.AuthorId);
 
         var applications = requesterIsProjectAuthor
-            ? await _applications.GetReceivedAsync(requesterId, projectId)
-            : await _applications.GetSentAsync(requesterId, projectId);
+            ? throw new NotImplementedException()
+            : await _applications.GetSentAsync(requesterId, projectId, pageSize: int.MaxValue);
 
-        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
+        return applications.Items.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
     }
 
     [HttpGet("sent")]
-    public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetSentAsync(
+    public async Task<ActionResult<PagedList<SentApplicationDisplayModel>>> GetSentAsync(
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption? sort
+        ApplicationsSortOption? sort,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5
     )
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
@@ -70,35 +75,71 @@ public class ApplicationsController : ControllerBase
             requesterId,
             projectId,
             positionId,
-            sort ?? ApplicationsSortOption.Default
+            sort ?? ApplicationsSortOption.Default,
+            page,
+            pageSize
         );
 
-        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
+        var uniqueProjectIds = applications.Items
+            .Select(a => a.ProjectId)
+            .Distinct();
+
+        var uniqueProjects = new List<Project>();
+
+        foreach (var id in uniqueProjectIds)
+        {
+            var project = await _projects.GetByIdAsync(id);
+            uniqueProjects.Add(project);
+        }
+
+        return new PagedList<SentApplicationDisplayModel>(
+            applications.TotalItems,
+            applications.Page,
+            applications.TotalPages,
+            applications.Items.Select(a => new SentApplicationDisplayModel(
+                a,
+                requester,
+                uniqueProjects.Single(p => p.Id == a.ProjectId)))
+            .ToList()
+        );
     }
 
     [HttpGet("sent/projects")]
-    public async Task<ActionResult<ICollection<Guid>>> GetSubmittedApplicationsProjectsAsync()
+    public async Task<ActionResult<ICollection<ProjectDisplayModel>>> GetSubmittedApplicationsProjectsAsync()
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
             Request
         );
         var requesterId = await _contributors.GetUserIdFromAccountId(requesterAccountId);
+        var requester = await _contributors.GetByIdAsync(requesterId);
 
         var applications = await _applications.GetSentAsync(
             requesterId,
             null,
             null,
-            ApplicationsSortOption.Default
+            ApplicationsSortOption.Default,
+            pageSize: int.MaxValue
         );
 
-        return applications.Select(a => a.ProjectId).Distinct().ToList();
+        var projectsIds = applications.Items.Select(a => a.ProjectId).Distinct().ToList();
+
+        List<Project> projects = new();
+        foreach (var id in projectsIds)
+        {
+            var project = await _projects.GetByIdAsync(id);
+            projects.Add(project);
+        }
+
+        return projects.Select(p => new ProjectDisplayModel(p, requester)).ToList();
     }
 
     [HttpGet("received")]
-    public async Task<ActionResult<ICollection<ApplicationDisplayModel>>> GetReceivedAsync(
+    public async Task<ActionResult<PagedList<ReceivedApplicationDisplayModel>>> GetReceivedAsync(
         Guid? projectId,
         Guid? positionId,
-        ApplicationsSortOption? sort
+        ApplicationsSortOption? sort,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5
     )
     {
         var requesterAccountId = _accountIdExtractionService.ExtractAccountIdFromHttpRequest(
@@ -111,10 +152,45 @@ public class ApplicationsController : ControllerBase
             requesterId,
             projectId,
             positionId,
-            sort ?? ApplicationsSortOption.Default
+            sort ?? ApplicationsSortOption.Default,
+            page,
+            pageSize
         );
 
-        return applications.Select(a => new ApplicationDisplayModel(a, requester)).ToList();
+        var uniqueProjectIds = applications.Items
+            .Select(a => a.ProjectId)
+            .Distinct();
+
+        var uniqueProjects = new List<Project>();
+
+        foreach (var id in uniqueProjectIds)
+        {
+            var project = await _projects.GetByIdAsync(id);
+            uniqueProjects.Add(project);
+        }
+
+        var uniqueApplicantIds = applications.Items
+            .Select(a => a.ApplicantId)
+            .Distinct();
+
+        var uniqueApplicants = new List<Contributor>();
+
+        foreach (var id in uniqueApplicantIds)
+        {
+            var applicant = await _contributors.GetByIdAsync(id);
+            uniqueApplicants.Add(applicant);
+        }
+
+        return new PagedList<ReceivedApplicationDisplayModel>(
+            applications.TotalItems,
+            applications.Page,
+            applications.TotalPages,
+            applications.Items.Select(a => new ReceivedApplicationDisplayModel(
+                a,
+                requester,
+                uniqueProjects.Single(p => p.Id == a.ProjectId),
+                uniqueApplicants.Single(c => c.Id == a.ApplicantId))
+            ).ToList());
     }
 
     [HttpPost]

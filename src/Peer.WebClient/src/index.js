@@ -19,6 +19,7 @@ import Contributor from './pages/Contributor';
 import Applications from './pages/Applications';
 import Search from './pages/Search';
 import MyContributions from './pages/MyContributions';
+import NotFound from './pages/NotFound';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -48,10 +49,12 @@ root.render(
             <Route path='/projects/:projectId' element={<Project></Project>}></Route>
             <Route path='/projects/:projectId/edit' element={<EditProject></EditProject>}></Route>
             <Route path='/contributors/:contributorId' element={<Contributor></Contributor>}></Route>
-            <Route path='/applications' element={<Applications></Applications>}></Route>
+            <Route path='/applications/:selectedApplicationType' element={<Applications></Applications>}></Route>
             <Route path='/search' element={<Search></Search>}></Route>
-
             <Route path='/contributions' element={<MyContributions></MyContributions>}></Route>
+
+            <Route path='/404' element={<NotFound></NotFound>}></Route>
+            <Route path='/*' element={<NotFound></NotFound>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

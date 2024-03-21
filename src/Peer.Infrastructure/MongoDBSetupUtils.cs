@@ -153,6 +153,9 @@ public class MongoDBSetupUtils
         {
             cm.AutoMap();
             cm.MapProperty(an => an.Processed);
+            cm.MapProperty(an => an.Message);
+            cm.MapProperty(an => an.ContributorToNotifyId);
+            cm.MapProperty(an => an.Timestamp);
         });
 
         BsonClassMap.RegisterClassMap<NewApplicationReceived>(cm =>

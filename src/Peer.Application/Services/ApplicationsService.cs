@@ -46,11 +46,13 @@ public class ApplicationsService
         await Task.WhenAll(application.DomainEvents.Select(de => _domainEvents.AddAsync(de)));
     }
 
-    public async Task<List<Domain.Applications.Application>> GetReceivedAsync(
+    public async Task<PagedList<Domain.Applications.Application>> GetReceivedAsync(
         Guid requesterId,
         Guid? projectId = null,
         Guid? positionId = null,
-        ApplicationsSortOption applicationsSortOption = ApplicationsSortOption.Default)
+        ApplicationsSortOption applicationsSortOption = ApplicationsSortOption.Default,
+        int page = 1,
+        int pageSize = 5)
     {
         var requester = await _contributors.GetByIdAsync(requesterId) ??
             throw new InvalidOperationException("The contributor with the given Id doesn't exist");
@@ -81,14 +83,18 @@ public class ApplicationsService
             requesterId,
             projectId,
             positionId,
-            applicationsSortOption);
+            applicationsSortOption,
+            page,
+            pageSize);
     }
 
-    public async Task<List<Domain.Applications.Application>> GetSentAsync(
+    public async Task<PagedList<Domain.Applications.Application>> GetSentAsync(
         Guid requesterId,
         Guid? projectId = null,
         Guid? positionId = null,
-        ApplicationsSortOption applicationsSortOption = ApplicationsSortOption.Default)
+        ApplicationsSortOption applicationsSortOption = ApplicationsSortOption.Default,
+        int page = 1,
+        int pageSize = 5)
     {
         var requester = await _contributors.GetByIdAsync(requesterId) ??
             throw new InvalidOperationException("The contributor with the given Id doesn't exist");
@@ -113,7 +119,9 @@ public class ApplicationsService
             requesterId,
             projectId,
             positionId,
-            applicationsSortOption);
+            applicationsSortOption,
+            page,
+            pageSize);
     }
 
     public async Task RejectAsync(Guid requesterId, Guid applicationId)

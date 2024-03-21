@@ -10,24 +10,27 @@ import {
 } from '../services/RequestResult'
 import { useAuth0 } from '@auth0/auth0-react';
 import ReceivedApplications from '../comps/applications/ReceivedApplications'
-import TabulatedMenu from '../comps/nav/TabulatedMenu'
 import { HatSearchParam } from '../comps/search/HatSearchParam'
+import { Link, useParams } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
+import { BeatLoader, ClipLoader, PulseLoader } from 'react-spinners'
 
 const Applications = () => {
     const applicationType = {
-        sent: "Sent",
-        received: "Received"
+        sent: "sent",
+        received: "received"
     };
 
     const { getAccessTokenSilently } = useAuth0();
 
-    const [selectedApplicationType, setSelectedApplicationType] = useState(applicationType.sent);
-
-    const [sentApplications, setSentApplications] = useState(undefined);
+    const { selectedApplicationType } = useParams();
+    const [sentApplicationsPage, setSentApplicationsPage] = useState(undefined);
     const [projectIdFilter, setProjectIdFilter] = useState(undefined);
     const [sort, setSort] = useState(undefined);
 
-    const [receivedApplications, setReceivedApplications] = useState(undefined);
+    const [receivedApplicationsPage, setReceivedApplicationsPage] = useState(undefined);
+
+    const [applicationsLoading, setApplicationsLoading] = useState(true);
 
     useEffect(() => {
         if (selectedApplicationType == applicationType.sent) {
@@ -38,18 +41,25 @@ const Applications = () => {
     }, [selectedApplicationType, sort, projectIdFilter])
 
 
-    function getSentApplications() {
+    if (selectedApplicationType != applicationType.sent &&
+        selectedApplicationType != applicationType.received) {
+        return <Navigate to="/404" replace></Navigate>
+    }
+
+
+    function getSentApplications(page = 1) {
         (async () => {
             try {
+                setApplicationsLoading(true);
                 let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await getSubmittedApplications(token, projectIdFilter, sort);
+                let result = await getSubmittedApplications(token, projectIdFilter, sort, page);
 
                 if (result.outcome === successResult) {
                     const sentApplications = result.payload;
-                    setSentApplications(sentApplications);
+                    setSentApplicationsPage(sentApplications);
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
@@ -71,23 +81,27 @@ const Applications = () => {
                 // setTimeout(() => {
                 //     document.getElementById('user-action-fail-toast').close();
                 // }, 3000);
+            } finally {
+                setApplicationsLoading(false);
             }
         })();
     }
 
-    function getReceivedApplications() {
+    function getReceivedApplications(page = 1) {
         (async () => {
             try {
+                setApplicationsLoading(true);
+
                 {/* add validation */ }
                 let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
                 });
 
-                let result = await getIncomingApplications(token, projectIdFilter, sort);
+                let result = await getIncomingApplications(token, projectIdFilter, sort, page);
 
                 if (result.outcome === successResult) {
                     const receivedApplications = result.payload;
-                    setReceivedApplications(receivedApplications);
+                    setReceivedApplicationsPage(receivedApplications);
                     // document.getElementById('user-action-success-toast').show();
                     // setTimeout(() => window.location.href = "/homepage", 1000);
                 } else if (result.outcome === failureResult) {
@@ -109,6 +123,8 @@ const Applications = () => {
                 // setTimeout(() => {
                 //     document.getElementById('user-action-fail-toast').close();
                 // }, 3000);
+            } finally {
+                setApplicationsLoading(false);
             }
         })();
     }
@@ -118,38 +134,53 @@ const Applications = () => {
             title="Applications"
             description="Manage sent and received project applications">
 
-            <div className='pt-16 w-full flex flex-col gap-y-8'>
+            <div className='w-full flex flex-col gap-y-16 mt-16'>
                 <div className="flex gap-x-4 items-center text-gray-600">
-                    <HatSearchParam
-                        selected={selectedApplicationType == "Sent"}
-                        onSelected={() => setSelectedApplicationType("Sent")}>
-                        Sent
-                    </HatSearchParam>
+                    <Link to="/applications/sent">
+                        <HatSearchParam
+                            selected={selectedApplicationType == "sent"}>
+                            Sent
+                        </HatSearchParam>
+                    </Link>
 
-                    <HatSearchParam
-                        selected={selectedApplicationType == "Received"}
-                        onSelected={() => setSelectedApplicationType("Received")}>
-                        Received
-                    </HatSearchParam>
+                    <Link to="/applications/received">
+                        <HatSearchParam
+                            selected={selectedApplicationType == "received"}>
+                            Received
+                        </HatSearchParam>
+                    </Link>
                 </div>
 
                 {/* applications */}
                 <div>
                     {
+                        ((selectedApplicationType == applicationType.sent && !sentApplicationsPage) ||
+                            (selectedApplicationType == applicationType.received && !receivedApplicationsPage)) &&
+                        <div className='flex content-center place-content-center h-96'>
+                            <ClipLoader></ClipLoader>
+                        </div>
+                    }
+                    {
                         selectedApplicationType == applicationType.sent &&
-                        sentApplications != undefined &&
+                        sentApplicationsPage != undefined &&
                         <SentApplications
-                            applications={sentApplications}
+                            applications={sentApplicationsPage}
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
-                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}></SentApplications>
+                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}
+                            onPageChanged={(page) => getSentApplications(page)}
+                            applicationsLoading={applicationsLoading}>
+                        </SentApplications>
                     }
                     {
                         selectedApplicationType == applicationType.received &&
-                        receivedApplications != undefined &&
+                        receivedApplicationsPage != undefined &&
                         <ReceivedApplications
-                            applications={receivedApplications}
+                            applications={receivedApplicationsPage}
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
-                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}>
+                            onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}
+                            onPageChanged={(page) => getReceivedApplications(page)}
+                            onRefreshRequested={() => getReceivedApplications()}
+                            applicationsLoading={applicationsLoading}>
                         </ReceivedApplications>
                     }
                 </div>
