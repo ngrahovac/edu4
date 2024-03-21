@@ -36,8 +36,6 @@ const SentApplications = (props) => {
 
     const fetchProjectsUserAppliedFor = async () => {
         try {
-            let fetchedProjects = [];
-
             let token = await getAccessTokenSilently({
                 audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
             });
@@ -46,12 +44,10 @@ const SentApplications = (props) => {
 
             if (result.outcome == successResult) {
                 let projects = await result.payload;
-                fetchedProjects.push(projects);
+                setSubmittedApplicationsProjects(projects);
             } else {
                 console.log("error fetching all projects user applied to");
             }
-
-            setSubmittedApplicationsProjects(fetchedProjects);
         } catch (ex) {
             console.log("error fetching all projects user applied to", ex);
         }
