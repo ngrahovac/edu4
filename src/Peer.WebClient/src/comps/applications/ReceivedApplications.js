@@ -221,7 +221,7 @@ const ReceivedApplications = (props) => {
                     </div>
 
                     <BorderlessButton
-                        text="Refresh"
+                        text="Incoming applications"
                         onClick={() => {
                             if (projectIdFilter == undefined && sort == "NewestFirst")
                                 onRefreshRequested();
