@@ -30,6 +30,8 @@ const Applications = () => {
 
     const [receivedApplicationsPage, setReceivedApplicationsPage] = useState(undefined);
 
+    const [applicationsLoading, setApplicationsLoading] = useState(true);
+
     useEffect(() => {
         if (selectedApplicationType == applicationType.sent) {
             getSentApplications();
@@ -85,6 +87,8 @@ const Applications = () => {
     function getReceivedApplications(page = 1) {
         (async () => {
             try {
+                setApplicationsLoading(true);
+
                 {/* add validation */ }
                 let token = await getAccessTokenSilently({
                     audience: process.env.REACT_APP_EDU4_API_IDENTIFIER
@@ -116,6 +120,8 @@ const Applications = () => {
                 // setTimeout(() => {
                 //     document.getElementById('user-action-fail-toast').close();
                 // }, 3000);
+            } finally {
+                setApplicationsLoading(false);
             }
         })();
     }
@@ -168,7 +174,8 @@ const Applications = () => {
                             onProjectIdFilterChanged={(projectId) => { setProjectIdFilter(projectId) }}
                             onSortChanged={(sort) => { setSort(sort ? sort : undefined) }}
                             onPageChanged={(page) => getReceivedApplications(page)}
-                            onRefreshRequested={() => getReceivedApplications()}>
+                            onRefreshRequested={() => getReceivedApplications()}
+                            applicationsLoading={applicationsLoading}>
                         </ReceivedApplications>
                     }
                 </div>
