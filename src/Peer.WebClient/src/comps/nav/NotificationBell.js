@@ -10,7 +10,7 @@ const NotificationBell = () => {
 
     const [hasNotifs, setHasNotifs] = useState(false);
     const [notifs, setNotifs] = useState(undefined);
-    const [previewVisible, setPreviewVisible] = useState(true);
+    const [previewVisible, setPreviewVisible] = useState(false);
 
     const { getAccessTokenSilently } = useAuth0();
 
